@@ -10,6 +10,17 @@ allprojects {
 
     repositories {
         mavenCentral()
+
+        // ▼▼▼ [추가] GitHub Packages 저장소 등록 ▼▼▼
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Poten-Up-3rd-Project/common-lib")
+
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 

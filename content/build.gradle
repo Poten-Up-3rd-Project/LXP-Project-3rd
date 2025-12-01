@@ -25,7 +25,12 @@ repositories {
 }
 
 dependencies {
-
+    implementation 'com.lxp:common-domain:1.0.0'
+    implementation 'com.lxp:common-application:1.0.0'
+    implementation 'com.lxp:common-infrastructure:1.0.0'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    testRuntimeOnly 'com.h2database:h2'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 }
 
 tasks.named('test') {

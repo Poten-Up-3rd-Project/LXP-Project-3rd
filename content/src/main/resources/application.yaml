@@ -1,0 +1,15 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: "content/compose.yaml"
+
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+
+      properties:
+        hibernate:
+          format_sql: true
+          highlight_sql: true

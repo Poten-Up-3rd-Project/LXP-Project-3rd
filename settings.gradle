@@ -1,1 +1,9 @@
 rootProject.name = 'LXP-Project-3rd'
+
+include 'auth'
+include 'content'
+include 'enrollment'
+include 'recommand'
+include 'skill'
+include 'tag'
+include 'user'

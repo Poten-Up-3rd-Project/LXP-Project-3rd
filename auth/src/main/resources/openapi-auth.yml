@@ -1,0 +1,20 @@
+openapi: 3.0.3
+info:
+  title: "Auth Module Stub"
+  version: 1.0.0
+  description: "인증 모듈의 paths와 components 조각 명세 예시"
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: 사용자 로그인
+      # ... (생략)
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      # ... (생략)
+    AuthResponse:
+      type: object
+      # ... (생략)

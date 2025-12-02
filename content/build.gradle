@@ -1,12 +1,10 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot'
-    id 'io.spring.dependency-management'
 }
 
 group = 'com.lxp'
 version = '0.0.1-SNAPSHOT'
-description = 'Content'
+description = 'content'
 
 java {
     toolchain {
@@ -14,14 +12,12 @@ java {
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
 repositories {
     mavenCentral()
+}
+
+bootJar {
+    enabled = false
 }
 
 dependencies {

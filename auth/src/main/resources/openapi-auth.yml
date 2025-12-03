@@ -34,48 +34,6 @@ paths:
     post:
       tags:
         - Auth
-      summary: 사용자 로그인 및 JWT 발급
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: 로그인 성공 및 토큰 발급
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /auth/refresh:
-    post:
-      tags:
-        - Auth
-      summary: Refresh Token을 사용하여 Access Token 갱신
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                refreshToken:
-                  type: string
-                  description: 유효한 Refresh Token
-      responses:
-        '200':
-          description: Access Token 갱신 성공
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-
 components:
   # --- Schemas (데이터 모델) ---
   schemas:

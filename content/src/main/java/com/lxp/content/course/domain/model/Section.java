@@ -1,6 +1,5 @@
 package com.lxp.content.course.domain.model;
 
-import com.lxp.common.util.UUIdGenerator;
 import com.lxp.content.course.domain.model.collection.SectionLectures;
 import com.lxp.content.course.domain.model.id.LectureUUID;
 import com.lxp.content.course.domain.model.id.SectionUUID;

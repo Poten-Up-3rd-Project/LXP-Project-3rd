@@ -3,6 +3,7 @@ package com.lxp.enrollment.domain.model;
 import com.lxp.common.domain.event.AggregateRoot;
 import com.lxp.enrollment.domain.model.enums.StudyStatus;
 import com.lxp.enrollment.domain.model.vo.CourseStudyId;
+import com.lxp.enrollment.domain.model.vo.LectureStudyId;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,14 +40,30 @@ public class CourseStudy extends AggregateRoot {
     }
 
     /**
-     * 강좌 진행률의 진행률 재 계산
-     * 소수점 버림
+     * 강의 진행상태 업데이트
      */
-    public void recalculateProgress() {
+    public void updateLectureProgress(LectureStudyId id) {
         if(this.studyStatus == StudyStatus.COMPLETED) {
             throw new IllegalStateException("완료 상태의 강의는 진도를 업데이트 할 수 없습니다.");
         }
 
+        LectureStudy lectureStudy = lectureStudies.stream()
+            .filter(lecStd -> lecStd.lectureStudyId().equals(id))
+                .findAny().orElseThrow(() -> new IllegalArgumentException("해당 LectureStudyID에 해당하는 LectureStudy가 없습니다. : " + id.value()));
+
+        if(lectureStudy.completed())
+            return;
+
+        lectureStudy.changeCompleted();
+
+        recalculateProgress();
+    }
+
+    /**
+     * 강좌 진행률의 진행률 재 계산
+     * 소수점 버림
+     */
+    private void recalculateProgress() {
         float total = ((float) lectureStudies.stream().filter(LectureStudy::completed).count()) /
                 lectureStudies.size() * 100;
 

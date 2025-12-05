@@ -71,9 +71,9 @@ class CourseStudyTest {
     @Test
     @DisplayName("완료 상태에서 다시 진도 업데이트를 시도해도 상태가 바뀌지 않아야 한다")
     void shouldNotChangeCourseStatus_WhenUpdateProgressWithStatusIsCompleted() {
-        courseStudy.lectureStudies().get(0).changeCompleted();
-        courseStudy.lectureStudies().get(1).changeCompleted();
-        courseStudy.lectureStudies().get(2).changeCompleted();
+        lectureStudy1.changeCompleted();
+        lectureStudy2.changeCompleted();
+        lectureStudy3.changeCompleted();
 
         courseStudy.recalculateProgress();
 

@@ -49,4 +49,24 @@ public class LocalAuth extends BaseEntity<UserId> {
     public UserId getId() {
         return this.id;
     }
+
+    public String getIdValue() {
+        return this.id.getValue().toString();
+    }
+
+    public String getLoginIdentifier() {
+        return loginIdentifier;
+    }
+
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public OffsetDateTime getLastPasswordModifiedAt() {
+        return lastPasswordModifiedAt;
+    }
 }

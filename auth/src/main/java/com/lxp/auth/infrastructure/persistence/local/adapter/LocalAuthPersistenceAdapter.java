@@ -38,9 +38,7 @@ public class LocalAuthPersistenceAdapter implements LocalAuthRepository {
         return JpaLocalAuth.of(
             localAuth.getId().getValue(),
             localAuth.getLoginIdentifier(),
-            localAuth.getHashedPassword(),
-            localAuth.getCreatedAt(),
-            localAuth.getLastPasswordModifiedAt()
+            localAuth.getHashedPassword()
         );
     }
 
@@ -48,9 +46,7 @@ public class LocalAuthPersistenceAdapter implements LocalAuthRepository {
         return LocalAuth.of(
             UserId.of(jpaAuth.getId()),
             jpaAuth.getLoginIdentifier(),
-            jpaAuth.getHashedPassword(),
-            jpaAuth.getCreatedAt(),
-            jpaAuth.getLastPasswordModifiedAt()
+            jpaAuth.getHashedPassword()
         );
     }
 }

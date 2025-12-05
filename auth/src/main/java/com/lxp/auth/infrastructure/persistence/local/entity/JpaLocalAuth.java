@@ -20,32 +20,17 @@ public class JpaLocalAuth extends BaseUuidJpaEntity {
     @Column(name = "hashed_password")
     private String hashedPassword;
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
-
-    @Column
-    private OffsetDateTime lastPasswordModifiedAt;
-
     protected JpaLocalAuth() {
     }
 
-    private JpaLocalAuth(UUID id, String loginIdentifier, String hashedPassword, OffsetDateTime createdAt) {
+    private JpaLocalAuth(UUID id, String loginIdentifier, String hashedPassword) {
         super.setId(id.toString());
         this.loginIdentifier = loginIdentifier;
         this.hashedPassword = hashedPassword;
-        this.createdAt = createdAt;
-    }
-
-    public JpaLocalAuth(UUID id, String loginIdentifier, String hashedPassword, OffsetDateTime createdAt, OffsetDateTime lastPasswordModifiedAt) {
-        this(id, loginIdentifier, hashedPassword, createdAt);
-        this.lastPasswordModifiedAt = lastPasswordModifiedAt;
     }
 
     public static JpaLocalAuth of(UUID userId, String loginIdentifier, String hashedPassword) {
-        return new JpaLocalAuth(userId, loginIdentifier, hashedPassword, OffsetDateTime.now());
+        return new JpaLocalAuth(userId, loginIdentifier, hashedPassword);
     }
 
-    public static JpaLocalAuth of(UUID userId, String loginIdentifier, String hashedPassword, OffsetDateTime createdAt, OffsetDateTime lastPasswordModifiedAt) {
-        return new JpaLocalAuth(userId, loginIdentifier, hashedPassword, createdAt, lastPasswordModifiedAt);
-    }
 }

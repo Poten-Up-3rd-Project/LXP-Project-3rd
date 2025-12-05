@@ -1,7 +1,7 @@
 package com.lxp.auth.presentation.rest.local;
 
-import com.lxp.auth.application.local.usecase.AuthenticateUserUseCase;
-import com.lxp.auth.application.local.usecase.RegisterUserUseCase;
+import com.lxp.auth.application.local.port.required.usecase.AuthenticateUserUseCase;
+import com.lxp.auth.application.local.port.required.usecase.RegisterUserUseCase;
 import com.lxp.auth.presentation.rest.local.dto.reqeust.LoginRequest;
 import com.lxp.auth.presentation.rest.local.dto.reqeust.RegisterRequest;
 import com.lxp.auth.presentation.rest.local.dto.response.LoginResponse;
@@ -25,8 +25,8 @@ public class LocalAuthController {
 
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request) {
-        authenticateUserUseCase.authenticate(request.toCommand());
-        return ApiResponse.success(new LoginResponse("token..."));
+        String accessToken = authenticateUserUseCase.authenticate(request.toCommand());
+        return ApiResponse.success(new LoginResponse(accessToken));
     }
 
     @PostMapping("/register")

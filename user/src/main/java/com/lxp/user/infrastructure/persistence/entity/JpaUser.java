@@ -1,13 +1,11 @@
 package com.lxp.user.infrastructure.persistence.entity;
 
-import com.lxp.common.infrastructure.persistence.BaseSoftDeleteJpaEntity;
 import com.lxp.common.infrastructure.persistence.BaseUuidJpaEntity;
 import com.lxp.user.domain.user.model.vo.UserRole;
 import com.lxp.user.domain.user.model.vo.UserStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.util.UUID;
@@ -39,5 +37,21 @@ public class JpaUser extends BaseUuidJpaEntity {
 
     public static JpaUser of(UUID id, String name, String email, UserRole role, UserStatus userStatus) {
         return new JpaUser(id.toString(), name, email, role, userStatus);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 }

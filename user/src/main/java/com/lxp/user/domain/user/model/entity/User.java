@@ -29,6 +29,10 @@ public class User extends BaseEntity<UserId> {
         this.userStatus = UserStatus.ACTIVE;
     }
 
+    public static User of (UserId id, UserName name, UserEmail email, UserRole userRole) {
+        return new User(id, name, email, userRole);
+    }
+
 
     public static User createLearner(UserId id, UserName name, UserEmail email) {
         return new User(id, name, email, UserRole.LEARNER);

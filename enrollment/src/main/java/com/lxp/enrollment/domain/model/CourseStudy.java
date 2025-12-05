@@ -1,5 +1,6 @@
 package com.lxp.enrollment.domain.model;
 
+import com.lxp.common.domain.event.AggregateRoot;
 import com.lxp.enrollment.domain.model.enums.StudyStatus;
 import com.lxp.enrollment.domain.model.vo.CourseStudyId;
 
@@ -7,11 +8,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 강좌 진행률 도메인
  */
-public class CourseStudy {
+public class CourseStudy extends AggregateRoot {
 
     private CourseStudyId courseStudyId;
     private float totalProgress;
@@ -26,14 +28,14 @@ public class CourseStudy {
      * @param lectureStudies 강의 진행률 리스트
      * @return 생성된 강좌 진행률
      */
-    public static CourseStudy createCourseStudy(CourseStudyId courseStudyId, List<LectureStudy> lectureStudies) {
-        return new CourseStudy.Builder()
-                .courseStudyId(courseStudyId)
-                .totalProgress(0.0f)
-                .studyStatus(StudyStatus.IN_PROGRESS)
-                .completedAt(null)
-                .lectureStudies(lectureStudies)
-                .build();
+    public static CourseStudy create(CourseStudyId courseStudyId, List<LectureStudy> lectureStudies) {
+        return new CourseStudy(
+                Objects.requireNonNull(courseStudyId, "CourseStudyId는 null일 수 없습니다."),
+                StudyStatus.IN_PROGRESS,
+                0.0f,
+                Objects.requireNonNull(lectureStudies, "LectureStudies는 null일 수 없습니다."),
+                null
+        );
     }
 
     /**
@@ -45,7 +47,7 @@ public class CourseStudy {
             throw new IllegalStateException("완료 상태의 강의는 진도를 업데이트 할 수 없습니다.");
         }
 
-        float total = ((float) lectureStudies.stream().filter(LectureStudy::isCompleted).count()) /
+        float total = ((float) lectureStudies.stream().filter(LectureStudy::completed).count()) /
                 lectureStudies.size() * 100;
 
         this.totalProgress = BigDecimal.valueOf(total).setScale(0, RoundingMode.FLOOR).floatValue();
@@ -63,75 +65,32 @@ public class CourseStudy {
         }
     }
 
-    /*
-     * Getters
-     */
-    public CourseStudyId getCourseStudyId() {
+    public CourseStudyId courseStudyId() {
         return courseStudyId;
     }
 
-    public float getTotalProgress() {
+    public float totalProgress() {
         return totalProgress;
     }
 
-    public StudyStatus getStudyStatus() {
+    public StudyStatus studyStatus() {
         return studyStatus;
     }
 
-    public OffsetDateTime getCompletedAt() {
+    public OffsetDateTime completedAt() {
         return completedAt;
     }
 
-    public List<LectureStudy> getLectureStudies() {
+    public List<LectureStudy> lectureStudies() {
         return lectureStudies;
     }
 
-    /*
-     * Builder pattern
-     */
-    private CourseStudy(Builder builder) {
-        this.courseStudyId = builder.courseStudyId;
-        this.totalProgress = builder.totalProgress;
-        this.studyStatus = builder.studyStatus;
-        this.completedAt = builder.completedAt;
-        this.lectureStudies = builder.lectureStudies;
-    }
-
-    public static class Builder {
-        private CourseStudyId courseStudyId;
-        private float totalProgress;
-        private StudyStatus studyStatus;
-        private OffsetDateTime completedAt;
-        private List<LectureStudy> lectureStudies;
-
-        public Builder courseStudyId(CourseStudyId courseStudyId) {
-            this.courseStudyId = courseStudyId;
-            return this;
-        }
-
-        public Builder totalProgress(float totalProgress) {
-            this.totalProgress = totalProgress;
-            return this;
-        }
-
-        public Builder studyStatus(StudyStatus studyStatus) {
-            this.studyStatus = studyStatus;
-            return this;
-        }
-
-        public Builder completedAt(OffsetDateTime completedAt) {
-            this.completedAt = completedAt;
-            return this;
-        }
-
-        public Builder lectureStudies(List<LectureStudy> lectureStudies) {
-            this.lectureStudies = lectureStudies;
-            return this;
-        }
-
-        public CourseStudy build() {
-            return new CourseStudy(this);
-        }
+    private CourseStudy(CourseStudyId courseStudyId, StudyStatus studyStatus, float totalProgress, List<LectureStudy> lectureStudies, OffsetDateTime completedAt) {
+        this.courseStudyId = courseStudyId;
+        this.studyStatus = studyStatus;
+        this.totalProgress = totalProgress;
+        this.lectureStudies = lectureStudies;
+        this.completedAt = completedAt;
     }
 
 }

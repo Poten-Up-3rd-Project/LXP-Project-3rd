@@ -31,7 +31,7 @@ class CourseStudyTest {
         lectureStudy2 = LectureStudy.createLectureStudy(new LectureStudyId("learnerId_lectureId2"));
         lectureStudy3 = LectureStudy.createLectureStudy(new LectureStudyId("learnerId_lectureId3"));
 
-        courseStudy = CourseStudy.createCourseStudy(
+        courseStudy = CourseStudy.create(
                 courseStudyId,
                 List.of(lectureStudy1, lectureStudy2, lectureStudy3)
         );
@@ -40,40 +40,40 @@ class CourseStudyTest {
     @Test
     @DisplayName("새로 생성 된 강좌 학습 기록은 0% 진행률과 IN_PROGRESS 상태여야 한다")
     void shouldZeroPercentageAndInProgressStatus_WhenCreatedCourse() {
-        assertEquals(0.0f, courseStudy.getTotalProgress(), "새로 생성된 강좌 학습 진행률은 0%여야 합니다.");
-        assertEquals(StudyStatus.IN_PROGRESS, courseStudy.getStudyStatus(), "새로 생성된 강좌 상태는 IN_PROGRESS여야 한다.");
+        assertEquals(0.0f, courseStudy.totalProgress(), "새로 생성된 강좌 학습 진행률은 0%여야 합니다.");
+        assertEquals(StudyStatus.IN_PROGRESS, courseStudy.studyStatus(), "새로 생성된 강좌 상태는 IN_PROGRESS여야 한다.");
     }
 
     @Test
     @DisplayName("일부 강의만 완료했을 때, 강좌 진행률이 올바르게 계산되어야 한다.")
     void shouldCalculateCoursePercentage_WhenCompletedSomeLecture() {
-        courseStudy.getLectureStudies().get(0).changeCompleted();
-        courseStudy.getLectureStudies().get(1).changeCompleted();
+        lectureStudy1.changeCompleted();
+        lectureStudy2.changeCompleted();
 
         courseStudy.recalculateProgress();
 
-        assertEquals(66.0f, courseStudy.getTotalProgress(),"일부 강의가 완료되었을 때, 강좌 진행률이 올바르게 계산되어야 합니다.");
+        assertEquals(66.0f, courseStudy.totalProgress(),"일부 강의가 완료되었을 때, 강좌 진행률이 올바르게 계산되어야 합니다.");
     }
 
     @Test
     @DisplayName("모든 강의가 100% 완료 시 강좌가 자동으로 완료되어야 한다.")
     void shouldCompleteCourse_WhenWholeLectureCompleted() {
-        courseStudy.getLectureStudies().get(0).changeCompleted();
-        courseStudy.getLectureStudies().get(1).changeCompleted();
-        courseStudy.getLectureStudies().get(2).changeCompleted();
+        lectureStudy1.changeCompleted();
+        lectureStudy2.changeCompleted();
+        lectureStudy3.changeCompleted();
 
         courseStudy.recalculateProgress();
 
-        assertEquals(StudyStatus.COMPLETED, courseStudy.getStudyStatus(), "모든 강의가 완료되면 강좌가 완료 상태가 되어야 합니다.");
-        assertNotNull(courseStudy.getCompletedAt(), "강좌가 완료되면 완료된 시간이 표시되어야 합니다.");
+        assertEquals(StudyStatus.COMPLETED, courseStudy.studyStatus(), "모든 강의가 완료되면 강좌가 완료 상태가 되어야 합니다.");
+        assertNotNull(courseStudy.completedAt(), "강좌가 완료되면 완료된 시간이 표시되어야 합니다.");
     }
 
     @Test
     @DisplayName("완료 상태에서 다시 진도 업데이트를 시도해도 상태가 바뀌지 않아야 한다")
     void shouldNotChangeCourseStatus_WhenUpdateProgressWithStatusIsCompleted() {
-        courseStudy.getLectureStudies().get(0).changeCompleted();
-        courseStudy.getLectureStudies().get(1).changeCompleted();
-        courseStudy.getLectureStudies().get(2).changeCompleted();
+        courseStudy.lectureStudies().get(0).changeCompleted();
+        courseStudy.lectureStudies().get(1).changeCompleted();
+        courseStudy.lectureStudies().get(2).changeCompleted();
 
         courseStudy.recalculateProgress();
 

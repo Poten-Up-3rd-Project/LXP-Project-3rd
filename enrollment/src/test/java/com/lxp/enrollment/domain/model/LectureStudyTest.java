@@ -23,14 +23,14 @@ class LectureStudyTest {
     @Test
     @DisplayName("새로 생성된 강의 학습 기록은 완료되지 않은 상태여야 한다")
     void shouldNotCompleted_WhenLectureCreated() {
-        assertFalse(lectureStudy.completed(), "새로 생성된 강의 학습 기록은 완료되지 않은 상태여야 합니다.");
+        assertFalse(lectureStudy.isCompleted(), "새로 생성된 강의 학습 기록은 완료되지 않은 상태여야 합니다.");
     }
 
     @Test
     @DisplayName("강의 학습 기록을 완료 상태로 변경하면 완료 상태가 true가 되어야 한다")
     void shouldCompletedIsTrue_WhenLectureStatusChangeCompleted() {
         lectureStudy.changeCompleted();
-        assertTrue(lectureStudy.completed(), "강의 학습 기록을 완료 상태로 변경하면 완료 상태가 true가 되어야 합니다.");
+        assertTrue(lectureStudy.isCompleted(), "강의 학습 기록을 완료 상태로 변경하면 완료 상태가 true가 되어야 합니다.");
     }
 
 }

@@ -2,8 +2,6 @@ package com.lxp.enrollment.domain.model;
 
 import com.lxp.enrollment.domain.model.vo.LectureStudyId;
 
-import java.util.Objects;
-
 /**
  * 강의 진행률 도메인
  */
@@ -18,10 +16,10 @@ public class LectureStudy {
      * @return 생성 된 강의 진행률
      */
     public static LectureStudy createLectureStudy(LectureStudyId lectureStudyId) {
-        return new LectureStudy(
-            Objects.requireNonNull(lectureStudyId, "LectureStudyId는 null일 수 없습니다."),
-            false
-        );
+        return new Builder()
+                .lectureStudyId(lectureStudyId)
+                .isCompleted(false)
+                .build();
     }
 
     /**
@@ -35,17 +33,37 @@ public class LectureStudy {
      * 강의 진행률 완료 여부
      * @return 진행 완료 여부
      */
-    public boolean completed() {
+    public boolean isCompleted() {
         return this.isCompleted;
     }
 
-    public LectureStudyId lectureStudyId() {
-        return lectureStudyId;
+    /*
+     * Builder Pattern
+     */
+    private LectureStudy(Builder builder) {
+        this.lectureStudyId = builder.lectureStudyId;
+        this.isCompleted = builder.isCompleted;
     }
 
-    private LectureStudy(LectureStudyId lectureStudyId, boolean isCompleted) {
-        this.lectureStudyId = lectureStudyId;
-        this.isCompleted = isCompleted;
+    public static class Builder {
+        private LectureStudyId lectureStudyId;
+        private boolean isCompleted;
+
+        public Builder lectureStudyId(LectureStudyId lectureStudyId) {
+            this.lectureStudyId = lectureStudyId;
+            return this;
+        }
+
+        public Builder isCompleted(boolean isCompleted) {
+            this.isCompleted = isCompleted;
+            return this;
+        }
+
+        public LectureStudy build() {
+            return new LectureStudy(this);
+        }
+
+
     }
 
 }

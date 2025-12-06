@@ -31,9 +31,12 @@ class TagTest {
     @Test
     @DisplayName("태그 name이 null이면 NPE가 발생한다")
     void create_fail_withNullName() {
-        // given && when
+        // given
+        TagCategoryId tagCategoryId = new TagCategoryId(1L);
+        String name = null;
+        // when
         NullPointerException exception = assertThrows(NullPointerException.class,
-                () -> tag(null));
+                () -> Tag.create(tagCategoryId, null));
 
         // then
         assertEquals("name must not be null", exception.getMessage());

@@ -1,11 +1,12 @@
 package com.lxp.content;
 
-import org.springframework.boot.SpringBootConfiguration;
+import com.lxp.common.infrastructure.persistence.JpaAuditingConfig;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.modulith.ApplicationModule;
 
 @Configuration
 @ApplicationModule
-@SpringBootConfiguration
+@Import(JpaAuditingConfig.class)
 public class ContentConfiguration {
 }

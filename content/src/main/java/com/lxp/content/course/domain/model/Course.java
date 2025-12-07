@@ -180,7 +180,7 @@ public class Course extends AggregateRoot<CourseUUID> {
         return this.tags.contains(tag);
     }
 
-
+    public CourseTags tags() { return tags; }
     public CourseUUID uuid() { return uuid; }
     public Long id() { return id; }
     public CourseTitle title() { return title; }

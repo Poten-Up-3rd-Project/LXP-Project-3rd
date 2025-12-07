@@ -5,6 +5,7 @@ import com.lxp.content.course.application.mapper.CourseResultMapper;
 import com.lxp.content.course.application.port.provided.dto.command.CourseCreateCommand;
 import com.lxp.content.course.application.port.provided.dto.result.CourseInfoResult;
 import com.lxp.content.course.application.port.provided.usecase.CourseCreateUseCase;
+import com.lxp.content.course.domain.repository.CourseRepository;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.repository.CourseRepository;
 import com.lxp.content.course.domain.service.CourseCreateDomainService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @Transactional
 public class CourseCreateService implements CourseCreateUseCase {

@@ -1,11 +1,12 @@
 package com.lxp.content.course.domain.model;
 
+import com.lxp.common.domain.model.BaseEntity;
 import com.lxp.content.course.domain.model.id.LectureUUID;
 import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
 
 import java.util.Objects;
 
-public class Lecture {
+public class Lecture extends BaseEntity<LectureUUID> {
     private final LectureUUID uuid;
     private Long id;
     private String title;
@@ -72,4 +73,9 @@ public class Lecture {
     public LectureDuration duration() { return duration; }
     public int order() { return order; }
     public String videoUrl() { return videoUrl; }
+
+    @Override
+    public LectureUUID getId() {
+        return uuid;
+    }
 }

@@ -12,9 +12,10 @@ import com.lxp.content.course.domain.model.id.InstructorUUID;
 import com.lxp.content.course.domain.model.vo.duration.CourseDuration;
 import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
 
+import java.time.Instant;
 import java.util.Objects;
 
-public class Course extends AggregateRoot {
+public class Course extends AggregateRoot<CourseUUID> {
     private Long id;
     private final CourseUUID uuid;
     private final InstructorUUID instructorUUID;
@@ -24,6 +25,8 @@ public class Course extends AggregateRoot {
     private CourseSections sections;
     private CourseDifficulty difficulty;
     private CourseTags tags;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     private Course(
             Long id,
@@ -34,7 +37,9 @@ public class Course extends AggregateRoot {
             String description,
             CourseDifficulty difficulty,
             CourseSections sections,
-            CourseTags tags
+            CourseTags tags,
+            Instant createdAt,
+            Instant updatedAt
     ) {
         this.id = id;
         this.uuid = uuid;
@@ -45,6 +50,8 @@ public class Course extends AggregateRoot {
         this.difficulty = Objects.requireNonNull(difficulty);
         this.sections = Objects.requireNonNull(sections);
         this.tags = tags;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public static Course create(
@@ -66,7 +73,9 @@ public class Course extends AggregateRoot {
                 description,
                 difficulty,
                 sections,
-                tags
+                tags,
+                null,
+                null
         );
     }
 
@@ -79,9 +88,23 @@ public class Course extends AggregateRoot {
             String description,
             CourseDifficulty difficulty,
             CourseSections sections,
-            CourseTags tags
+            CourseTags tags,
+            Instant createdAt,
+            Instant updatedAt
     ) {
-        return new Course(id, uuid, instructorUUID, thumbnailUrl, title, description, difficulty, sections, tags);
+        return new Course(
+                id,
+                uuid,
+                instructorUUID,
+                thumbnailUrl,
+                title,
+                description,
+                difficulty,
+                sections,
+                tags,
+                createdAt,
+                updatedAt
+                );
     }
 
     //setters
@@ -164,9 +187,15 @@ public class Course extends AggregateRoot {
     public CourseSections sections() { return sections; }
     public String thumbnailUrl() { return thumbnailUrl; }
     public InstructorUUID instructorUUID() { return instructorUUID; }
+    public Instant createdAt() { return createdAt; }
+    public Instant updatedAt() { return updatedAt; }
 
     public CourseDuration totalDuration() {
         return sections.totalDuration();
     }
 
+    @Override
+    public CourseUUID getId() {
+        return uuid;
+    }
 }

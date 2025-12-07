@@ -7,7 +7,9 @@ import com.lxp.content.course.domain.model.id.SectionUUID;
 import com.lxp.content.course.domain.model.vo.duration.CourseDuration;
 import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
 
 public record CourseSections(List<Section> values){

@@ -8,15 +8,11 @@ public record UserProfileId(Long id) {
         Objects.requireNonNull(id, "id is null");
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        UserProfileId that = (UserProfileId) o;
-        return Objects.equals(id, that.id);
+    public boolean matches(UserProfileId userProfileId) {
+        return this.id.equals(userProfileId.id);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
+    public boolean matches(Long userProfileId) {
+        return this.id.equals(userProfileId);
     }
 }

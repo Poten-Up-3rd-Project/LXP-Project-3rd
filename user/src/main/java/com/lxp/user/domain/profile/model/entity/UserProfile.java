@@ -1,14 +1,15 @@
 package com.lxp.user.domain.profile.model.entity;
 
-import com.lxp.common.domain.model.BaseEntity;
+import com.lxp.common.domain.event.AggregateRoot;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.profile.model.vo.LearnerLevel;
 import com.lxp.user.domain.profile.model.vo.Tags;
 import com.lxp.user.domain.profile.model.vo.UserProfileId;
 
+import java.util.List;
 import java.util.Objects;
 
-public class UserProfile extends BaseEntity<UserProfileId> {
+public class UserProfile extends AggregateRoot {
 
     private UserProfileId id;
     private UserId userId;
@@ -28,28 +29,29 @@ public class UserProfile extends BaseEntity<UserProfileId> {
         return new UserProfile(id, userId, level, tags, job);
     }
 
-    @Override
-    public UserProfileId getId() {
+    public void update(LearnerLevel level, List<String> tags, String job) {
+        this.level = Objects.requireNonNull(level);
+        this.tags = this.tags.withTags(tags);
+        this.job = job;
+    }
+
+    public UserProfileId id() {
         return id;
     }
 
-    public UserId getUserId() {
+    public UserId userId() {
         return userId;
     }
 
-    public String getUserIdForString() {
-        return userId.getValue().toString();
-    }
-
-    public LearnerLevel getLevel() {
+    public LearnerLevel level() {
         return level;
     }
 
-    public Tags getTags() {
+    public Tags tags() {
         return tags;
     }
 
-    public String getJob() {
+    public String job() {
         return job;
     }
 }

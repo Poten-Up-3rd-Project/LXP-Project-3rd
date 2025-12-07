@@ -3,12 +3,10 @@ package com.lxp.auth.domain.common.model.vo;
 import java.util.Objects;
 import java.util.UUID;
 
-public class UserId {
+public record UserId(UUID value) {
 
-    private final UUID value;
-
-    private UserId(UUID value) {
-        this.value = Objects.requireNonNull(value);
+    public UserId {
+        Objects.requireNonNull(value);
     }
 
     public static UserId create() {
@@ -23,20 +21,20 @@ public class UserId {
         return new UserId(UUID.fromString(value));
     }
 
-    public UUID getValue() {
-        return value;
+    public boolean matches(UUID id) {
+        return this.value.equals(id);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        UserId userId = (UserId) o;
-        return Objects.equals(value, userId.value);
+    public boolean matches(UserId userId) {
+        return this.equals(userId);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), value);
+    public boolean matches(String userId) {
+        return this.asString().equals(userId);
     }
+
+    public String asString() {
+        return this.value.toString();
+    }
+
 }

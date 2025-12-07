@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public record UserSaveCommand(UUID userId, String name, String email, String role) {
 
+    //Todo 추후 domainService로 이동할 것
     public User toDomain() {
         UserRole role = UserRole.fromString(this.role).orElseThrow(UserRoleNotFoundException::new);
 

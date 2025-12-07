@@ -2,14 +2,12 @@ package com.lxp.auth.domain.local.model.entity;
 
 import com.lxp.auth.domain.common.model.vo.UserId;
 import com.lxp.auth.domain.local.model.vo.HashedPassword;
-import com.lxp.common.domain.model.BaseEntity;
-import lombok.Getter;
+import com.lxp.common.domain.event.AggregateRoot;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-@Getter
-public class LocalAuth extends BaseEntity<UserId> {
+public class LocalAuth extends AggregateRoot {
 
     private UserId id;
     private String loginIdentifier;
@@ -29,7 +27,7 @@ public class LocalAuth extends BaseEntity<UserId> {
         this.lastPasswordModifiedAt = lastPasswordModifiedAt;
     }
 
-    public static LocalAuth of(String loginIdentifier, HashedPassword hashedPassword) {
+    public static LocalAuth register(String loginIdentifier, HashedPassword hashedPassword) {
         return new LocalAuth(UserId.create(), loginIdentifier, hashedPassword, OffsetDateTime.now());
     }
 
@@ -37,37 +35,56 @@ public class LocalAuth extends BaseEntity<UserId> {
         return new LocalAuth(id, loginIdentifier, passwordHash, OffsetDateTime.now());
     }
 
-    public static LocalAuth of(UserId id, String loginIdentifier, HashedPassword passwordHash, OffsetDateTime createdAt, OffsetDateTime lastPasswordModifiedAt) {
-        return new LocalAuth(id, loginIdentifier, passwordHash, createdAt, lastPasswordModifiedAt);
-    }
-
     public void updatePassword(final HashedPassword newHashedPassword) {
         this.hashedPassword = Objects.requireNonNull(newHashedPassword, "비밀번호는 null일 수 없습니다.");
         lastPasswordModifiedAt = OffsetDateTime.now();
     }
 
-    @Override
-    public UserId getId() {
+    public boolean matchesId(UserId id) {
+        return this.id.matches(id);
+    }
+
+    public boolean matchesId(String id) {
+        return this.id.matches(id);
+    }
+
+    public UserId userId() {
         return this.id;
     }
 
     public String getIdValue() {
-        return this.id.getValue().toString();
+        return this.id.asString();
     }
 
-    public String getLoginIdentifier() {
+    public String loginIdentifier() {
         return loginIdentifier;
     }
 
-    public HashedPassword getHashedPassword() {
+    public HashedPassword hashedPassword() {
         return hashedPassword;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public String hashedPasswordAsString() {
+        return hashedPassword.value();
+    }
+
+    public OffsetDateTime createdAt() {
         return createdAt;
     }
 
-    public OffsetDateTime getLastPasswordModifiedAt() {
+    public OffsetDateTime lastPasswordModifiedAt() {
         return lastPasswordModifiedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        LocalAuth localAuth = (LocalAuth) o;
+        return Objects.equals(id, localAuth.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, loginIdentifier, hashedPassword, createdAt, lastPasswordModifiedAt);
     }
 }

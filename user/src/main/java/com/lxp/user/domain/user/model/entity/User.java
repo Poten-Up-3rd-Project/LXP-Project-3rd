@@ -1,6 +1,6 @@
 package com.lxp.user.domain.user.model.entity;
 
-import com.lxp.common.domain.model.BaseEntity;
+import com.lxp.common.domain.event.AggregateRoot;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.user.model.vo.UserEmail;
 import com.lxp.user.domain.user.model.vo.UserName;
@@ -9,7 +9,7 @@ import com.lxp.user.domain.user.model.vo.UserStatus;
 
 import java.util.Objects;
 
-public class User extends BaseEntity<UserId> {
+public class User extends AggregateRoot {
 
     private UserId id;
 
@@ -57,28 +57,35 @@ public class User extends BaseEntity<UserId> {
         this.userStatus = UserStatus.DELETED;
     }
 
-    @Override
-    public UserId getId() {
+    public UserId id() {
         return id;
     }
 
-    public String getIdForString() {
-        return id.getValue().toString();
-    }
-
-    public String getName() {
+    public String name() {
         return name.value();
     }
 
-    public String getEmail() {
+    public String email() {
         return email.value();
     }
 
-    public UserRole getRole() {
+    public UserRole role() {
         return role;
     }
 
-    public UserStatus getUserStatus() {
+    public UserStatus userStatus() {
         return userStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, role, userStatus);
     }
 }

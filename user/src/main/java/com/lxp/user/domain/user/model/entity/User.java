@@ -9,7 +9,7 @@ import com.lxp.user.domain.user.model.vo.UserStatus;
 
 import java.util.Objects;
 
-public class User extends AggregateRoot {
+public class User extends AggregateRoot<UserId> {
 
     private UserId id;
 
@@ -45,6 +45,16 @@ public class User extends AggregateRoot {
         return new User(id, name, email, UserRole.ADMIN);
     }
 
+    public void updateName(UserName name) {
+        this.name = Objects.requireNonNull(name);
+    }
+
+    public void makeInstructor() {
+        if (this.role == UserRole.LEARNER && this.userStatus == UserStatus.ACTIVE) {
+            this.role = UserRole.INSTRUCTOR;
+        }
+    }
+
     public boolean canManageOwnCourse() {
         return this.role == UserRole.INSTRUCTOR || this.role == UserRole.ADMIN;
     }
@@ -58,34 +68,28 @@ public class User extends AggregateRoot {
     }
 
     public UserId id() {
-        return id;
+        return this.id;
     }
 
     public String name() {
-        return name.value();
+        return this.name.value();
     }
 
     public String email() {
-        return email.value();
+        return this.email.value();
     }
 
     public UserRole role() {
-        return role;
+        return this.role;
     }
 
     public UserStatus userStatus() {
-        return userStatus;
+        return this.userStatus;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
+    public UserId getId() {
+        return this.id;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, email, role, userStatus);
-    }
 }

@@ -9,7 +9,7 @@ import com.lxp.user.domain.profile.model.vo.UserProfileId;
 import java.util.List;
 import java.util.Objects;
 
-public class UserProfile extends AggregateRoot {
+public class UserProfile extends AggregateRoot<UserProfileId> {
 
     private UserProfileId id;
     private UserId userId;
@@ -25,10 +25,12 @@ public class UserProfile extends AggregateRoot {
         this.job = job;
     }
 
+    //todo 추후 도메인 서비스에서 user가 활성화 상태인지 여부 체크
     public static UserProfile create(UserProfileId id, UserId userId, LearnerLevel level, Tags tags, String job) {
         return new UserProfile(id, userId, level, tags, job);
     }
 
+    //todo 추후 도메인 서비스에서 user가 활성화 상태인지 여부 체크
     public void update(LearnerLevel level, List<String> tags, String job) {
         this.level = Objects.requireNonNull(level);
         this.tags = this.tags.withTags(tags);
@@ -36,22 +38,27 @@ public class UserProfile extends AggregateRoot {
     }
 
     public UserProfileId id() {
-        return id;
+        return this.id;
     }
 
     public UserId userId() {
-        return userId;
+        return this.userId;
     }
 
     public LearnerLevel level() {
-        return level;
+        return this.level;
     }
 
     public Tags tags() {
-        return tags;
+        return this.tags;
     }
 
     public String job() {
-        return job;
+        return this.job;
+    }
+
+    @Override
+    public UserProfileId getId() {
+        return this.id;
     }
 }

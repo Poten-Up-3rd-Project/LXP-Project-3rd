@@ -7,7 +7,7 @@ import com.lxp.common.domain.event.AggregateRoot;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class LocalAuth extends AggregateRoot {
+public class LocalAuth extends AggregateRoot<UserId> {
 
     private UserId id;
     private String loginIdentifier;
@@ -15,24 +15,26 @@ public class LocalAuth extends AggregateRoot {
     private OffsetDateTime createdAt;
     private OffsetDateTime lastPasswordModifiedAt;
 
-    private LocalAuth(UserId id, String loginIdentifier, HashedPassword hashedPassword, OffsetDateTime createdAt) {
+    private LocalAuth(UserId id, String loginIdentifier, HashedPassword hashedPassword, OffsetDateTime createdAt, OffsetDateTime lastPasswordModifiedAt) {
         this.id = Objects.requireNonNull(id);
         this.loginIdentifier = Objects.requireNonNull(loginIdentifier);
         this.hashedPassword = Objects.requireNonNull(hashedPassword);
-        this.createdAt = createdAt;
-    }
-
-    private LocalAuth(UserId id, String loginIdentifier, HashedPassword hashedPassword, OffsetDateTime createdAt, OffsetDateTime lastPasswordModifiedAt) {
-        this(id, loginIdentifier, hashedPassword, createdAt);
+        this.createdAt = Objects.requireNonNull(createdAt);
         this.lastPasswordModifiedAt = lastPasswordModifiedAt;
     }
 
     public static LocalAuth register(String loginIdentifier, HashedPassword hashedPassword) {
-        return new LocalAuth(UserId.create(), loginIdentifier, hashedPassword, OffsetDateTime.now());
+        return new LocalAuth(UserId.create(), loginIdentifier, hashedPassword, OffsetDateTime.now(), null);
     }
 
-    public static LocalAuth of(UserId id, String loginIdentifier, HashedPassword passwordHash) {
-        return new LocalAuth(id, loginIdentifier, passwordHash, OffsetDateTime.now());
+    public static LocalAuth of(
+        UserId id,
+        String loginIdentifier,
+        HashedPassword passwordHash,
+        OffsetDateTime createdAt,
+        OffsetDateTime lastPasswordModifiedAt
+    ) {
+        return new LocalAuth(id, loginIdentifier, passwordHash, createdAt, lastPasswordModifiedAt);
     }
 
     public void updatePassword(final HashedPassword newHashedPassword) {
@@ -52,39 +54,29 @@ public class LocalAuth extends AggregateRoot {
         return this.id;
     }
 
-    public String getIdValue() {
-        return this.id.asString();
-    }
-
     public String loginIdentifier() {
-        return loginIdentifier;
+        return this.loginIdentifier;
     }
 
     public HashedPassword hashedPassword() {
-        return hashedPassword;
+        return this.hashedPassword;
     }
 
     public String hashedPasswordAsString() {
-        return hashedPassword.value();
+        return this.hashedPassword.value();
     }
 
     public OffsetDateTime createdAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public OffsetDateTime lastPasswordModifiedAt() {
-        return lastPasswordModifiedAt;
+        return this.lastPasswordModifiedAt;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        LocalAuth localAuth = (LocalAuth) o;
-        return Objects.equals(id, localAuth.id);
+    public UserId getId() {
+        return this.id;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, loginIdentifier, hashedPassword, createdAt, lastPasswordModifiedAt);
-    }
 }

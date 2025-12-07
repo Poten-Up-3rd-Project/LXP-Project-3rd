@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Lecture extends BaseEntity<LectureUUID> {
     private final LectureUUID uuid;
-    private Long id;
+    private final Long id;
     private String title;
     private LectureDuration duration;
     private int order;

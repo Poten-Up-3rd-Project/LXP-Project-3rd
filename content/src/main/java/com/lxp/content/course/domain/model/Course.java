@@ -9,6 +9,8 @@ import com.lxp.content.course.domain.model.id.CourseUUID;
 import com.lxp.content.course.domain.model.id.LectureUUID;
 import com.lxp.content.course.domain.model.id.SectionUUID;
 import com.lxp.content.course.domain.model.id.InstructorUUID;
+import com.lxp.content.course.domain.model.vo.CourseDescription;
+import com.lxp.content.course.domain.model.vo.CourseTitle;
 import com.lxp.content.course.domain.model.vo.duration.CourseDuration;
 import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
 
@@ -16,12 +18,12 @@ import java.time.Instant;
 import java.util.Objects;
 
 public class Course extends AggregateRoot<CourseUUID> {
-    private Long id;
+    private final Long id;
     private final CourseUUID uuid;
     private final InstructorUUID instructorUUID;
     private String thumbnailUrl;
-    private String title;
-    private String description;
+    private CourseTitle title;
+    private CourseDescription description;
     private CourseSections sections;
     private CourseDifficulty difficulty;
     private CourseTags tags;
@@ -33,8 +35,8 @@ public class Course extends AggregateRoot<CourseUUID> {
             CourseUUID uuid,
             InstructorUUID instructorUUID,
             String thumbnailUrl,
-            String title,
-            String description,
+            CourseTitle title,
+            CourseDescription description,
             CourseDifficulty difficulty,
             CourseSections sections,
             CourseTags tags,
@@ -49,7 +51,7 @@ public class Course extends AggregateRoot<CourseUUID> {
         this.description = description;
         this.difficulty = Objects.requireNonNull(difficulty);
         this.sections = Objects.requireNonNull(sections);
-        this.tags = tags;
+        this.tags = Objects.requireNonNull(tags);
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -69,8 +71,8 @@ public class Course extends AggregateRoot<CourseUUID> {
                 uuid,
                 instructorUUID,
                 thumbnailUrl,
-                title,
-                description,
+                CourseTitle.of(title),
+                CourseDescription.of(description),
                 difficulty,
                 sections,
                 tags,
@@ -97,8 +99,8 @@ public class Course extends AggregateRoot<CourseUUID> {
                 uuid,
                 instructorUUID,
                 thumbnailUrl,
-                title,
-                description,
+                CourseTitle.of(title),
+                CourseDescription.of(description),
                 difficulty,
                 sections,
                 tags,
@@ -109,11 +111,11 @@ public class Course extends AggregateRoot<CourseUUID> {
 
     //setters
     public void rename(String title) {
-        this.title = Objects.requireNonNull(title,"title cannot be null");
+        this.title = CourseTitle.of(Objects.requireNonNull(title,"title cannot be null"));
     }
 
     public void changeDescription(String description) {
-        this.description = description;
+        this.description = CourseDescription.of(description);
     }
 
     public void changeDifficulty(CourseDifficulty difficulty) {
@@ -181,8 +183,8 @@ public class Course extends AggregateRoot<CourseUUID> {
 
     public CourseUUID uuid() { return uuid; }
     public Long id() { return id; }
-    public String title() { return title; }
-    public String description() { return description; }
+    public CourseTitle title() { return title; }
+    public CourseDescription description() { return description; }
     public CourseDifficulty difficulty() { return difficulty; }
     public CourseSections sections() { return sections; }
     public String thumbnailUrl() { return thumbnailUrl; }

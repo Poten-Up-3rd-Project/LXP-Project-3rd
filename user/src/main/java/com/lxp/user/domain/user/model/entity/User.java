@@ -21,28 +21,28 @@ public class User extends AggregateRoot<UserId> {
 
     private UserStatus userStatus;
 
-    private User(UserId id, UserName name, UserEmail email, UserRole userRole) {
+    private User(UserId id, UserName name, UserEmail email, UserRole userRole, UserStatus userStatus) {
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
         this.email = Objects.requireNonNull(email);
         this.role = Objects.requireNonNull(userRole);
-        this.userStatus = UserStatus.ACTIVE;
+        this.userStatus = userStatus;
     }
 
-    public static User of(UserId id, UserName name, UserEmail email, UserRole userRole) {
-        return new User(id, name, email, userRole);
+    public static User of(UserId id, UserName name, UserEmail email, UserRole userRole, UserStatus userStatus) {
+        return new User(id, name, email, userRole, userStatus);
     }
 
     public static User createLearner(UserId id, UserName name, UserEmail email) {
-        return new User(id, name, email, UserRole.LEARNER);
+        return new User(id, name, email, UserRole.LEARNER, UserStatus.ACTIVE);
     }
 
     public static User createInstructor(UserId id, UserName name, UserEmail email) {
-        return new User(id, name, email, UserRole.INSTRUCTOR);
+        return new User(id, name, email, UserRole.INSTRUCTOR, UserStatus.ACTIVE);
     }
 
     public static User createAdmin(UserId id, UserName name, UserEmail email) {
-        return new User(id, name, email, UserRole.ADMIN);
+        return new User(id, name, email, UserRole.ADMIN, UserStatus.ACTIVE);
     }
 
     public void updateName(UserName name) {

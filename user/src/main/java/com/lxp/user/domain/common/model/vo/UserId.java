@@ -21,4 +21,8 @@ public record UserId(UUID value) {
         return new UserId(UUID.fromString(value));
     }
 
+    public String asString() {
+        return value.toString();
+    }
+
 }

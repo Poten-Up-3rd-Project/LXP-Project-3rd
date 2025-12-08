@@ -17,6 +17,11 @@ public class Tag extends AggregateRoot {
 
     private Tag() {}
 
+    @Override
+    public Object getId() {
+        return this.tagId;
+    }
+
     private Tag(TagCategoryId tagCategoryId, String name, TagState state) {
         this.tagCategoryId = tagCategoryId;
         this.name = name;

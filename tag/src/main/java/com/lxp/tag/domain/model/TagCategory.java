@@ -13,6 +13,11 @@ public class TagCategory extends AggregateRoot {
 
     private TagCategory() {}
 
+    @Override
+    public Object getId() {
+        return this.tagCategoryId;
+    }
+
     public TagCategory(String name, TagCategoryState state) {
         this.name = name;
         this.state = state;

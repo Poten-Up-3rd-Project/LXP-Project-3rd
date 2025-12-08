@@ -1,14 +1,14 @@
 package com.lxp.enrollment.domain.model;
 
 import com.lxp.enrollment.domain.model.enums.StudyStatus;
-import com.lxp.enrollment.domain.model.vo.CourseStudyId;
-import com.lxp.enrollment.domain.model.vo.LectureStudyId;
+import com.lxp.enrollment.domain.model.vo.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,13 +26,18 @@ class CourseStudyTest {
     @BeforeEach
     void setUp() {
         CourseStudyId courseStudyId = new CourseStudyId(1L);
+        CourseId courseId = new CourseId(UUID.randomUUID().toString());
+        UserId userId = new UserId(UUID.randomUUID().toString());
+        LectureId lectureId = new LectureId(UUID.randomUUID().toString());
 
-        lectureStudy1 = LectureStudy.createLectureStudy(new LectureStudyId(1L));
-        lectureStudy2 = LectureStudy.createLectureStudy(new LectureStudyId(2L));
-        lectureStudy3 = LectureStudy.createLectureStudy(new LectureStudyId(3L));
+        lectureStudy1 = LectureStudy.createLectureStudy(new LectureStudyId(1L), userId, lectureId);
+        lectureStudy2 = LectureStudy.createLectureStudy(new LectureStudyId(2L), userId, lectureId);
+        lectureStudy3 = LectureStudy.createLectureStudy(new LectureStudyId(3L), userId, lectureId);
 
         courseStudy = CourseStudy.create(
                 courseStudyId,
+                userId,
+                courseId,
                 List.of(lectureStudy1, lectureStudy2, lectureStudy3)
         );
     }

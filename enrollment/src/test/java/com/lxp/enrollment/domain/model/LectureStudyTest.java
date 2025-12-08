@@ -15,7 +15,7 @@ class LectureStudyTest {
 
     @BeforeEach
     void setUp() {
-        LectureStudyId lectureStudyId = new LectureStudyId("learnerId_LectureId");
+        LectureStudyId lectureStudyId = new LectureStudyId(1L);
 
         lectureStudy = LectureStudy.createLectureStudy(lectureStudyId);
     }

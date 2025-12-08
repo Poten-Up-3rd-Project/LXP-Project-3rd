@@ -2,10 +2,10 @@ package com.lxp.enrollment.domain.model.vo;
 
 import java.util.Objects;
 
-public record LectureStudyId(String value) {
+public record LectureStudyId(Long value) {
     public LectureStudyId {
-        if(value == null || value.isBlank()) {
-            throw new IllegalArgumentException("LectureStudyId cannot be null or blank");
+        if(value == null) {
+            throw new IllegalArgumentException("LectureStudyId cannot be null");
         }
     }
 

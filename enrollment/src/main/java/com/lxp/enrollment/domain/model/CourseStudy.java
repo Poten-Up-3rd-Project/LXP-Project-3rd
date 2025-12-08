@@ -2,8 +2,10 @@ package com.lxp.enrollment.domain.model;
 
 import com.lxp.common.domain.event.AggregateRoot;
 import com.lxp.enrollment.domain.model.enums.StudyStatus;
+import com.lxp.enrollment.domain.model.vo.CourseId;
 import com.lxp.enrollment.domain.model.vo.CourseStudyId;
 import com.lxp.enrollment.domain.model.vo.LectureStudyId;
+import com.lxp.enrollment.domain.model.vo.UserId;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,6 +19,8 @@ import java.util.Objects;
 public class CourseStudy extends AggregateRoot<CourseStudyId> {
 
     private CourseStudyId courseStudyId;
+    private UserId userId;
+    private CourseId courseId;
     private float totalProgress;
     private StudyStatus studyStatus;
     private OffsetDateTime completedAt;
@@ -29,9 +33,11 @@ public class CourseStudy extends AggregateRoot<CourseStudyId> {
      * @param lectureStudies 강의 진행률 리스트
      * @return 생성된 강좌 진행률
      */
-    public static CourseStudy create(CourseStudyId courseStudyId, List<LectureStudy> lectureStudies) {
+    public static CourseStudy create(CourseStudyId courseStudyId, UserId userId, CourseId courseId, List<LectureStudy> lectureStudies) {
         return new CourseStudy(
                 Objects.requireNonNull(courseStudyId, "CourseStudyId는 null일 수 없습니다."),
+                Objects.requireNonNull(userId, "UserId는 null일 수 없습니다."),
+                Objects.requireNonNull(courseId, "CourseId는 null일 수 없습니다."),
                 StudyStatus.IN_PROGRESS,
                 0.0f,
                 Objects.requireNonNull(lectureStudies, "LectureStudies는 null일 수 없습니다."),
@@ -102,8 +108,10 @@ public class CourseStudy extends AggregateRoot<CourseStudyId> {
         return lectureStudies;
     }
 
-    private CourseStudy(CourseStudyId courseStudyId, StudyStatus studyStatus, float totalProgress, List<LectureStudy> lectureStudies, OffsetDateTime completedAt) {
+    private CourseStudy(CourseStudyId courseStudyId, UserId userId, CourseId courseId, StudyStatus studyStatus, float totalProgress, List<LectureStudy> lectureStudies, OffsetDateTime completedAt) {
         this.courseStudyId = courseStudyId;
+        this.userId = userId;
+        this.courseId = courseId;
         this.studyStatus = studyStatus;
         this.totalProgress = totalProgress;
         this.lectureStudies = lectureStudies;

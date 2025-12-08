@@ -25,11 +25,11 @@ class CourseStudyTest {
 
     @BeforeEach
     void setUp() {
-        CourseStudyId courseStudyId = new CourseStudyId("learnerId_courseId");
+        CourseStudyId courseStudyId = new CourseStudyId(1L);
 
-        lectureStudy1 = LectureStudy.createLectureStudy(new LectureStudyId("learnerId_lectureId1"));
-        lectureStudy2 = LectureStudy.createLectureStudy(new LectureStudyId("learnerId_lectureId2"));
-        lectureStudy3 = LectureStudy.createLectureStudy(new LectureStudyId("learnerId_lectureId3"));
+        lectureStudy1 = LectureStudy.createLectureStudy(new LectureStudyId(1L));
+        lectureStudy2 = LectureStudy.createLectureStudy(new LectureStudyId(2L));
+        lectureStudy3 = LectureStudy.createLectureStudy(new LectureStudyId(3L));
 
         courseStudy = CourseStudy.create(
                 courseStudyId,

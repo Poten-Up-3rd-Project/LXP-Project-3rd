@@ -1,0 +1,6 @@
+package com.lxp.auth.application.local.port.required.command;
+
+import java.util.List;
+
+public record HandleUserRegisterCommand(String email, String password, String name, String role, List<String> tags) {
+}

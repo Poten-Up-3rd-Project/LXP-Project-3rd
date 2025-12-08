@@ -1,9 +1,13 @@
 package com.lxp.enrollment.domain.model;
 
+import com.lxp.enrollment.domain.model.vo.LectureId;
 import com.lxp.enrollment.domain.model.vo.LectureStudyId;
+import com.lxp.enrollment.domain.model.vo.UserId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,8 +20,10 @@ class LectureStudyTest {
     @BeforeEach
     void setUp() {
         LectureStudyId lectureStudyId = new LectureStudyId(1L);
+        UserId userId = new UserId(UUID.randomUUID().toString());
+        LectureId lectureId = new LectureId(UUID.randomUUID().toString());
 
-        lectureStudy = LectureStudy.createLectureStudy(lectureStudyId);
+        lectureStudy = LectureStudy.createLectureStudy(lectureStudyId, userId, lectureId);
     }
 
     @Test

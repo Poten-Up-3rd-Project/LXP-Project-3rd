@@ -1,6 +1,8 @@
 package com.lxp.enrollment.domain.model;
 
+import com.lxp.enrollment.domain.model.vo.LectureId;
 import com.lxp.enrollment.domain.model.vo.LectureStudyId;
+import com.lxp.enrollment.domain.model.vo.UserId;
 
 import java.util.Objects;
 
@@ -10,6 +12,8 @@ import java.util.Objects;
 public class LectureStudy {
 
     private LectureStudyId lectureStudyId;
+    private UserId userId;
+    private LectureId lectureId;
     private boolean isCompleted;
 
     /**
@@ -17,9 +21,11 @@ public class LectureStudy {
      * @param lectureStudyId 강의 진행률 ID(학습자 ID + 강의 ID)
      * @return 생성 된 강의 진행률
      */
-    public static LectureStudy createLectureStudy(LectureStudyId lectureStudyId) {
+    public static LectureStudy createLectureStudy(LectureStudyId lectureStudyId, UserId userId, LectureId lectureId) {
         return new LectureStudy(
                 Objects.requireNonNull(lectureStudyId, "LectureStudyId는 null일 수 없습니다."),
+                Objects.requireNonNull(userId, "UserId는 null일 수 없습니다."),
+                Objects.requireNonNull(lectureId, "lectureId는 null일 수 없습니다."),
                 false
         );
     }
@@ -43,8 +49,10 @@ public class LectureStudy {
         return lectureStudyId;
     }
 
-    private LectureStudy(LectureStudyId lectureStudyId, boolean isCompleted) {
+    private LectureStudy(LectureStudyId lectureStudyId, UserId userId, LectureId lectureId, boolean isCompleted) {
         this.lectureStudyId = lectureStudyId;
+        this.userId = userId;
+        this.lectureId = lectureId;
         this.isCompleted = isCompleted;
     }
 }

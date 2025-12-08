@@ -4,13 +4,56 @@ info:
   version: 1.0.0
   description: "수강 모듈의 paths와 components 조각 명세 예시"
 paths:
+  # 수강 API
   /enrollments:
     post:
       tags:
         - Enrollment
       summary: 강의 수강 신청
+
+  # 진행률 API
+  /enrollments/progress/{courseId}:
+    get:
+      tags:
+        - Enrollment
+      summary: 강의 진행률 조회
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressResponse'
+        '404':
+          description: 강의를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "COURSE_NOT_FOUND"
+                  message:
+                    type: string
+                    example: "강의를 찾을 수 없습니다."
+                    # 오류 메시지 예시(Domain 오류 뽑으면 정의하기)
 components:
   schemas:
+    CourseId:
+      type: object
+      properties:
+        courseId:
+          type: string
+          description: 강좌 고유 ID
+
+    # Enrollment 관련 components
     EnrollmentRequest:
       type: object
       properties:
@@ -18,3 +61,14 @@ components:
           type: integer
         userId:
           type: integer
+
+    # Progress 관련 components
+    ProgressResponse:
+      allOf:
+        - $ref: '#/components/schemas/CourseId'
+        - type: object
+          properties:
+            progress:
+              type: number
+              format: float
+              description: 진행률 (0.0 ~ 100.0)

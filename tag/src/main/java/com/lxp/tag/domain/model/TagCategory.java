@@ -6,7 +6,7 @@ import com.lxp.tag.domain.model.vo.TagCategoryId;
 
 import java.util.Objects;
 
-public class TagCategory extends AggregateRoot {
+public class TagCategory extends AggregateRoot<TagCategoryId> {
     private TagCategoryId tagCategoryId;
     private String name;
     private TagCategoryState state;
@@ -14,7 +14,7 @@ public class TagCategory extends AggregateRoot {
     private TagCategory() {}
 
     @Override
-    public Object getId() {
+    public TagCategoryId getId() {
         return this.tagCategoryId;
     }
 

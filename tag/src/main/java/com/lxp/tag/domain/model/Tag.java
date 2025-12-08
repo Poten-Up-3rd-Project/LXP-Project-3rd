@@ -9,7 +9,7 @@ import com.lxp.tag.domain.model.vo.TagId;
 
 import java.util.Objects;
 
-public class Tag extends AggregateRoot {
+public class Tag extends AggregateRoot<TagId> {
     private TagId tagId;
     private TagCategoryId tagCategoryId;
     private String name;
@@ -18,7 +18,7 @@ public class Tag extends AggregateRoot {
     private Tag() {}
 
     @Override
-    public Object getId() {
+    public TagId getId() {
         return this.tagId;
     }
 

@@ -57,6 +57,8 @@ subprojects {
 
         implementation 'org.springframework.modulith:spring-modulith-starter-core:1.2.1'
         testRuntimeOnly('com.h2database:h2')
+        testImplementation 'org.mockito:mockito-junit-jupiter'
+        testImplementation 'org.assertj:assertj-core'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }

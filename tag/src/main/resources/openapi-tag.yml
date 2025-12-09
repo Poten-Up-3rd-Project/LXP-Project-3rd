@@ -45,9 +45,15 @@ components:
         tagId:
           type: integer
           example: 34
-        name:
+        content:
           type: string
           example: "java"
+        color:
+          type: string
+          example: "indigo-500"
+        variant:
+          type: string
+          example: "solid"
         state:
           $ref: '#/components/schemas/TagState'
 

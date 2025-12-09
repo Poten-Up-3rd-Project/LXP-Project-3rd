@@ -2,7 +2,6 @@ package com.lxp.auth.domain.common.policy;
 
 import com.lxp.auth.application.local.port.required.dto.AuthTokenInfo;
 import com.lxp.auth.domain.common.model.vo.TokenClaims;
-import org.springframework.security.core.Authentication;
 
 public interface JwtPolicy {
 
@@ -20,7 +19,7 @@ public interface JwtPolicy {
      * @param token 복호화할 JWT 문자열
      * @return Spring Security Authentication 객체
      */
-    Authentication getAuthentication(String token);
+    Object getAuthentication(String token);
 
 
     /**

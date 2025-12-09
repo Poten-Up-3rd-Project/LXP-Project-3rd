@@ -21,7 +21,6 @@ public interface JwtPolicy {
      */
     Object getAuthentication(String token);
 
-
     /**
      * 토큰의 유효성을 검증합니다.
      *

@@ -1,4 +1,6 @@
 package com.lxp.auth.application.local.port.required.command;
 
-public record HandleLoginCommand(String email, String password) {
+import com.lxp.common.application.cqrs.Command;
+
+public record HandleLoginCommand(String email, String password) implements Command {
 }

@@ -29,4 +29,12 @@ public interface JwtPolicy {
      * @return 유효성 여부
      */
     boolean validateToken(String token);
+
+    /**
+     * JWT 토큰을 복호화하여 만료 시간(exp) 클레임을 추출합니다.
+     *
+     * @param token JWT 문자열
+     * @return 만료 시간 (밀리초 단위의 Unix Timestamp)
+     */
+    long getExpirationTimeMillis(String token);
 }

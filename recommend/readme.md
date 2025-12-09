@@ -186,70 +186,12 @@ com.lxp.recommend
 
 ### 2. ERD 다이어그램 (Mermaid)
 
-```mermaid
-erDiagram
-    %% ---------------------------------------------------------
-    %% Recommendation Bounded Context Tables
-    %% ---------------------------------------------------------
-    
-    MEMBER_RECOMMENDATIONS {
-        BIGINT id PK "Auto Increment"
-        BIGINT member_id "Unique Index (회원당 1개)"
-        DATETIME calculated_at "계산 시각"
-    }
-
-    RECOMMENDED_COURSE_ITEMS {
-        BIGINT recommendation_id FK "부모 테이블 ID"
-        BIGINT course_id "추천된 강좌 ID"
-        DOUBLE score "추천 점수"
-        INT rank_val "순위 (1~4)"
-        INT item_index "리스트 순서 (JPA OrderColumn)"
-    }
-
-    %% ---------------------------------------------------------
-    %% Relationships
-    %% ---------------------------------------------------------
-    
-    MEMBER_RECOMMENDATIONS ||--|{ RECOMMENDED_COURSE_ITEMS : "contains (1:N)"
-```
 
 ***
 
 ### 3. MySQL DDL 스크립트
 
 프로젝트 정책인 **'Database-First'** 접근에 맞춰, 실제 실행 가능한 DDL 스크립트를 작성했습니다.
-
-```sql
--- 1. 추천 결과 메타 테이블 (Aggregate Root)
-CREATE TABLE `member_recommendations` (
-    `id`            BIGINT          NOT NULL AUTO_INCREMENT COMMENT '추천 ID',
-    `member_id`     BIGINT          NOT NULL                COMMENT '회원 ID (Member 모듈)',
-    `calculated_at` DATETIME(6)     NOT NULL                COMMENT '추천 계산 시각',
-    
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_member_recommendation_member_id` (`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='회원별 추천 결과 메타 정보';
-
-
--- 2. 추천 강좌 아이템 테이블 (Value Collection)
-CREATE TABLE `recommended_course_items` (
-    `recommendation_id` BIGINT      NOT NULL                COMMENT '추천 ID (FK)',
-    `course_id`         BIGINT      NOT NULL                COMMENT '강좌 ID (Course 모듈)',
-    `score`             DOUBLE      NOT NULL                COMMENT '추천 점수',
-    `rank_val`          INT         NOT NULL                COMMENT '추천 순위 (1~4)',
-    `item_index`        INT         NOT NULL                COMMENT '리스트 정렬 순서 (0부터 시작)',
-    
-    -- 외래 키 제약조건 (부모 삭제 시 자식도 삭제)
-    CONSTRAINT `fk_recommended_items_recommendation_id`
-        FOREIGN KEY (`recommendation_id`) 
-        REFERENCES `member_recommendations` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='개별 추천 강좌 목록';
-
--- 3. 성능 최적화를 위한 인덱스 (선택 사항)
--- 강좌별 추천 횟수 통계 등을 낼 때 필요할 수 있음
-CREATE INDEX `idx_recommended_items_course_id` ON `recommended_course_items` (`course_id`);
-```
 
 ***
 
@@ -262,3 +204,79 @@ CREATE INDEX `idx_recommended_items_course_id` ON `recommended_course_items` (`c
 *   **`item_index`:** JPA의 `@OrderColumn`을 사용했기 때문에, 리스트의 순서를 보장하기 위한 컬럼이 필수입니다.
 *   **`ON DELETE CASCADE`:** 부모인 `member_recommendations`가 삭제되면(회원 탈퇴 등으로), 딸린 추천 아이템들도 자동으로 삭제되도록 설정했습니다.
 *   **`course_id`:** 물리적 FK를 걸지 않았습니다. Course 모듈이 독립적으로 배포되거나 DB가 분리될 가능성을 고려하여, **논리적인 참조(ID 값만 저장)**만 유지합니다.
+
+# 인수인계용
+
+***
+
+## 추천 BC – CourseMetaReader 관련 현황 정리 1209
+
+### 1. 현재 설계 상태
+
+- 추천 BC는 **CourseMetaReader 인터페이스**만 정의해둔 상태입니다:
+
+```java
+public interface CourseMetaReader {
+
+    List<CourseMetaView> findByDifficulties(Set<DifficultyLevel> difficulties);
+}
+```
+
+- 구현체 `CourseMetaReaderImpl`은 **아직 만들지 않았습니다.**
+- 이유:
+    - Course BC의 도메인/리포지토리/API 설계가 완전히 확정되지 않았고,
+    - 추천 BC에서는 **다른 BC의 내부 코드에 직접 의존하지 않기로 한 원칙**(느슨한 결합, MSA 대비)을 지키기 위해서입니다.
+
+***
+
+### 2. 현재 추천 로직에서의 사용 방식
+
+- `RecommendationApplicationService`는 현재 `findByDifficulties(...)`를 호출하여 **후보군 전체를 가져오는 구조**입니다.
+- 앞으로는 **성능을 위해 "최신 100개"까지만 받아오는 형태로 개선**할 예정입니다.
+- 다만 지금은:
+    - **구현체가 없기 때문에 실제 DB 접근은 되지 않는 상태**이고,
+    - 인터페이스 수준에서만 설계가 되어 있습니다.
+
+***
+
+### 3. 향후 해야 할 일 (후임자/유지보수 담당자에게)
+
+1. **CourseMetaReader 인터페이스 확장 (limit 추가)**  
+   강좌 수 증가를 대비해, 호출자가 최대 개수를 조절할 수 있도록 인터페이스를 변경해야 합니다:
+
+   ```java
+   List<CourseMetaView> findByDifficulties(Set<DifficultyLevel> difficulties, int limit);
+   ```
+
+2. **CourseMetaReaderImpl 구현 (infrastructure 계층)**
+    - 위치 예시:  
+      `com.lxp.recommend.infrastructure.course.CourseMetaReaderImpl`
+    - 역할:
+        - Course BC가 제공하는 수단(JPA Repository, REST API, Feign Client 등)을 이용해
+        - 특정 난이도에 해당하는 강좌들을 **최신순으로 최대 100개까지 조회**하여 `CourseMetaView`로 변환.
+    - 구현 시점:
+        - Course BC의 스키마/엔티티/API가 확정된 이후,
+        - 팀 합의된 통신 방식(내부 모듈 직접 참조 vs HTTP 호출 등)에 맞춰 구현.
+
+3. **수강 중 강좌 태그를 활용한 가중치 고도화**
+    - 현재 설계에서는:
+        - 1차 후보군(최신 100개)에서 **Implicit Tag(수강 중 강좌 태그)**를 수집하는 방식으로 가정.
+    - 더 정확한 구현을 위해서는:
+        - 수강 중인 강좌 ID 목록으로 **별도의 `findAllByIds(Set<String>)` 메서드**를 추가하고,
+        - 그 메서드를 통해 **수강 중 강좌 메타 정보를 다시 조회**한 뒤 태그를 수집하는 방향으로 확장할 수 있습니다.
+    - 이 부분은 **향후 성능/정확도 요구에 따라 선택적으로 도입**할 수 있습니다.
+
+***
+
+### 4. 현재 단계에서의 결론
+
+- 지금은 **추천 BC – 도메인/애플리케이션 레벨 설계와 로직(연차 필터링, 태그 가중치 계산)**까지 완료된 상태입니다.
+- **CourseMetaReaderImpl 구현은 보류**하고,
+    - “**최신 100개 강좌만 가져오도록 구현해야 한다**”
+    - “**다른 BC(Course)에 직접 의존하지 않고, Port(인터페이스)를 통해 접근해야 한다**”
+      는 설계 의도만 명확히 문서로 남겨둔 상태입니다.
+- 추후 Course BC 쪽 스펙이 확정되면:
+    - 위 인터페이스를 기준으로 실제 구현을 추가하고,
+    - 필요 시 `limit`, `findAllByIds` 같은 메서드를 확장하면 됩니다.
+
+***

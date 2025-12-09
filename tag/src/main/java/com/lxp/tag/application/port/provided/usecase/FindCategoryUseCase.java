@@ -1,6 +1,6 @@
 package com.lxp.tag.application.port.provided.usecase;
 
-import com.lxp.tag.application.port.provided.dto.CategoryResult;
+import com.lxp.tag.application.port.query.CategoryResult;
 
 import java.util.List;
 

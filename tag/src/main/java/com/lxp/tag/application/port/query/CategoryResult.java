@@ -1,4 +1,4 @@
-package com.lxp.tag.application.port.provided.dto;
+package com.lxp.tag.application.port.query;
 
 import java.util.List;
 

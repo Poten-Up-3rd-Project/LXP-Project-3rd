@@ -1,13 +1,12 @@
 package com.lxp.tag.application.port.required;
 
-
-import com.lxp.api.tag.port.dto.result.TagResult;
+import com.lxp.tag.application.port.dto.TagView;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TagQueryPort {
-    List<TagResult> findByIds(List<Long> ids);
-    Optional<TagResult> findById(Long id);
-    Optional<TagResult> findIdByName(String name);
+    List<TagView> findByIds(List<Long> ids);
+    Optional<TagView> findById(Long id);
+    Optional<TagView> findIdByName(String name);
 }

@@ -18,18 +18,6 @@ public record EnrollmentSummaryResult(
         List<Long> tags
 ) {
     public static EnrollmentSummaryResult of(EnrollmentResult enrollment, CourseResult course) {
-        return new EnrollmentSummaryResult(
-                enrollment.id(),
-                enrollment.state(),
-                enrollment.userUUID(),
-                enrollment.courseUUID(),
-                course.courseId(),
-                course.instructorUUID(),
-                course.title(),
-                course.thumbnailUrl(),
-                course.description(),
-                course.difficulty(),
-                course.tags()
-        );
+        return null;
     }
 }

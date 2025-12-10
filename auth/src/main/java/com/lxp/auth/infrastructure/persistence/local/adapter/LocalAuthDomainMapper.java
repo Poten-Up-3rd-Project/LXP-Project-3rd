@@ -6,8 +6,6 @@ import com.lxp.auth.domain.local.model.vo.HashedPassword;
 import com.lxp.auth.infrastructure.persistence.local.entity.JpaLocalAuth;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneOffset;
-
 @Component
 public class LocalAuthDomainMapper {
 
@@ -15,9 +13,7 @@ public class LocalAuthDomainMapper {
         return LocalAuth.of(
             UserId.of(jpaLocalAuth.getId()),
             jpaLocalAuth.getLoginIdentifier(),
-            new HashedPassword(jpaLocalAuth.getHashedPassword()),
-            jpaLocalAuth.getCreatedAt().atOffset(ZoneOffset.of("+09:00")),
-            jpaLocalAuth.getUpdatedAt().atOffset(ZoneOffset.of("+09:00"))
+            new HashedPassword(jpaLocalAuth.getHashedPassword())
         );
     }
 

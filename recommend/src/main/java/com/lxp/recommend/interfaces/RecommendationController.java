@@ -1,4 +1,4 @@
-package com.lxp.recommend.presentation;
+package com.lxp.recommend.interfaces;
 
 import com.lxp.recommend.application.RecommendationApplicationService;
 import com.lxp.recommend.application.dto.RecommendedCourseDto;

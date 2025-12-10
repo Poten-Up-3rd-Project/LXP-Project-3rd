@@ -46,4 +46,7 @@ public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
         );
     }
 
+    public Enrollment toDomain() {
+        return Enrollment.reconstruct(this.getId(), this.state.toString(), this.userId, this.courseId, this.getCreatedAt());
+    }
 }

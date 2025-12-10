@@ -6,6 +6,7 @@ import com.lxp.enrollment.domain.model.vo.CourseId;
 import com.lxp.enrollment.domain.model.vo.EnrollmentDate;
 import com.lxp.enrollment.domain.model.vo.EnrollmentId;
 import com.lxp.enrollment.domain.model.vo.UserId;
+import com.lxp.enrollment.infrastructure.persistence.entity.EnrollmentJpaEntity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -19,6 +20,14 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
 
     private Enrollment() {}
 
+    public Enrollment(EnrollmentId enrollmentId, EnrollmentState state, UserId userId, CourseId courseId, EnrollmentDate enrollmentDate) {
+        this.enrollmentId = enrollmentId;
+        this.state = state;
+        this.userId = userId;
+        this.courseId = courseId;
+        this.enrollmentDate = enrollmentDate;
+    }
+
     @Override
     public EnrollmentId getId() {
         return this.enrollmentId;
@@ -29,6 +38,22 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         this.userId = userId;
         this.courseId = courseId;
         this.enrollmentDate = new EnrollmentDate(LocalDateTime.now());
+    }
+
+    public static Enrollment reconstruct(
+            long enrollmentId,
+            String state,
+            String userId,
+            String courseId,
+            LocalDateTime createdAt
+    ) {
+        return new Enrollment(
+                new EnrollmentId(enrollmentId),
+                EnrollmentState.valueOf(state),
+                new UserId(userId),
+                new CourseId(courseId),
+                new EnrollmentDate(createdAt)
+        );
     }
 
     public static Enrollment create(UserId userId, CourseId courseId) {

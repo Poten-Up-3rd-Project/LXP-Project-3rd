@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringJUnitConfig(classes = JpaTestConfig.class)
 @Import({CoursePersistenceAdapter.class, CourseEntityMapper.class})
 @Transactional
-@DisplayName("CoursePersistenceAdapter 통합 테스트")
+@DisplayName("CoursePersistenceAdapter 테스트")
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class CoursePersistenceAdapterIntegrationTest {
 

@@ -1,4 +1,4 @@
-package com.lxp.recommend.application.required;
+package com.lxp.recommend.application.port.required;
 
 import com.lxp.recommend.domain.dto.LearningStatusView;
 

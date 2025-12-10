@@ -1,9 +1,9 @@
 package com.lxp.recommend.application;
 
 import com.lxp.recommend.application.dto.RecommendedCourseDto;
-import com.lxp.recommend.application.required.CourseMetaReader;
-import com.lxp.recommend.application.required.LearningStatusReader;
-import com.lxp.recommend.application.required.MemberProfileReader;
+import com.lxp.recommend.application.port.required.CourseMetaReader;
+import com.lxp.recommend.application.port.required.LearningStatusReader;
+import com.lxp.recommend.application.port.required.MemberProfileReader;
 import com.lxp.recommend.domain.model.MemberRecommendation;
 import com.lxp.recommend.domain.model.RecommendedCourse;
 import com.lxp.recommend.domain.model.ids.MemberId;

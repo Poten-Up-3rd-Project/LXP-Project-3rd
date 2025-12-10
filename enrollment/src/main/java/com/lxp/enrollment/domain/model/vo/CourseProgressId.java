@@ -2,8 +2,8 @@ package com.lxp.enrollment.domain.model.vo;
 
 import java.util.Objects;
 
-public record CourseStudyId(Long value) {
-    public CourseStudyId {
+public record CourseProgressId(Long value) {
+    public CourseProgressId {
         if(value == null) {
             throw new IllegalArgumentException("CourseStudyId cannot be null");
         }
@@ -13,7 +13,7 @@ public record CourseStudyId(Long value) {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CourseStudyId that = (CourseStudyId) o;
+        CourseProgressId that = (CourseProgressId) o;
         return Objects.equals(value, that.value);
     }
 

@@ -1,7 +1,7 @@
 package com.lxp.enrollment.domain.model;
 
 import com.lxp.enrollment.domain.model.vo.LectureId;
-import com.lxp.enrollment.domain.model.vo.LectureStudyId;
+import com.lxp.enrollment.domain.model.vo.LectureProgressId;
 import com.lxp.enrollment.domain.model.vo.UserId;
 
 import java.util.Objects;
@@ -9,21 +9,21 @@ import java.util.Objects;
 /**
  * 강의 진행률 도메인
  */
-public class LectureStudy {
+public class LectureProgress {
 
-    private LectureStudyId lectureStudyId;
+    private LectureProgressId lectureProgressId;
     private UserId userId;
     private LectureId lectureId;
     private boolean isCompleted;
 
     /**
      * 강의 진행률 생성
-     * @param lectureStudyId 강의 진행률 ID(학습자 ID + 강의 ID)
+     * @param userId 사용자 ID
+     * @param lectureId 강의 ID
      * @return 생성 된 강의 진행률
      */
-    public static LectureStudy createLectureStudy(LectureStudyId lectureStudyId, UserId userId, LectureId lectureId) {
-        return new LectureStudy(
-                Objects.requireNonNull(lectureStudyId, "LectureStudyId는 null일 수 없습니다."),
+    public static LectureProgress create(UserId userId, LectureId lectureId) {
+        return new LectureProgress(
                 Objects.requireNonNull(userId, "UserId는 null일 수 없습니다."),
                 Objects.requireNonNull(lectureId, "lectureId는 null일 수 없습니다."),
                 false
@@ -45,12 +45,21 @@ public class LectureStudy {
         return this.isCompleted;
     }
 
-    public LectureStudyId lectureStudyId() {
-        return lectureStudyId;
+    public LectureProgressId lectureStudyId() {
+        return lectureProgressId;
     }
 
-    private LectureStudy(LectureStudyId lectureStudyId, UserId userId, LectureId lectureId, boolean isCompleted) {
-        this.lectureStudyId = lectureStudyId;
+    public LectureId lectureId() { return lectureId;}
+
+    private LectureProgress(UserId userId, LectureId lectureId, boolean isCompleted) {
+        this.lectureProgressId = null;
+        this.userId = userId;
+        this.lectureId = lectureId;
+        this.isCompleted = isCompleted;
+    }
+
+    private LectureProgress(LectureProgressId lectureProgressId, UserId userId, LectureId lectureId, boolean isCompleted) {
+        this.lectureProgressId = lectureProgressId;
         this.userId = userId;
         this.lectureId = lectureId;
         this.isCompleted = isCompleted;

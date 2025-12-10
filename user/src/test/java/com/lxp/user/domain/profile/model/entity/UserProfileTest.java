@@ -15,11 +15,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 
 class UserProfileTest {
 
@@ -113,51 +115,54 @@ class UserProfileTest {
     }
 
     @Test
-    @DisplayName("UserProfile 업데이트 시 LearnerLevel이 null인 경우 예외 발생")
-    void update_ShouldThrowNPEWhenLevelIsNull() {
+    @DisplayName("LearnerLevel이 null인 경우 기존 값이 유지됨")
+    void update_ShouldMaintainCurrentLevelWhenLevelIsNull() {
         // given
+        LearnerLevel initialLevel = LearnerLevel.MIDDLE;
+        // ... 다른 setup ...
         UserProfile userProfile = UserProfile.create(userId, initialLevel, initialTags, initialJob);
         List<Long> tags = Collections.emptyList();
         String job = "Job";
 
-        // when & then
-        assertThrows(NullPointerException.class, () -> userProfile.update(null, tags, job),
-            "LearnerLevel이 null이면 NullPointerException이 발생해야 합니다.");
+        // when
+        assertDoesNotThrow(() -> userProfile.update(null, tags, job)); // 💡 NPE가 발생하면 안 됨
+
+        // then
+        assertAll(
+            () -> assertEquals(initialLevel, userProfile.level(), "LearnerLevel은 기존 값이 유지되어야 합니다."),
+            () -> assertNotEquals(initialTags, userProfile.tags(), "Tags가 업데이트되어야 합니다."), // tags가 emptyList이므로 업데이트 확인
+            () -> assertEquals(job, userProfile.job(), "Job은 업데이트되어야 합니다.")
+        );
+        // 참고: tags가 Collections.emptyList()이고 withTags(List)가 새 Tags 객체를 반환한다고 가정
     }
 
     @Test
-    @DisplayName("UserProfile 업데이트 시 tags가 null인 경우")
-    void update_ShouldHandleNullTagsList() {
+    @DisplayName("Tags 리스트가 null인 경우 기존 Tags 객체가 유지되어야 함")
+    void update_ShouldMaintainCurrentTagsWhenTagsListIsNull() {
         // given
         UserProfile userProfile = UserProfile.create(userId, initialLevel, initialTags, initialJob);
         LearnerLevel newLevel = LearnerLevel.MIDDLE;
         String newJob = "New Job";
 
-        Tags tagsHandlingNull = Mockito.mock(Tags.class);
-
-        // 💡 withTags(null) 호출 시 반환될 Mock 객체 지정
-        given(initialTags.withTags(null)).willReturn(tagsHandlingNull);
-
-        // when & then
-        // update 메서드 내부에서 tags 인수가 바로 Objects.requireNonNull() 검증 대상이 아니므로 예외가 발생하면 안 됩니다.
+        // when
         assertDoesNotThrow(() -> userProfile.update(newLevel, null, newJob),
             "Tags 리스트가 null이어도 update 메소드 자체에서 바로 예외가 발생하면 안 됩니다.");
 
         // then (상태 검증)
         assertAll(
             () -> assertEquals(newLevel, userProfile.level(), "LearnerLevel이 업데이트되어야 합니다."),
-            // Tags 필드가 Mock 객체가 반환한 값으로 업데이트되었는지 확인
-            () -> assertEquals(tagsHandlingNull, userProfile.tags(), "Tags 필드가 withTags(null)의 결과로 업데이트되어야 합니다.")
+            () -> assertEquals(initialTags, userProfile.tags(), "Tags 필드는 null 입력으로 인해 기존 값이 유지되어야 합니다."), // 💡 기존 값 유지 검증
+            () -> assertEquals(newJob, userProfile.job(), "Job 필드는 업데이트되어야 합니다.")
         );
 
-        // withTags(null)이 정확히 호출되었는지 검증
-        then(initialTags).should().withTags(null);
+        then(initialTags).should(never()).withTags(any());
     }
 
     @Test
-    @DisplayName("UserProfile 업데이트 시 job이 null인 경우")
-    void update_ShouldAcceptNullJob() {
+    @DisplayName("Job이 null인 경우 기존 값이 유지되어야 함")
+    void update_ShouldMaintainCurrentJobWhenJobIsNull() {
         // given
+        String initialJob = "Initial Job";
         UserProfile userProfile = UserProfile.create(userId, initialLevel, initialTags, initialJob);
         LearnerLevel newLevel = LearnerLevel.EXPERT;
         List<Long> tags = Arrays.asList(1L);
@@ -166,7 +171,11 @@ class UserProfileTest {
         userProfile.update(newLevel, tags, null);
 
         // then
-        assertNull(userProfile.job(), "Job은 null로 업데이트될 수 있어야 합니다.");
+        assertAll(
+            () -> assertEquals(newLevel, userProfile.level(), "LearnerLevel은 업데이트되어야 합니다."),
+            () -> assertNotNull(userProfile.job(), "Job은 null로 업데이트되지 않고 기존 값(Initial Job)이 유지되어야 합니다."), // 💡 null 대신 기존 값 검증
+            () -> assertEquals(initialJob, userProfile.job(), "Job은 기존 값으로 유지되어야 합니다.") // 💡 기존 값으로 유지되는지 확인
+        );
     }
 
     @Test

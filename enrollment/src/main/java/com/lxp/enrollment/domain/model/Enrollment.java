@@ -1,12 +1,13 @@
 package com.lxp.enrollment.domain.model;
 
 import com.lxp.common.domain.event.AggregateRoot;
+import com.lxp.enrollment.domain.exception.EnrollmentErrorCode;
+import com.lxp.enrollment.domain.exception.EnrollmentException;
 import com.lxp.enrollment.domain.model.enums.EnrollmentState;
 import com.lxp.enrollment.domain.model.vo.CourseId;
 import com.lxp.enrollment.domain.model.vo.EnrollmentDate;
 import com.lxp.enrollment.domain.model.vo.EnrollmentId;
 import com.lxp.enrollment.domain.model.vo.UserId;
-import com.lxp.enrollment.infrastructure.persistence.entity.EnrollmentJpaEntity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -64,7 +65,7 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
 
     public void complete() {
         if (this.state == EnrollmentState.CANCELLED) {
-            throw new IllegalStateException("취소된 수강은 완료할 수 없습니다.");
+            throw new EnrollmentException(EnrollmentErrorCode.CAN_NOT_CANCEL_COMPLETED_ENROLLMENT);
         }
         if (this.state == EnrollmentState.COMPLETED) {
             return;
@@ -81,11 +82,11 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         }
 
         if (this.state == EnrollmentState.COMPLETED) {
-            throw new IllegalStateException("완료된 수강은 취소할 수 없습니다.");
+            throw new EnrollmentException(EnrollmentErrorCode.CAN_NOT_COMPLETE_CANCEL_ENROLLMENT);
         }
 
         if (!enrollmentDate.canCancel(now)) {
-            throw new IllegalStateException("수강 시작 후 3일이 지나 취소할 수 없습니다.");
+            throw new EnrollmentException(EnrollmentErrorCode.CAN_NOT_CANCEL_ENROLLMENT);
         }
 
         this.state = EnrollmentState.CANCELLED;

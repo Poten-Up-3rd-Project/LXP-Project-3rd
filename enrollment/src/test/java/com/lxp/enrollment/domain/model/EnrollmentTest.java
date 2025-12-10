@@ -1,5 +1,6 @@
 package com.lxp.enrollment.domain.model;
 
+import com.lxp.enrollment.domain.exception.EnrollmentException;
 import com.lxp.enrollment.domain.model.enums.EnrollmentState;
 import com.lxp.enrollment.domain.model.vo.CourseId;
 import com.lxp.enrollment.domain.model.vo.UserId;
@@ -97,7 +98,7 @@ class EnrollmentTest {
         enrollment.cancel(LocalDateTime.now());
 
         // when
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
+        EnrollmentException exception = assertThrows(EnrollmentException.class,
                 enrollment::complete
         );
 
@@ -155,7 +156,7 @@ class EnrollmentTest {
         enrollment.complete();
 
         // when
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
+        EnrollmentException exception = assertThrows(EnrollmentException.class,
                 () -> enrollment.cancel(LocalDateTime.now()));
 
         // then
@@ -170,7 +171,7 @@ class EnrollmentTest {
         LocalDateTime cancelAt = enrollment.enrollmentDate().value().plusDays(4);
 
         // when
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
+        EnrollmentException exception = assertThrows(EnrollmentException.class,
                 () -> enrollment.cancel(cancelAt));
 
         // then

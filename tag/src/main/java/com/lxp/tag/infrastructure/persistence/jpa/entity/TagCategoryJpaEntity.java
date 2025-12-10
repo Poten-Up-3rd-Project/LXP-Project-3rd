@@ -1,6 +1,5 @@
 package com.lxp.tag.infrastructure.persistence.jpa.entity;
 
-import com.lxp.tag.application.port.provided.dto.result.CategoryResult;
 import com.lxp.tag.infrastructure.persistence.jpa.enums.TagState;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,12 +30,13 @@ public class TagCategoryJpaEntity {
     )
     private List<TagJpaEntity> tags = new ArrayList<>();
 
-    public static CategoryResult toResult(TagCategoryJpaEntity entity) {
-        return new CategoryResult(
-                entity.id,
-                entity.name,
-                entity.state.toString(),
-                entity.tags.stream().map(TagJpaEntity::toResult).toList()
-        );
-    }
+    //TODO("")
+//    public static CategoryResult toResult(TagCategoryJpaEntity entity) {
+//        return new CategoryResult(
+//                entity.id,
+//                entity.name,
+//                entity.state.toString(),
+//                entity.tags.stream().map(TagJpaEntity::toResult).toList()
+//        );
+//    }
 }

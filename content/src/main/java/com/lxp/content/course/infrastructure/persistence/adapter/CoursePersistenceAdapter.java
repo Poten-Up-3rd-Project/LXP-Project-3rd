@@ -15,6 +15,7 @@ import java.util.Optional;
 public class CoursePersistenceAdapter implements CourseRepository {
     private final CourseJpaRepository jpaRepository;
     private final CourseEntityMapper mapper;
+
     @Override
     public Course save(Course course) {
         CourseJpaEntity entity = mapper.toEntity(course);

@@ -1,31 +1,32 @@
 package com.lxp.recommend.domain.model.ids;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
-public class MemberId implements Serializable {
+/**
+ * 회원 식별자 값 객체 (Value Object)
+ * JPA 어노테이션 없음 - 순수 도메인 개념
+ */
+public class MemberId {
 
-    @Column(name = "member_id", nullable = false)
-    private String id; // Long -> String 변경 (UUID 수용)
+    private final String value;
 
-    protected MemberId() {}
-
-    public MemberId(String id) {
-        if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("MemberId cannot be null or blank");
-        }
-        this.id = id;
+    protected MemberId() {
+        this.value = null; // JPA 재구성용, 실제로는 사용 안 됨
     }
 
-    public static MemberId of(String id) {
-        return new MemberId(id);
+    public MemberId(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("MemberId cannot be null or blank");
+        }
+        this.value = value;
+    }
+
+    public static MemberId of(String value) {
+        return new MemberId(value);
     }
 
     public String getValue() {
-        return id;
+        return value;
     }
 
     @Override
@@ -33,16 +34,16 @@ public class MemberId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MemberId memberId = (MemberId) o;
-        return Objects.equals(id, memberId.id);
+        return Objects.equals(value, memberId.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(value);
     }
 
     @Override
     public String toString() {
-        return id;
+        return value;
     }
 }

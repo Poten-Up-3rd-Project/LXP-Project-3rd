@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Transactional
 public class CourseCreateService implements CourseCreateUseCase {
     private final CourseRepository courseRepository;
     private final CourseCreateDomainService courseCreateDomainService;

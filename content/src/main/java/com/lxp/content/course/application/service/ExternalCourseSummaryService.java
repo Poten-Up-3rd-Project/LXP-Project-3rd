@@ -7,12 +7,14 @@ import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ExternalCourseSummaryService implements ExternalCourseSummaryPort {
     private final CourseRepository courseRepository;

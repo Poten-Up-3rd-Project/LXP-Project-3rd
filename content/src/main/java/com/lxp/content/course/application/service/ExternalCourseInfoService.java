@@ -6,10 +6,12 @@ import com.lxp.content.course.application.port.provided.external.ExternalCourseI
 import com.lxp.content.course.domain.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ExternalCourseInfoService implements ExternalCourseInfoPort {
     private final CourseRepository courseRepository;

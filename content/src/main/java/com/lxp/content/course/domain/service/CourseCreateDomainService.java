@@ -11,7 +11,11 @@ import com.lxp.content.course.domain.model.Section;
 import com.lxp.content.course.domain.model.collection.CourseSections;
 import com.lxp.content.course.domain.model.collection.CourseTags;
 import com.lxp.content.course.domain.model.collection.SectionLectures;
-import com.lxp.content.course.domain.model.id.*;
+import com.lxp.content.course.domain.model.id.CourseUUID;
+import com.lxp.content.course.domain.model.id.InstructorUUID;
+import com.lxp.content.course.domain.model.id.LectureUUID;
+import com.lxp.content.course.domain.model.id.SectionUUID;
+import com.lxp.content.course.domain.model.id.TagId;
 import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
 import com.lxp.content.course.domain.policy.SectionMinCountRule;
 

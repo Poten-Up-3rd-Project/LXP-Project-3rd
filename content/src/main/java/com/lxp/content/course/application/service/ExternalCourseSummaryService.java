@@ -8,6 +8,8 @@ import com.lxp.content.course.domain.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,8 +20,8 @@ public class ExternalCourseSummaryService implements ExternalCourseSummaryPort {
 
 
     @Override
-    public Optional<CourseResult> getCourseSummary(String courseUUID) {
-        Optional<Course> courseOptional = courseRepository.findByUUID(courseUUID);
-        return courseOptional.map(resultMapper::toResult);
+    public List<CourseResult> getCourseSummaryList(Collection<String> courseUUIDs) {
+        List<Course> courses = courseRepository.findAllByUUID(courseUUIDs);
+        return courses.stream().map(resultMapper::toResult).toList();
     }
 }

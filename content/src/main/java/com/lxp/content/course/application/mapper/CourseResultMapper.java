@@ -24,7 +24,7 @@ public class CourseResultMapper {
                 course.title().value(),
                 course.thumbnailUrl(),
                 course.description().value(),
-                course.difficulty().name(),
+                course.difficulty(),
                 toTagIds(course.tags())
         );
     }

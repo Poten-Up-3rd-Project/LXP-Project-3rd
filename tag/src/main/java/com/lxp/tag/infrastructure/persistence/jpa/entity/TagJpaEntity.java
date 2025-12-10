@@ -1,6 +1,6 @@
 package com.lxp.tag.infrastructure.persistence.jpa.entity;
 
-import com.lxp.tag.application.port.query.TagResult;
+import com.lxp.tag.application.port.provided.dto.result.TagResult;
 import com.lxp.tag.infrastructure.persistence.jpa.enums.TagState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

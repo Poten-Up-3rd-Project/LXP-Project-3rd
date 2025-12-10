@@ -1,6 +1,6 @@
 package com.lxp.tag.presentation.web.dto;
 
-import com.lxp.tag.application.port.query.CategoryResult;
+import com.lxp.tag.application.port.provided.dto.result.CategoryResult;
 
 import java.util.List;
 

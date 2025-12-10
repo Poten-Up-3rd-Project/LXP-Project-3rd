@@ -2,9 +2,9 @@ package com.lxp.content.course.application.service;
 
 import com.lxp.common.application.port.out.DomainEventPublisher;
 import com.lxp.content.course.application.mapper.CourseResultMapper;
-import com.lxp.content.course.application.port.provided.dto.command.CourseCreateCommand;
-import com.lxp.content.course.application.port.provided.dto.result.CourseInfoResult;
-import com.lxp.content.course.application.port.provided.usecase.CourseCreateUseCase;
+import com.lxp.api.content.course.port.dto.command.CourseCreateCommand;
+import com.lxp.api.content.course.port.dto.result.CourseInfoResult;
+import com.lxp.api.content.course.port.usecase.CourseCreateUseCase;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.repository.CourseRepository;
 import com.lxp.content.course.domain.service.CourseCreateDomainService;

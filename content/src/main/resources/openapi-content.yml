@@ -178,7 +178,7 @@ components:
           type: string
           example: "https://example.com/thumbnail.jpg"
         level:
-          $ref: '#/components/schemas/CourseDifficulty'
+          $ref: '#/components/schemas/Level'
         tags:
           type: array
           items:
@@ -228,7 +228,7 @@ components:
           type: string
           example:  "https://example.com/thumbnail-updated.jpg"
         level:
-            $ref: '#/components/schemas/CourseDifficulty'
+            $ref: '#/components/schemas/Level'
         tags:
           type: array
           items:
@@ -358,7 +358,7 @@ components:
           example: "주니어"
 
     # ==================== Enum ====================
-    CourseDifficulty:
+    Level:
       type: string
       enum:
         - JUNIOR

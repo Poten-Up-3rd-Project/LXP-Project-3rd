@@ -1,7 +1,7 @@
 package com.lxp.content.course.application.mapper;
 
-import com.lxp.content.course.application.port.provided.dto.result.CourseInfoResult;
-import com.lxp.content.course.application.port.provided.dto.result.CourseResult;
+import com.lxp.api.content.course.port.dto.result.CourseInfoResult;
+import com.lxp.api.content.course.port.dto.result.CourseResult;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.model.Lecture;
 import com.lxp.content.course.domain.model.Section;

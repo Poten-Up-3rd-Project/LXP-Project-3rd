@@ -1,7 +1,7 @@
 package com.lxp.user.domain.profile.model.entity;
 
+import com.lxp.common.enums.Level;
 import com.lxp.user.domain.common.model.vo.UserId;
-import com.lxp.user.domain.profile.model.vo.LearnerLevel;
 import com.lxp.user.domain.profile.model.vo.Tags;
 import com.lxp.user.domain.profile.model.vo.UserProfileId;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +26,16 @@ class UserProfileTest {
 
     private UserProfileId userProfileId;
     private UserId userId;
-    private LearnerLevel initialLevel;
+    private Level initialLevel;
     private Tags initialTags;
     private String initialJob;
+
 
     @BeforeEach
     void setUp() {
         userProfileId = new UserProfileId(100L);
         userId = UserId.create();
-        initialLevel = LearnerLevel.EXPERT;
+        initialLevel = Level.EXPERT;
         initialTags = Mockito.mock(Tags.class);
         initialJob = "Software Engineer";
     }
@@ -52,7 +53,7 @@ class UserProfileTest {
             () -> assertNotNull(userProfile, "UserProfile 객체는 null이 아니어야 합니다."),
             () -> assertEquals(userProfileId, userProfile.id(), "ID는 일치해야 합니다."),
             () -> assertEquals(userId, userProfile.userId(), "UserId는 일치해야 합니다."),
-            () -> assertEquals(initialLevel, userProfile.level(), "LearnerLevel은 일치해야 합니다."),
+            () -> assertEquals(initialLevel, userProfile.level(), "Level은 일치해야 합니다."),
             () -> assertEquals(initialTags, userProfile.tags(), "Tags는 일치해야 합니다."),
             () -> assertEquals(initialJob, userProfile.job(), "Job은 일치해야 합니다."),
             () -> assertEquals(userProfileId, userProfile.getId(), "getId()는 올바른 ID를 반환해야 합니다.")
@@ -65,7 +66,7 @@ class UserProfileTest {
         // given
         UserProfileId nullId = null;
         UserId nullUserId = null;
-        LearnerLevel nullLevel = null;
+        Level nullLevel = null;
         Tags nullTags = null;
 
         // when & then
@@ -82,7 +83,7 @@ class UserProfileTest {
 
             () -> assertThrows(NullPointerException.class,
                 () -> UserProfile.create(userProfileId, userId, nullLevel, initialTags, initialJob),
-                "LearnerLevel이 null이면 NullPointerException이 발생해야 합니다."
+                "Level이 null이면 NullPointerException이 발생해야 합니다."
             ),
 
             () -> assertThrows(NullPointerException.class,
@@ -100,7 +101,7 @@ class UserProfileTest {
         // given
         UserProfile userProfile = UserProfile.create(userProfileId, userId, initialLevel, initialTags, initialJob);
 
-        LearnerLevel newLevel = LearnerLevel.MIDDLE;
+        Level newLevel = Level.MIDDLE;
         List<Long> newTagsList = Arrays.asList(5L, 6L, 7L);
         String newJob = "Lead Developer";
 
@@ -112,7 +113,7 @@ class UserProfileTest {
 
         // then
         assertAll(
-            () -> assertEquals(newLevel, userProfile.level(), "LearnerLevel이 업데이트되어야 합니다."),
+            () -> assertEquals(newLevel, userProfile.level(), "Level이 업데이트되어야 합니다."),
             () -> assertEquals(updatedTags, userProfile.tags(), "Tags는 withTags()의 결과를 받아 업데이트되어야 합니다."),
             () -> assertEquals(newJob, userProfile.job(), "Job이 업데이트되어야 합니다.")
         );
@@ -121,7 +122,7 @@ class UserProfileTest {
     }
 
     @Test
-    @DisplayName("UserProfile 업데이트 시 LearnerLevel이 null인 경우 예외 발생")
+    @DisplayName("UserProfile 업데이트 시 Level이 null인 경우 예외 발생")
     void update_ShouldThrowNPEWhenLevelIsNull() {
         // given
         UserProfile userProfile = UserProfile.create(userProfileId, userId, initialLevel, initialTags, initialJob);
@@ -130,7 +131,7 @@ class UserProfileTest {
 
         // when & then
         assertThrows(NullPointerException.class, () -> userProfile.update(null, tags, job),
-            "LearnerLevel이 null이면 NullPointerException이 발생해야 합니다.");
+            "Level이 null이면 NullPointerException이 발생해야 합니다.");
     }
 
     @Test
@@ -138,7 +139,7 @@ class UserProfileTest {
     void update_ShouldHandleNullTagsList() {
         // given
         UserProfile userProfile = UserProfile.create(userProfileId, userId, initialLevel, initialTags, initialJob);
-        LearnerLevel newLevel = LearnerLevel.MIDDLE;
+        Level newLevel = Level.MIDDLE;
         String newJob = "New Job";
 
         Tags tagsHandlingNull = Mockito.mock(Tags.class);
@@ -150,7 +151,7 @@ class UserProfileTest {
 
         // then (상태 검증)
         assertAll(
-            () -> assertEquals(newLevel, userProfile.level(), "LearnerLevel이 업데이트되어야 합니다."),
+            () -> assertEquals(newLevel, userProfile.level(), "Level이 업데이트되어야 합니다."),
             () -> assertEquals(tagsHandlingNull, userProfile.tags(), "Tags 필드가 Mock 객체가 반환한 값으로 업데이트되어야 합니다.")
         );
 
@@ -162,7 +163,7 @@ class UserProfileTest {
     void update_ShouldAcceptNullJob() {
         // given
         UserProfile userProfile = UserProfile.create(userProfileId, userId, initialLevel, initialTags, initialJob);
-        LearnerLevel newLevel = LearnerLevel.EXPERT;
+        Level newLevel = Level.EXPERT;
         List<Long> tags = Arrays.asList(1L);
 
         // when
@@ -182,7 +183,7 @@ class UserProfileTest {
         assertAll(
             () -> assertEquals(userProfileId, userProfile.id(), "id()는 정확한 UserProfileId를 반환해야 합니다."),
             () -> assertEquals(userId, userProfile.userId(), "userId()는 정확한 UserId를 반환해야 합니다."),
-            () -> assertEquals(initialLevel, userProfile.level(), "level()은 정확한 LearnerLevel을 반환해야 합니다."),
+            () -> assertEquals(initialLevel, userProfile.level(), "level()은 정확한 Level을 반환해야 합니다."),
             () -> assertEquals(initialTags, userProfile.tags(), "tags()는 정확한 Tags를 반환해야 합니다."),
             () -> assertEquals(initialJob, userProfile.job(), "job()은 정확한 job을 반환해야 합니다."),
             () -> assertEquals(userProfileId, userProfile.getId(), "getId()는 정확한 UserProfileId를 반환해야 합니다.")

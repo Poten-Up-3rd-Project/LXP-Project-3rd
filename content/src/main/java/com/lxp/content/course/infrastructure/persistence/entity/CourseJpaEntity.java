@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "course")
+@Table(name = "course",  indexes = {
+        @Index(name = "idx_course_uuid", columnList = "uuid")
+})
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CourseJpaEntity extends BaseVersionedJpaEntity {

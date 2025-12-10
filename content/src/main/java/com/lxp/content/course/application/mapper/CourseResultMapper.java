@@ -1,6 +1,7 @@
 package com.lxp.content.course.application.mapper;
 
 import com.lxp.content.course.application.port.provided.dto.result.CourseInfoResult;
+import com.lxp.content.course.application.port.provided.dto.result.CourseResult;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.model.Lecture;
 import com.lxp.content.course.domain.model.Section;
@@ -14,7 +15,22 @@ import java.util.List;
 
 @Component
 public class CourseResultMapper {
-    public CourseInfoResult toResult(Course course) {
+
+    public CourseResult toResult(Course course) {
+        return new CourseResult(
+                course.uuid().value(),
+                course.id(),
+                course.instructorUUID().value(),
+                course.title().value(),
+                course.thumbnailUrl(),
+                course.description().value(),
+                course.difficulty().name(),
+                toTagIds(course.tags())
+        );
+    }
+
+
+    public CourseInfoResult toInfoResult(Course course) {
         return new CourseInfoResult(
                 course.uuid().value(),
                 course.id(),

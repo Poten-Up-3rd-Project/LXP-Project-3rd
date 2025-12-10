@@ -1,4 +1,4 @@
-package com.lxp.enrollment.application.port.provided.command;
+package com.lxp.api.enrollment.dto.command;
 
 public record EnrollCourseCommand(
     String userId,

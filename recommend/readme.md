@@ -8,7 +8,7 @@
 **목표:** LXP(Learning Experience Platform)의 개인화 추천 기능 구현  
 **담당:** Recommendation Bounded Context  
 **기술 스택:**
-- Java 17, Spring Boot 3.x, MySQL 8.0, JPA, Gradle
+- Java 17, Spring Boot 4.0.0, MySQL 9.0, JPA, Gradle
 - 아키텍처: **Modulith(멀티모듈)** + **DDD(Domain-Driven Design)** + **Layered Architecture**
 - 패키지 루트: `com.lxp.recommend`
 
@@ -40,52 +40,89 @@
 
 #### (2) 패키지 구조: DDD Layered Architecture
 ```
-com.lxp.recommend
-├─ domain
-│   ├─ model               // 엔티티, VO
-│   │   ├─ MemberRecommendation    // Aggregate Root
-│   │   ├─ RecommendedCourse      // Value Object (@Embeddable)
-│   │   └─ ids
-│   │       ├─ MemberId           // String 기반 외부 ID
-│   │       └─ CourseId
-│   ├─ service            // 도메인 서비스 (순수 비즈니스 로직)
-│   │   └─ RecommendationScoringService
-│   ├─ repository         // 도메인 저장소 인터페이스
-│   │   └─ MemberRecommendationRepository
-│   ├─ dto                // 다른 BC에서 가져온 데이터를 담는 View DTO
-│   │   ├─ LearnerProfileView
-│   │   ├─ CourseMetaView
-│   │   ├─ LearningStatusView
-│   │   ├─ DifficultyLevel
-│   │   └─ EnrollmentStatus
-│   └─ event              // (필요 시) 도메인 이벤트
+com.lxp.recommend/
+├─ domain/
+│ ├─ model/ # 도메인 모델 (Aggregate, Entity, VO)
+│ │ ├─ MemberRecommendation.java # Aggregate Root
+│ │ ├─ RecommendedCourse.java # Entity (순수 POJO)
+│ │ ├─ RecommendationContext.java # VO - 추천 계산 컨텍스트
+│ │ ├─ TagContext.java # VO - 태그 컨텍스트 (Explicit/Implicit)
+│ │ ├─ ScoringPolicy.java # VO - 점수 계산 정책
+│ │ ├─ CourseCandidate.java # VO - 강좌 후보 메타정보
+│ │ ├─ LearningStatusView.java # VO - 학습 이력 (이름 유지, 역할 명확화)
+│ │ └─ ids/ # 식별자 VO
+│ │ ├─ MemberId.java # 순수 POJO (JPA 제거)
+│ │ └─ CourseId.java # 순수 POJO (JPA 제거)
+│ │
+│ ├─ service/ # 도메인 서비스
+│ │ └─ RecommendationScoringService.java # 순수 점수 계산 로직
+│ │
+│ ├─ repository/ # Repository 인터페이스 (Port)
+│ │ └─ MemberRecommendationRepository.java
+2.2 설계 원칙 (팀 규약 포함)
+A. 계층별 책임
+B. 의존성 방향 (헥사고날 원칙)
+C. 팀 규약 준수 사항
+✅ 폴더 구조: domain/, application/, infrastructure/, interfaces/
+✅ Port 용어: required (외부 필요), provided (외부 제공)
+✅ 기존 객체 이름 유지 (예: LearningStatusView → 이름은 그대로, 역할만 명확화)
+✅ POJO/JPA 완전 분리 (도메인은 순수 Java, JPA는 infrastructure에만)
+3. 최종 패키지 구조
+│ │
+│ ├─ exception/ # 도메인 예외
+│ │ ├─ RecommendationException.java
+│ │ ├─ InvalidRecommendationContextException.java
+│ │ └─ RecommendationLimitExceededException.java
+│ │
+│ └─ dto/ # 도메인 DTO (Enum, 단순 데이터 구조)
+│ ├─ DifficultyLevel.java # Enum
+│ ├─ LearnerLevel.java # Enum
+│ └─ EnrollmentStatus.java # Enum
 │
-├─ application
-│   ├─ service
-│   │   └─ RecommendationApplicationService
-│   ├─ dto
-│   │   └─ RecommendedCourseDto   // API 응답용 DTO
-│   └─ port
-│       └─ required               // Required Ports (Outbound Port)
-│           ├─ MemberProfileReader
-│           ├─ CourseMetaReader
-│           └─ LearningStatusReader
+├─ application/
+│ ├─ port/
+│ │ ├─ required/ # Outbound Port (외부로부터 필요)
+│ │ │ ├─ MemberProfileReader.java
+│ │ │ ├─ CourseMetaReader.java
+│ │ │ └─ LearningStatusReader.java
+│ │ │
+│ │ └─ provided/ # Inbound Port (외부에 제공)
+│ │ └─ RefreshRecommendationUseCase.java
+│ │
+│ ├─ service/ # Application Service
+│ │ └─ RecommendationApplicationService.java # 유스케이스 조율
+│ │
+│ └─ dto/ # Application DTO (외부 통신용)
+│ ├─ RecommendedCourseDto.java # API 응답용
+│ └─ LearnerProfileView.java # Port 통신용 (외부 BC 데이터 수신)
 │
-├─ presentation
-│   └─ RecommendationController   // REST API 엔드포인트
+├─ infrastructure/
+│ ├─ adapter/ # Adapter 구현체
+│ │ ├─ MemberProfileReaderAdapter.java
+│ │ ├─ CourseMetaReaderAdapter.java
+│ │ └─ LearningStatusReaderAdapter.java
+│ │
+│ ├─ persistence/
+│ │ ├─ jpa/
+│ │ │ ├─ entity/ # JPA 전용 엔티티
+│ │ │ │ ├─ MemberRecommendationJpaEntity.java
+│ │ │ │ └─ RecommendedCourseItemJpaEntity.java
+│ │ │ │
+│ │ │ ├─ repository/ # Spring Data JPA Repository
+│ │ │ │ └─ JpaMemberRecommendationRepository.java
+│ │ │ │
+│ │ │ └─ mapper/ # JPA ↔ Domain 변환
+│ │ │ └─ MemberRecommendationMapper.java
+│ │ │
+│ │ └─ adapter/ # Repository Adapter
+│ │ └─ MemberRecommendationRepositoryAdapter.java
+│ │
+│ └─ scheduler/ # 배치 작업
+│ └─ RecommendationBatchScheduler.java
 │
-├─ infrastructure
-│   ├─ adapter                    // Required Port 구현체 (나중에 작성)
-│   │   ├─ MemberProfileReaderAdapter
-│   │   ├─ CourseMetaReaderAdapter
-│   │   └─ LearningStatusReaderAdapter
-│   ├─ messaging                  // (이벤트 리스너 등)
-│   └─ persistence
-│       └─ repository
-│           └─ JpaMemberRecommendationRepository // Spring Data JPA 구현체
-│
-└─ resources
-    └─ openapi-recommend.yml      // 추천 API 문서
+└─ interfaces/ # Presentation Layer (HTTP)
+└─ rest/
+└─ RecommendationController.java
 
 ```
 
@@ -129,33 +166,19 @@ OpenAPI 명세
 
 openapi-recommend.yml에 /recommendations/me 스펙 정의
 
-⏳ 남은 작업 (외부 BC 모두 준비된 상황 기준)
-Required Port 구현체 작성 (infrastructure/adapter)
+⏳ 남은 작업 (외부 BC 모두 준비된 상황 기준 1211)
+infrastructure /  application 계층 수정될 예정입니다. 
+[ ] 도메인 서비스 리팩토링 
+[ ] 애플리케이션 서비스 리팩토링
+[ ] Repository Adapter 수정
 
-MemberProfileReaderAdapter
-→ Member/User BC에서 프로필 조회
+[ ] 도메인 서비스 테스트 작성
+[ ] 애플리케이션 서비스 테스트 작성
+[ ] 통합 테스트 작성
 
-CourseMetaReaderAdapter
-→ Course BC에서 난이도별 강좌 목록 조회 (최신 100개 제한)
+[ ] 배치 스케줄러 추가
+[ ] Member BC와 협의 (전체 회원 목록 API)
 
-LearningStatusReaderAdapter
-→ Enrollment/Learning BC에서 수강 이력 조회
-
-현재는 포트 인터페이스만 있고, 구현체는 비어 있는 상태라
-“실제 데이터 연동”을 하려면 이 부분을 채워야 합니다.
-
-이벤트 리스너 (infrastructure/messaging)
-
-예: EnrollmentCreatedEvent, ProfileUpdatedEvent 수신 →
-RecommendationApplicationService.refreshRecommendationAsync(memberId) 호출.
-
-스케줄러(선택)
-
-매일 새벽 모든/일부 회원 추천 재계산 (배치).
-
-DB DDL 확인
-
-member_id 컬럼이 VARCHAR로 잘 잡혀 있는지 (String 기반 ID 반영).
 ***
 
 ### 5. API 명세 (프론트엔드 전달용)
@@ -176,27 +199,6 @@ member_id 컬럼이 VARCHAR로 잘 잡혀 있는지 (String 기반 ID 반영).
 
 ### 6. 미완료 및 다음 단계
 
-#### 🔜 구현 필요 항목
-1.  **Port 구현체 (`infrastructure.external`):**
-    - `MemberProfileReaderImpl`: Member 모듈에서 프로필 조회
-    - `CourseMetaReaderImpl`: Course 모듈에서 강좌 메타 조회
-    - `LearningStatusReaderImpl`: Learning 모듈에서 수강 이력 조회
-
-2.  **비동기 처리 설정:**
-    - 메인 애플리케이션에 `@EnableAsync` 추가
-    - 필요 시 `ThreadPoolTaskExecutor` 설정
-
-3.  **이벤트 리스너 구현:**
-    - 강좌 완료 이벤트 → `refreshRecommendationAsync` 트리거
-    - 프로필 수정 이벤트 → 추천 재계산
-
-4.  **DDL 스크립트 작성 (DB-First 정책):**
-    - `member_recommendations`, `recommended_course_items` 테이블 생성 스크립트
-
-5.  **통합 테스트:**
-    - Controller → Service → Repository 전체 흐름 검증
-
-***
 
 ### 7. 주요 설계 원칙 준수 사항
 
@@ -263,22 +265,13 @@ public interface CourseMetaReader {
 }
 ```
 
-- 구현체 `CourseMetaReaderImpl`은 **아직 만들지 않았습니다.**
-- 이유:
-    - Course BC의 도메인/리포지토리/API 설계가 완전히 확정되지 않았고,
-    - 추천 BC에서는 **다른 BC의 내부 코드에 직접 의존하지 않기로 한 원칙**(느슨한 결합, MSA 대비)을 지키기 위해서입니다.
 
-***
 
 ### 2. 현재 추천 로직에서의 사용 방식
 
 - `RecommendationApplicationService`는 현재 `findByDifficulties(...)`를 호출하여 **후보군 전체를 가져오는 구조**입니다.
 - 앞으로는 **성능을 위해 "최신 100개"까지만 받아오는 형태로 개선**할 예정입니다.
-- 다만 지금은:
-    - **구현체가 없기 때문에 실제 DB 접근은 되지 않는 상태**이고,
-    - 인터페이스 수준에서만 설계가 되어 있습니다.
 
-***
 
 ### 3. 향후 해야 할 일 (후임자/유지보수 담당자에게)
 

@@ -1,6 +1,8 @@
 package com.lxp.enrollment.infrastructure.persistence.adapter;
 
 import com.lxp.enrollment.application.port.required.CancelEnrollmentPort;
+import com.lxp.enrollment.domain.exception.EnrollmentErrorCode;
+import com.lxp.enrollment.domain.exception.EnrollmentException;
 import com.lxp.enrollment.domain.model.Enrollment;
 import com.lxp.enrollment.infrastructure.persistence.entity.EnrollmentJpaEntity;
 import com.lxp.enrollment.infrastructure.persistence.repository.EnrollmentJpaRepository;
@@ -14,7 +16,7 @@ public class UpdateStateEnrollmentAdapter implements CancelEnrollmentPort {
 
     public Enrollment findById(long enrollmentId) {
         return enrollmentJpaRepository.findById(enrollmentId)
-                .orElseThrow(() -> new IllegalStateException("todo"))
+                .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.NOT_FOUND_ENROLLMENT))
                 .toDomain();
     }
 

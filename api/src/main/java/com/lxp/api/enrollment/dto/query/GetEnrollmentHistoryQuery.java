@@ -1,4 +1,4 @@
-package com.lxp.enrollment.application.port.provided.query;
+package com.lxp.api.enrollment.dto.query;
 
 public record GetEnrollmentHistoryQuery(
     String userId,

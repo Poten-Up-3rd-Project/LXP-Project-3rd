@@ -1,4 +1,4 @@
-package com.lxp.enrollment.application.port.provided.dto.result;
+package com.lxp.api.enrollment.dto.result;
 
 public record CancelCourseResult(
     long enrollmentId,

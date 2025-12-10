@@ -1,6 +1,6 @@
 package com.lxp.recommend.interfaces;
 
-import com.lxp.recommend.application.RecommendationApplicationService;
+import com.lxp.recommend.application.service.RecommendApplicationService;
 import com.lxp.recommend.application.dto.RecommendedCourseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecommendationController {
 
-    private final RecommendationApplicationService recommendationService;
+    private final RecommendApplicationService recommendationService;
 
     /**
      * 내 맞춤 추천 강좌 조회 (Top 10)

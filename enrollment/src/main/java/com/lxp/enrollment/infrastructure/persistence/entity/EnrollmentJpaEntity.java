@@ -8,9 +8,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "enrollment")
 public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -24,7 +21,7 @@ public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
 
     public static EnrollmentResult toResult(EnrollmentJpaEntity entity) {
         return new EnrollmentResult(
-                entity.id,
+                entity.getId(),
                 entity.state.toString(),
                 entity.userId,
                 entity.courseId

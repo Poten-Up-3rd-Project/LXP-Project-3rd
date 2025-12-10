@@ -12,6 +12,5 @@ public record CourseResult(
         String description,
         String difficulty, // JUNIOR, MIDDLE, SENIOR, EXPERT
         List<Long> tags
-
 ) {
 }

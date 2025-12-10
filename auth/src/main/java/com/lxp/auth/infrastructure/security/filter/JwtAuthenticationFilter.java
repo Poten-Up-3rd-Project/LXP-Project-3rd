@@ -37,8 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = authHeaderResolver.resolveToken(request);
 
-        log.info("token: {}", token);
-
         if (token != null && jwtTokenProvider.validateToken(token)) {
             if (revocationPolicy.isTokenBlacklisted(token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

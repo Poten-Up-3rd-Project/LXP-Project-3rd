@@ -1,10 +1,11 @@
-package com.lxp.auth.application.local.port.required.command;
+package com.lxp.api.user.port.dto.command;
 
 import com.lxp.common.application.cqrs.Command;
 
 import java.util.List;
 
-public record HandleUserRegisterCommand(
+public record UserRegisterCommand(
+    String userId,
     String email,
     String password,
     String name,

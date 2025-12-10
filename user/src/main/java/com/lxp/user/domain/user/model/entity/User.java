@@ -1,9 +1,9 @@
 package com.lxp.user.domain.user.model.entity;
 
 import com.lxp.common.domain.event.AggregateRoot;
+import com.lxp.common.enums.Level;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.profile.model.entity.UserProfile;
-import com.lxp.user.domain.profile.model.vo.LearnerLevel;
 import com.lxp.user.domain.user.model.vo.UserEmail;
 import com.lxp.user.domain.user.model.vo.UserName;
 import com.lxp.user.domain.user.model.vo.UserRole;
@@ -55,7 +55,7 @@ public class User extends AggregateRoot<UserId> {
         return new User(id, name, email, UserRole.ADMIN, UserStatus.ACTIVE, null, null);
     }
 
-    public void update(UserName name, LearnerLevel level, List<Long> tags, String job) {
+    public void update(UserName name, Level level, List<Long> tags, String job) {
         if (!isActive()) {
             return;
         }

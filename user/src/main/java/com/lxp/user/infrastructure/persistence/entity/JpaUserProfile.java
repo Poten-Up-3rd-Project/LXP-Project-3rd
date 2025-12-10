@@ -1,7 +1,7 @@
 package com.lxp.user.infrastructure.persistence.entity;
 
+import com.lxp.common.enums.Level;
 import com.lxp.common.infrastructure.persistence.BaseJpaEntity;
-import com.lxp.user.domain.profile.model.vo.LearnerLevel;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -40,7 +40,7 @@ public class JpaUserProfile extends BaseJpaEntity implements Persistable<Long> {
     @Setter
     @Column(name = "learner_level", nullable = false)
     @Enumerated(EnumType.STRING)
-    private LearnerLevel learnerLevel;
+    private Level level;
 
     @Setter
     @ElementCollection
@@ -60,9 +60,9 @@ public class JpaUserProfile extends BaseJpaEntity implements Persistable<Long> {
     private boolean isNew = true;
 
     @Builder
-    public JpaUserProfile(JpaUser user, LearnerLevel learnerLevel, List<Long> tags, String job) {
+    public JpaUserProfile(JpaUser user, Level level, List<Long> tags, String job) {
         this.user = user;
-        this.learnerLevel = learnerLevel;
+        this.level = level;
         this.tags = tags;
         this.job = job;
     }

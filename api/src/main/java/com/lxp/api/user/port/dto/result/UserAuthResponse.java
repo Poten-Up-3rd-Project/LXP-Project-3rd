@@ -1,7 +1,4 @@
-package com.lxp.user.application.port.api.dto;
 package com.lxp.api.user.port.dto.result;
-
-
 
 /**
  * auth에서 로그인 시 jwt 토큰에 role을 저장하기 위한 용도로 구현

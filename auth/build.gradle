@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation project(':common')
-    implementation project(':user')
+    implementation project(':api')
 
     //web
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'

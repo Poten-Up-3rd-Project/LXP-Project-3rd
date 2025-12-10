@@ -1,33 +1,38 @@
-//package com.lxp.auth.application.local.handler;
-//
-//import com.lxp.auth.application.local.port.required.command.HandleUserRegisterCommand;
-//import com.lxp.auth.domain.common.model.vo.UserId;
-//import com.lxp.user.application.command.UserSaveCommand;
-//import com.lxp.user.application.port.api.external.ExternalUserSavePort;
-//import org.springframework.stereotype.Component;
-//
-//@Component
-//public class UserSavePortHandler {
-//
-//    private final ExternalUserSavePort externalUserSavePort;
-//
-//    public UserSavePortHandler(ExternalUserSavePort externalUserSavePort) {
-//        this.externalUserSavePort = externalUserSavePort;
-//    }
-//
-//    public void handleUserRegister(UserId userId, HandleUserRegisterCommand command) {
-//        externalUserSavePort.saveUser(toSaveCommand(userId, command));
-//    }
-//
-//    private UserSaveCommand toSaveCommand(UserId userId, HandleUserRegisterCommand command) {
-//        return new UserSaveCommand(
-//            userId.value(),
-//            command.name(),
-//            command.email(),
-//            command.role(),
-//            command.tags(),
-//            command.learnerLevel(),
-//            command.job()
-//        );
-//    }
-//}
+package com.lxp.auth.application.local.handler;
+
+import com.lxp.api.user.port.dto.command.UserRegisterCommand;
+import com.lxp.api.user.port.dto.command.UserSaveCommand;
+import com.lxp.api.user.port.external.ExternalUserSavePort;
+import com.lxp.common.application.cqrs.CommandWithResultHandler;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+
+@Component
+public class UserSavePortHandler implements CommandWithResultHandler<UserRegisterCommand, Void> {
+
+    private final ExternalUserSavePort externalUserSavePort;
+
+    public UserSavePortHandler(ExternalUserSavePort externalUserSavePort) {
+        this.externalUserSavePort = externalUserSavePort;
+    }
+
+    @Override
+    public Void handle(UserRegisterCommand command) {
+        externalUserSavePort.saveUser(toSaveCommand(command));
+        return null;
+    }
+
+    private UserSaveCommand toSaveCommand(UserRegisterCommand command) {
+        return new UserSaveCommand(
+            UUID.fromString(command.userId()),
+            command.name(),
+            command.email(),
+            command.role(),
+            command.tags(),
+            command.learnerLevel(),
+            command.job()
+        );
+    }
+
+}

@@ -21,7 +21,7 @@ public class UserProfile {
         this.job = job;
     }
 
-    public static UserProfile create(UserId userId, LearnerLevel level, Tags tags, String job) {
+    public static UserProfile create(UserId userId, Level level, Tags tags, String job) {
         return new UserProfile(userId, level, tags, job);
     }
 

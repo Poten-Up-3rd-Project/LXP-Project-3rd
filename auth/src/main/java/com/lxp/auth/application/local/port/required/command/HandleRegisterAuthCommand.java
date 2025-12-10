@@ -1,17 +1,15 @@
-package com.lxp.api.user.port.dto.command;
+package com.lxp.auth.application.local.port.required.command;
 
 import com.lxp.common.application.cqrs.Command;
 
 import java.util.List;
-import java.util.UUID;
 
-public record UserSaveCommand(
-    UUID userId,
-    String name,
+public record HandleRegisterAuthCommand(
     String email,
+    String password,
+    String name,
     String role,
-
-    List<Long> Tags,
+    List<Long> tags,
     String level,
     String job
 ) implements Command {

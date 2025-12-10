@@ -1,6 +1,6 @@
 package com.lxp.auth.presentation.rest.local.dto.reqeust;
 
-import com.lxp.auth.application.local.port.required.command.HandleUserRegisterCommand;
+import com.lxp.auth.application.local.port.required.command.HandleRegisterAuthCommand;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ public record RegisterRequest(
     String job
 ) {
 
-    public HandleUserRegisterCommand toCommand() {
-        return new HandleUserRegisterCommand(
+    public HandleRegisterAuthCommand toCommand() {
+        return new HandleRegisterAuthCommand(
             this.email,
             this.password,
             this.name,

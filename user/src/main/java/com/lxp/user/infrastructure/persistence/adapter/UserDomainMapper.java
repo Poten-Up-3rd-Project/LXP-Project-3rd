@@ -55,18 +55,18 @@ public class UserDomainMapper {
 
     public JpaUserProfile toEntity(UserProfile profile) {
         return JpaUserProfile.builder()
-            .learnerLevel(profile.level())
+            .level(profile.level())
             .tags(profile.tags().values())
             .job(profile.job())
             .build();
     }
 
     public UserProfile toDomain(JpaUserProfile jpaProfile, UserId userId) {
-        return UserProfile.create(userId, jpaProfile.getLearnerLevel(), new Tags(jpaProfile.getTags()), jpaProfile.getJob());
+        return UserProfile.create(userId, jpaProfile.getLevel(), new Tags(jpaProfile.getTags()), jpaProfile.getJob());
     }
 
     public void updateProfileEntityFromDomain(UserProfile profile, JpaUserProfile existingEntity) {
-        existingEntity.setLearnerLevel(profile.level());
+        existingEntity.setLevel(profile.level());
         existingEntity.setJob(profile.job());
 
         List<Long> existingTags = existingEntity.getTags();

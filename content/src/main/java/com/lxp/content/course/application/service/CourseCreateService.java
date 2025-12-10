@@ -1,5 +1,6 @@
 package com.lxp.content.course.application.service;
 
+import com.lxp.common.application.port.out.DomainEventPublisher;
 import com.lxp.content.course.application.mapper.CourseResultMapper;
 import com.lxp.content.course.application.port.provided.dto.command.CourseCreateCommand;
 import com.lxp.content.course.application.port.provided.dto.result.CourseInfoResult;
@@ -18,6 +19,7 @@ public class CourseCreateService implements CourseCreateUseCase {
     private final CourseRepository courseRepository;
     private final CourseCreateDomainService courseCreateDomainService;
     private final CourseResultMapper resultMapper;
+    private final DomainEventPublisher domainEventPublisher;
     // TODO(userPort 포트주입)
 
     @Override
@@ -27,6 +29,8 @@ public class CourseCreateService implements CourseCreateUseCase {
                 courseCreateDomainService.create(command)
         );
 
-        return resultMapper.toResult(course);
+        course.getDomainEvents().forEach(domainEventPublisher::publish);
+        course.clearDomainEvents();
+        return resultMapper.toInfoResult(course);
     }
 }

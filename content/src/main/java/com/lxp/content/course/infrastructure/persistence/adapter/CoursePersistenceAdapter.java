@@ -8,6 +8,8 @@ import com.lxp.content.course.infrastructure.persistence.repository.CourseJpaRep
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class CoursePersistenceAdapter implements CourseRepository {
@@ -18,5 +20,11 @@ public class CoursePersistenceAdapter implements CourseRepository {
         CourseJpaEntity entity = mapper.toEntity(course);
         CourseJpaEntity savedEntity = jpaRepository.save(entity);
         return mapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<Course> findByUUID(String courseUUID) {
+        return jpaRepository.findByUuid(courseUUID)
+                .map(mapper::toDomain);
     }
 }

@@ -28,7 +28,7 @@ dependencies {
     implementation project(':content')
     implementation project(':enrollment')
     implementation project(':recommend')
-    implementation project(':skill')
+    implementation project(':api')
     implementation project(':tag')
     implementation project(':user')
 

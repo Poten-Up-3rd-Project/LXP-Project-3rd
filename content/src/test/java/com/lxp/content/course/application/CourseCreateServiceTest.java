@@ -2,16 +2,16 @@ package com.lxp.content.course.application;
 
 
 import com.lxp.common.application.port.out.DomainEventPublisher;
+import com.lxp.common.enums.Level;
 import com.lxp.content.course.application.mapper.CourseResultMapper;
-import com.lxp.content.course.application.port.provided.dto.command.CourseCreateCommand;
-import com.lxp.content.course.application.port.provided.dto.command.LectureCreateCommand;
-import com.lxp.content.course.application.port.provided.dto.result.CourseInfoResult;
+import com.lxp.api.content.course.port.dto.command.CourseCreateCommand;
+import com.lxp.api.content.course.port.dto.command.LectureCreateCommand;
+import com.lxp.api.content.course.port.dto.result.CourseInfoResult;
 import com.lxp.content.course.application.service.CourseCreateService;
 import com.lxp.content.course.domain.event.CourseCreatedEvent;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.model.collection.CourseSections;
 import com.lxp.content.course.domain.model.collection.CourseTags;
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
 import com.lxp.content.course.domain.model.id.CourseUUID;
 import com.lxp.content.course.domain.model.id.InstructorUUID;
 import com.lxp.content.course.domain.model.id.TagId;
@@ -77,7 +77,7 @@ public class CourseCreateServiceTest {
                 "https://example.com/thumbnail.jpg",
                 "테스트 강의",
                 "테스트 설명",
-                CourseDifficulty.JUNIOR,
+                Level.JUNIOR,
                 List.of(1L, 2L),
                 List.of(new CourseCreateCommand.SectionCreateCommand(
                         "섹션 1",
@@ -93,7 +93,7 @@ public class CourseCreateServiceTest {
                 "https://example.com/thumbnail.jpg",
                 "테스트 강의",
                 "테스트 설명",
-                CourseDifficulty.JUNIOR,
+                Level.JUNIOR,
                 CourseSections.empty(),
                 CourseTags.of(List.of(new TagId(1L)))
         );
@@ -107,7 +107,7 @@ public class CourseCreateServiceTest {
                 "https://example.com/thumbnail.jpg",
                 "테스트 강의",
                 "테스트 설명",
-                CourseDifficulty.JUNIOR,
+                Level.JUNIOR,
                 CourseSections.empty(),
                 CourseTags.of(List.of(new TagId(1L))),
                 Instant.now(),
@@ -124,7 +124,7 @@ public class CourseCreateServiceTest {
                 "https://example.com/thumbnail.jpg",
                 "테스트 설명",
                 3000L,
-                CourseDifficulty.JUNIOR,
+                Level.JUNIOR,
                 List.of(),
                 List.of(1L)
         );

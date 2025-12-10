@@ -1,10 +1,10 @@
 package com.lxp.content.course.domain.model;
 
 import com.lxp.common.domain.event.AggregateRoot;
+import com.lxp.common.enums.Level;
 import com.lxp.content.course.domain.event.CourseCreatedEvent;
 import com.lxp.content.course.domain.model.collection.CourseSections;
 import com.lxp.content.course.domain.model.collection.CourseTags;
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
 import com.lxp.content.course.domain.model.id.TagId;
 import com.lxp.content.course.domain.model.id.CourseUUID;
 import com.lxp.content.course.domain.model.id.LectureUUID;
@@ -26,7 +26,7 @@ public class Course extends AggregateRoot<CourseUUID> {
     private CourseTitle title;
     private CourseDescription description;
     private CourseSections sections;
-    private CourseDifficulty difficulty;
+    private Level difficulty;
     private CourseTags tags;
     private Instant createdAt;
     private Instant updatedAt;
@@ -38,7 +38,7 @@ public class Course extends AggregateRoot<CourseUUID> {
             String thumbnailUrl,
             CourseTitle title,
             CourseDescription description,
-            CourseDifficulty difficulty,
+            Level difficulty,
             CourseSections sections,
             CourseTags tags,
             Instant createdAt,
@@ -63,7 +63,7 @@ public class Course extends AggregateRoot<CourseUUID> {
             String thumbnailUrl,
             String title,
             String description,
-            CourseDifficulty difficulty,
+            Level difficulty,
             CourseSections sections,
             CourseTags tags)
     {
@@ -101,7 +101,7 @@ public class Course extends AggregateRoot<CourseUUID> {
             String thumbnailUrl,
             String title,
             String description,
-            CourseDifficulty difficulty,
+            Level difficulty,
             CourseSections sections,
             CourseTags tags,
             Instant createdAt,
@@ -131,7 +131,7 @@ public class Course extends AggregateRoot<CourseUUID> {
         this.description = CourseDescription.of(description);
     }
 
-    public void changeDifficulty(CourseDifficulty difficulty) {
+    public void changeDifficulty(Level difficulty) {
         this.difficulty = difficulty;
     }
 
@@ -198,7 +198,7 @@ public class Course extends AggregateRoot<CourseUUID> {
     public Long id() { return id; }
     public CourseTitle title() { return title; }
     public CourseDescription description() { return description; }
-    public CourseDifficulty difficulty() { return difficulty; }
+    public Level difficulty() { return difficulty; }
     public CourseSections sections() { return sections; }
     public String thumbnailUrl() { return thumbnailUrl; }
     public InstructorUUID instructorUUID() { return instructorUUID; }

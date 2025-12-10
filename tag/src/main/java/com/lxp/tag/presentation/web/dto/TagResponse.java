@@ -1,6 +1,6 @@
 package com.lxp.tag.presentation.web.dto;
 
-import com.lxp.tag.application.port.query.TagResult;
+import com.lxp.tag.application.port.provided.dto.result.TagResult;
 
 public record TagResponse(
         long tagId,

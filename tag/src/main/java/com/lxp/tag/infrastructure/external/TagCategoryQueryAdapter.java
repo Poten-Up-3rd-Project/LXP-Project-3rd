@@ -1,6 +1,6 @@
 package com.lxp.tag.infrastructure.external;
 
-import com.lxp.tag.application.port.query.CategoryResult;
+import com.lxp.tag.application.port.provided.dto.result.CategoryResult;
 import com.lxp.tag.application.port.required.TagCategoryQueryPort;
 import com.lxp.tag.infrastructure.persistence.jpa.TagCategoryJpaRepository;
 import com.lxp.tag.infrastructure.persistence.jpa.entity.TagCategoryJpaEntity;

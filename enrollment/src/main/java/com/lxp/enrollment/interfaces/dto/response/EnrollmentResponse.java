@@ -10,7 +10,7 @@ public record EnrollmentResponse(
     float totalProgress,
     String courseTitle,
     String courseDescription,
-    String courseDifficulty,
+    String courseLevel,
     List<TagResponse> tags
 ) {
 

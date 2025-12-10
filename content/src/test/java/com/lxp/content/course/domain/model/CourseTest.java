@@ -3,13 +3,13 @@ package com.lxp.content.course.domain.model;
 import com.lxp.content.course.domain.exception.CourseException;
 import com.lxp.content.course.domain.model.collection.CourseSections;
 import com.lxp.content.course.domain.model.collection.CourseTags;
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
 import com.lxp.content.course.domain.model.id.*;
 import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import com.lxp.common.enums.Level;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class CourseTest {
                 "thumbnail.png",
                 "Java 기초",
                 "자바 기초 강의입니다",
-                CourseDifficulty.JUNIOR,
+                Level.JUNIOR,
                 validSections,
                 validTags
         );
@@ -56,7 +56,7 @@ public class CourseTest {
             assertThat(course.instructorUUID().value()).isEqualTo("instructor-456");
             assertThat(course.title().value()).isEqualTo("Java 기초");
             assertThat(course.description().value()).isEqualTo("자바 기초 강의입니다");
-            assertThat(course.difficulty()).isEqualTo(CourseDifficulty.JUNIOR);
+            assertThat(course.difficulty()).isEqualTo(Level.JUNIOR);
             assertThat(course.sections().values()).hasSize(1);
         }
 
@@ -70,15 +70,15 @@ public class CourseTest {
                     null,
                     null,
                     "description",
-                    CourseDifficulty.JUNIOR,
+                    Level.JUNIOR,
                     validSections,
                     validTags
             )).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
-        @DisplayName("exception courseDifficulty is null")
-        void createCourseWithNullCourseDifficulty() {
+        @DisplayName("exception Level is null")
+        void createCourseWithNullLevel() {
             CourseUUID courseUUID = new CourseUUID("course-123");
             assertThatThrownBy(() -> Course.create(
                     courseUUID,
@@ -117,9 +117,9 @@ public class CourseTest {
         @Test
         @DisplayName("update difficulty")
         void changeDifficulty() {
-            course.changeDifficulty(CourseDifficulty.MIDDLE);
+            course.changeDifficulty(Level.MIDDLE);
 
-            assertThat(course.difficulty()).isEqualTo(CourseDifficulty.MIDDLE);
+            assertThat(course.difficulty()).isEqualTo(Level.MIDDLE);
         }
     }
 

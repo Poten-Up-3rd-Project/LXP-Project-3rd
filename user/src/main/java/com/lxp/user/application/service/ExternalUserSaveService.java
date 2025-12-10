@@ -1,7 +1,7 @@
 package com.lxp.user.application.service;
 
 import com.lxp.user.application.command.UserSaveCommand;
-import com.lxp.user.application.port.provided.external.ExternalUserSavePort;
+import com.lxp.user.application.port.api.external.ExternalUserSavePort;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.profile.exception.LearnerLevelNotFoundException;
 import com.lxp.user.domain.profile.model.entity.UserProfile;

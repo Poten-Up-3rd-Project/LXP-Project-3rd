@@ -3,7 +3,7 @@ package com.lxp.auth.application.local.handler;
 import com.lxp.auth.application.local.port.required.command.HandleUserRegisterCommand;
 import com.lxp.auth.domain.common.model.vo.UserId;
 import com.lxp.user.application.command.UserSaveCommand;
-import com.lxp.user.application.port.provided.external.ExternalUserSavePort;
+import com.lxp.user.application.port.api.external.ExternalUserSavePort;
 import org.springframework.stereotype.Component;
 
 @Component

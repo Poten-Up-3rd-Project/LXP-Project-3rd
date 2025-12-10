@@ -1,6 +1,6 @@
-package com.lxp.user.application.port.provided.external;
+package com.lxp.user.application.port.api.external;
 
-import com.lxp.user.application.port.provided.dto.UserAuthResponse;
+import com.lxp.user.application.port.api.dto.UserAuthResponse;
 
 import java.util.Optional;
 

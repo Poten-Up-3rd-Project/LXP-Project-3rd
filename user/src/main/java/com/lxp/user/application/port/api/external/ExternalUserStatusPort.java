@@ -1,4 +1,4 @@
-package com.lxp.user.application.port.provided.external;
+package com.lxp.user.application.port.api.external;
 
 import java.util.Optional;
 

@@ -3,8 +3,8 @@ package com.lxp.auth.application.local.handler;
 import com.lxp.auth.application.local.port.provided.command.HandleUserSearchCommand;
 import com.lxp.auth.application.local.port.required.command.HandleUserInfoCommand;
 import com.lxp.common.application.cqrs.CommandWithResultHandler;
-import com.lxp.user.application.port.provided.dto.UserAuthResponse;
-import com.lxp.user.application.port.provided.external.ExternalUserAuthPort;
+import com.lxp.user.application.port.api.dto.UserAuthResponse;
+import com.lxp.user.application.port.api.external.ExternalUserAuthPort;
 import org.springframework.stereotype.Component;
 
 @Component

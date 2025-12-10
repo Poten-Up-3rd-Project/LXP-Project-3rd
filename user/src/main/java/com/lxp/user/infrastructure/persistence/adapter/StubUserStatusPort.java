@@ -1,6 +1,6 @@
 package com.lxp.user.infrastructure.persistence.adapter;
 
-import com.lxp.user.application.port.provided.external.ExternalUserStatusPort;
+import com.lxp.user.application.port.api.external.ExternalUserStatusPort;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

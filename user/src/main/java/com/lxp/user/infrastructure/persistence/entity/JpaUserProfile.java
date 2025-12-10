@@ -12,12 +12,16 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +30,7 @@ import java.util.List;
 @Entity
 @Table(name = "user_profile")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class JpaUserProfile extends BaseJpaEntity {
+public class JpaUserProfile extends BaseJpaEntity implements Persistable<Long> {
 
     @Setter
     @OneToOne(fetch = FetchType.LAZY)
@@ -52,11 +56,25 @@ public class JpaUserProfile extends BaseJpaEntity {
     @Column(length = 50)
     private String job;
 
+    @Transient
+    private boolean isNew = true;
+
     @Builder
     public JpaUserProfile(JpaUser user, LearnerLevel learnerLevel, List<Long> tags, String job) {
         this.user = user;
         this.learnerLevel = learnerLevel;
         this.tags = tags;
         this.job = job;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    public void markNotNew() {
+        this.isNew = false;
     }
 }

@@ -10,10 +10,12 @@ import com.lxp.user.infrastructure.persistence.entity.JpaUserProfile;
 import com.lxp.user.infrastructure.persistence.repository.JpaUserProfileRepository;
 import com.lxp.user.infrastructure.persistence.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserPersistenceAdapter implements UserRepository {
@@ -55,12 +57,15 @@ public class UserPersistenceAdapter implements UserRepository {
 
     @Override
     public void save(User user) {
-        JpaUser jpaUser = jpaUserRepository.save(userDomainMapper.toEntity(user));
+        JpaUser entity = userDomainMapper.toEntity(user);
+        boolean isNew = entity.isNew();
+        JpaUser jpaUser = jpaUserRepository.save(entity);
 
-        if (jpaUser.isNew()) {
+        if (isNew) {
             JpaUserProfile jpaUserProfile = userDomainMapper.toEntity(user.profile());
             jpaUserProfile.setUser(jpaUser);
             jpaUserProfileRepository.save(jpaUserProfile);
+            return;
         }
 
         JpaUserProfile existingJpaUserProfile = jpaUserProfileRepository.findByUser(jpaUser)

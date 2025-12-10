@@ -1,5 +1,6 @@
 package com.lxp.enrollment.infrastructure.persistence.adapter;
 
+import com.lxp.enrollment.application.port.required.EnrollCoursePort;
 import com.lxp.enrollment.domain.model.Enrollment;
 import com.lxp.enrollment.infrastructure.persistence.entity.EnrollmentJpaEntity;
 import com.lxp.enrollment.infrastructure.persistence.repository.EnrollmentJpaRepository;
@@ -8,9 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class EnrollmentCommandAdapter {
+public class EnrollCourseAdapter implements EnrollCoursePort {
     private final EnrollmentJpaRepository enrollmentJpaRepository;
 
-    public void updateState(Enrollment enrollment) {
+    public void save(Enrollment enrollment) {
+        EnrollmentJpaEntity entity = EnrollmentJpaEntity.from(enrollment);
+        enrollmentJpaRepository.save(entity);
     }
 }

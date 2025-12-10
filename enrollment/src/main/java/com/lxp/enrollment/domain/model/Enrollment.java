@@ -73,4 +73,12 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
     public EnrollmentDate enrollmentDate() {
         return this.enrollmentDate;
     }
+
+    public String userId() {
+        return this.userId.toString();
+    }
+
+    public String courseId() {
+        return this.courseId.toString();
+    }
 }

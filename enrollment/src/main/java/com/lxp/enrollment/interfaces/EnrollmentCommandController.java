@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api-v1/enrollments")
 @RequiredArgsConstructor
 public class EnrollmentCommandController {
-//    private final EnrollCourseUseCase enrollCourseUseCase;
+    private final EnrollCourseUseCase enrollCourseUseCase;
 
-//    @PostMapping
-//    public ResponseEntity<EnrollCourseResponse> enrollCourse(@RequestBody EnrollCourseRequest request) {
-//        EnrollCourseResult result = enrollCourseUseCase.enroll(new EnrollCourseCommand(
-//                request.userId(),
-//                request.courseId()
-//        ));
-//        EnrollCourseResponse response = new EnrollCourseResponse(
-//                result.enrollmentId(),
-//                request.
-//        )
-//    }
+    @PostMapping
+    public ResponseEntity<EnrollCourseResponse> enrollCourse(@RequestBody EnrollCourseRequest request) {
+        EnrollCourseResult result = enrollCourseUseCase.enroll(new EnrollCourseCommand(
+                request.userId(),
+                request.courseId()
+        ));
+        EnrollCourseResponse response = new EnrollCourseResponse(
+                result.enrollmentId(),
+                result.state()
+        );
+        return ResponseEntity.ok(response);
+    }
 }

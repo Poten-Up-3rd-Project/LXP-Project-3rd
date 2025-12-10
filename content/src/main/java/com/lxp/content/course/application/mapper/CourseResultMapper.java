@@ -73,6 +73,7 @@ public class CourseResultMapper {
                 lecture.id(),
                 lecture.title(),
                 lecture.videoUrl(),
+                lecture.duration().seconds(),
                 lecture.order()
         );
     }

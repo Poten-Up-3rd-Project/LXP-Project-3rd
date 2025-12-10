@@ -29,6 +29,7 @@ public record CourseInfoResult(
                 Long lectureId,
                 String title,
                 String videoUrl,
+                Long durationOnSeconds,
                 int order
         ) { }
     }

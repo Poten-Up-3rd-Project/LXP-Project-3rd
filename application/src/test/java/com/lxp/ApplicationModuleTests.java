@@ -1,8 +1,7 @@
-package com.lxp.application;
+package com.lxp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
 
@@ -13,10 +12,9 @@ class ApplicationModuleTests {
      * 프로젝트의 모듈 구조가 Modulith 규칙을 준수하는지 검증합니다.
      */
     @Test
-    void verifyModularity() {
-        // ApplicationModules.of(Class<?>): Modulith가 컨텍스트에서 모듈을 찾기 시작하는 시작점을 지정합니다.
-        // 여기서는 auth 모듈의 설정 클래스를 사용하지만, 어떤 도메인 모듈의 설정 클래스를 사용해도 무방합니다.
-        ApplicationModules.of(MainApplication.class).verify();
+    void verifyModularStructure() {
+        ApplicationModules modules = ApplicationModules.of("com.lxp");
+        modules.verify();
     }
 
     /**

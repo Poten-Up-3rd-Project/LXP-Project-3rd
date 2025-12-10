@@ -35,7 +35,7 @@ dependencies {
 
     implementation 'org.springframework.modulith:spring-modulith-starter-jpa:2.0.0'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0'
     implementation 'io.swagger.parser.v3:swagger-parser:2.1.22'
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'  // Java 9+ 환경에서 누락된 JAXB (javax.xml.bind.*) API 제공

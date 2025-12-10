@@ -3,6 +3,7 @@ package com.lxp.tag.application.service;
 
 import com.lxp.api.tag.port.dto.result.CategoryResult;
 import com.lxp.api.tag.port.usecase.FindCategoryUseCase;
+import com.lxp.tag.application.port.dto.CategoryView;
 import com.lxp.tag.application.port.required.TagCategoryQueryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ public class TagCategoryQueryService implements FindCategoryUseCase {
 
     @Override
     public List<CategoryResult> findAll() {
-        return tagCategoryQueryPort.findAllWithTags();
+        return tagCategoryQueryPort.findAllWithTags()
+                .stream().map(CategoryView::from)
+                .toList();
     }
 }

@@ -1,6 +1,6 @@
 package com.lxp.tag.infrastructure.external;
 
-import com.lxp.api.tag.port.dto.result.TagResult;
+import com.lxp.tag.application.port.dto.TagView;
 import com.lxp.tag.application.port.required.TagQueryPort;
 import com.lxp.tag.infrastructure.persistence.jpa.TagJpaRepository;
 import com.lxp.tag.infrastructure.persistence.jpa.entity.TagJpaEntity;
@@ -15,24 +15,20 @@ import java.util.Optional;
 public class TagQueryAdapter implements TagQueryPort {
     private final TagJpaRepository tagJpaRepository;
 
-    //TODO("")
     @Override
-    public List<TagResult> findByIds(List<Long> ids) {
-//        return tagJpaRepository.findByIdIn(ids)
-//                .stream().map(TagJpaEntity::toResult)
-//                .toList();
-        return List.of();
+    public List<TagView> findByIds(List<Long> ids) {
+        return tagJpaRepository.findByIdIn(ids)
+                .stream().map(TagJpaEntity::from)
+                .toList();
     }
 
     @Override
-    public Optional<TagResult> findById(Long id) {
-        //return tagJpaRepository.findById(id).map(TagJpaEntity::toResult);
-        return Optional.empty();
+    public Optional<TagView> findById(Long id) {
+        return tagJpaRepository.findById(id).map(TagJpaEntity::from);
     }
 
     @Override
-    public Optional<TagResult> findIdByName(String name) {
-//        return tagJpaRepository.findByName(name).map(TagJpaEntity::toResult);
-        return Optional.empty();
+    public Optional<TagView> findIdByName(String name) {
+        return tagJpaRepository.findByName(name).map(TagJpaEntity::from);
     }
 }

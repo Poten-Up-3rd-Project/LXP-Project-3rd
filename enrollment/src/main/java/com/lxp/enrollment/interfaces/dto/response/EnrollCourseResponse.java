@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public record EnrollCourseResponse(
         long enrollmentId,
-        String state,
-        LocalDateTime enrolledAt
+        String state
 ) {
 }

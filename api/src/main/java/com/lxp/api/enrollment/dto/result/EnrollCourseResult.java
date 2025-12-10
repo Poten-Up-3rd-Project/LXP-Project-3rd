@@ -1,11 +1,8 @@
 package com.lxp.api.enrollment.dto.result;
 
-import java.time.LocalDateTime;
-
 public record EnrollCourseResult(
     long enrollmentId,
-    String state, // ENROLLED, COMPLETED, CANCELLED
-    LocalDateTime enrolledAt
+    String state // ENROLLED, COMPLETED, CANCELLED
 ) {
 
 }

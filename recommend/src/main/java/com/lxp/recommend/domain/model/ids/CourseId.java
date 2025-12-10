@@ -1,31 +1,32 @@
 package com.lxp.recommend.domain.model.ids;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
-public class CourseId implements Serializable {
+/**
+ * 강좌 식별자 값 객체 (Value Object)
+ * JPA 어노테이션 없음 - 순수 도메인 개념
+ */
+public class CourseId {
 
-    @Column(name = "course_id", nullable = false)
-    private String id; // Long -> String 변경 (UUID 수용)
+    private final String value;
 
-    protected CourseId() {}
-
-    public CourseId(String id) {
-        if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("CourseId cannot be null or blank");
-        }
-        this.id = id;
+    protected CourseId() {
+        this.value = null; // JPA 재구성용
     }
 
-    public static CourseId of(String id) {
-        return new CourseId(id);
+    public CourseId(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("CourseId cannot be null or blank");
+        }
+        this.value = value;
+    }
+
+    public static CourseId of(String value) {
+        return new CourseId(value);
     }
 
     public String getValue() {
-        return id;
+        return value;
     }
 
     @Override
@@ -33,16 +34,16 @@ public class CourseId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CourseId courseId = (CourseId) o;
-        return Objects.equals(id, courseId.id);
+        return Objects.equals(value, courseId.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(value);
     }
 
     @Override
     public String toString() {
-        return id;
+        return value;
     }
 }

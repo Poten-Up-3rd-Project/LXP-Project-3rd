@@ -1,6 +1,7 @@
 package com.lxp.tag.application.port.required;
 
-import com.lxp.tag.application.port.provided.dto.result.CategoryResult;
+
+import com.lxp.api.tag.port.dto.result.CategoryResult;
 
 import java.util.List;
 

@@ -1,7 +1,8 @@
 package com.lxp.tag.application.service;
 
-import com.lxp.tag.application.port.provided.usecase.FindCategoryUseCase;
-import com.lxp.tag.application.port.provided.dto.result.CategoryResult;
+
+import com.lxp.api.tag.port.dto.result.CategoryResult;
+import com.lxp.api.tag.port.usecase.FindCategoryUseCase;
 import com.lxp.tag.application.port.required.TagCategoryQueryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

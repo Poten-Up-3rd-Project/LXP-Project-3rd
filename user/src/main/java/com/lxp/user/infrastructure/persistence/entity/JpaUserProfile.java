@@ -33,7 +33,7 @@ public class JpaUserProfile extends BaseJpaEntity {
     @JoinColumn(name = "user_id")
     private JpaUser user;
 
-    @Column(name = "learner_leve", nullable = false)
+    @Column(name = "learner_level", nullable = false)
     @Enumerated(EnumType.STRING)
     private com.lxp.user.domain.profile.model.vo.LearnerLevel learnerLevel;
 

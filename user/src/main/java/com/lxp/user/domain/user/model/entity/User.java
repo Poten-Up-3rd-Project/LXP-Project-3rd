@@ -30,10 +30,10 @@ public class User extends AggregateRoot<UserId> {
     private LocalDateTime deletedAt;
 
     private User(UserId id, UserName name, UserEmail email, UserRole userRole, UserStatus userStatus, UserProfile userProfile, LocalDateTime deletedAt) {
-        this.id = Objects.requireNonNull(id);
-        this.name = Objects.requireNonNull(name);
-        this.email = Objects.requireNonNull(email);
-        this.role = Objects.requireNonNull(userRole);
+        this.id = Objects.requireNonNull(id, "userId는 null일 수 없습니다.");
+        this.name = Objects.requireNonNull(name, "userName은 null일 수 없습니다.");
+        this.email = Objects.requireNonNull(email, "userEmail은 null일 수 없습니다.");
+        this.role = Objects.requireNonNull(userRole, "userRole은 null일 수 없습니다.");
         this.userStatus = userStatus;
         this.userProfile = userProfile;
         this.deletedAt = deletedAt;
@@ -60,7 +60,7 @@ public class User extends AggregateRoot<UserId> {
             return;
         }
 
-        this.name = Objects.requireNonNull(name);
+        this.name = Objects.requireNonNull(name, "userName은 null일 수 없습니다.");
         this.userProfile.update(level, tags, job);
     }
 

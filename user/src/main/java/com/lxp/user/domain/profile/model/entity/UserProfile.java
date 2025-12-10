@@ -15,9 +15,9 @@ public class UserProfile {
     private String job;
 
     private UserProfile(UserId userId, LearnerLevel level, Tags tags, String job) {
-        this.userId = Objects.requireNonNull(userId);
-        this.level = Objects.requireNonNull(level);
-        this.tags = Objects.requireNonNull(tags);
+        this.userId = Objects.requireNonNull(userId, "userId는 null일 수 없습니다.");
+        this.level = Objects.requireNonNull(level, "level은 null일 수 없습니다.");
+        this.tags = Objects.requireNonNull(tags, "tags는 null일 수 없습니다.");
         this.job = job;
     }
 
@@ -28,7 +28,7 @@ public class UserProfile {
 
     //todo 추후 도메인 서비스에서 user가 활성화 상태인지 여부 체크
     public void update(LearnerLevel level, List<Long> tags, String job) {
-        this.level = Objects.requireNonNull(level);
+        this.level = Objects.requireNonNull(level, "level은 null일 수 없습니다.");
         this.tags = this.tags.withTags(tags);
         this.job = job;
     }

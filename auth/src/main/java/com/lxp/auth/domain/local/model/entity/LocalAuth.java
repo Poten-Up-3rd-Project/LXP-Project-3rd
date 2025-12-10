@@ -16,10 +16,10 @@ public class LocalAuth extends AggregateRoot<UserId> {
     private OffsetDateTime lastPasswordModifiedAt;
 
     private LocalAuth(UserId id, String loginIdentifier, HashedPassword hashedPassword, OffsetDateTime createdAt, OffsetDateTime lastPasswordModifiedAt) {
-        this.id = Objects.requireNonNull(id);
-        this.loginIdentifier = Objects.requireNonNull(loginIdentifier);
-        this.hashedPassword = Objects.requireNonNull(hashedPassword);
-        this.createdAt = Objects.requireNonNull(createdAt);
+        this.id = Objects.requireNonNull(id, "userId는 null일 수 없습니다.");
+        this.loginIdentifier = Objects.requireNonNull(loginIdentifier, "loginIdentifier는 null일 수 없습니다.");
+        this.hashedPassword = Objects.requireNonNull(hashedPassword, "hashedPassword는 null일 수 없습니다.");
+        this.createdAt = Objects.requireNonNull(createdAt, "createdAt은 null일 수 없습니다.");
         this.lastPasswordModifiedAt = lastPasswordModifiedAt;
     }
 

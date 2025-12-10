@@ -20,4 +20,6 @@ public interface UserRepository {
 
     void save(User user);
 
+    void deactivate(User user);
+
 }

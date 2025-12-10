@@ -10,6 +10,8 @@ import com.lxp.user.infrastructure.persistence.entity.JpaUser;
 import com.lxp.user.infrastructure.persistence.entity.JpaUserProfile;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserDomainMapper {
 
@@ -61,5 +63,14 @@ public class UserDomainMapper {
 
     public UserProfile toDomain(JpaUserProfile jpaProfile, UserId userId) {
         return UserProfile.create(userId, jpaProfile.getLearnerLevel(), new Tags(jpaProfile.getTags()), jpaProfile.getJob());
+    }
+
+    public void updateProfileEntityFromDomain(UserProfile profile, JpaUserProfile existingEntity) {
+        existingEntity.setLearnerLevel(profile.level());
+        existingEntity.setJob(profile.job());
+
+        List<Long> existingTags = existingEntity.getTags();
+        existingTags.clear();
+        existingTags.addAll(profile.tags().values());
     }
 }

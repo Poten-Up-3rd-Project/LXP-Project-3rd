@@ -33,10 +33,12 @@ public class JpaUserProfile extends BaseJpaEntity {
     @JoinColumn(name = "user_id")
     private JpaUser user;
 
+    @Setter
     @Column(name = "learner_level", nullable = false)
     @Enumerated(EnumType.STRING)
-    private com.lxp.user.domain.profile.model.vo.LearnerLevel learnerLevel;
+    private LearnerLevel learnerLevel;
 
+    @Setter
     @ElementCollection
     @CollectionTable(
         name = "profile_tags",
@@ -46,6 +48,7 @@ public class JpaUserProfile extends BaseJpaEntity {
     @Column(name = "tag_id")
     private List<Long> tags = new ArrayList<>();
 
+    @Setter
     @Column(length = 50)
     private String job;
 

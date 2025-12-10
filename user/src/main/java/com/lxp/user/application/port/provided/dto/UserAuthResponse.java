@@ -1,4 +1,4 @@
-package com.lxp.user.application.user.port.provided.dto;
+package com.lxp.user.application.port.provided.dto;
 
 import com.lxp.user.domain.user.model.entity.User;
 

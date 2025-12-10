@@ -1,6 +1,7 @@
 package com.lxp.user.infrastructure.persistence.adapter;
 
 import com.lxp.user.domain.common.model.vo.UserId;
+import com.lxp.user.domain.profile.exception.ProfileNotFoundException;
 import com.lxp.user.domain.user.model.entity.User;
 import com.lxp.user.domain.user.model.vo.UserStatus;
 import com.lxp.user.domain.user.repository.UserRepository;
@@ -56,9 +57,25 @@ public class UserPersistenceAdapter implements UserRepository {
     public void save(User user) {
         JpaUser jpaUser = jpaUserRepository.save(userDomainMapper.toEntity(user));
 
-        JpaUserProfile jpaUserProfile = userDomainMapper.toEntity(user.profile());
-        jpaUserProfile.setUser(jpaUser);
-        jpaUserProfileRepository.save(jpaUserProfile);
+        if (jpaUser.isNew()) {
+            JpaUserProfile jpaUserProfile = userDomainMapper.toEntity(user.profile());
+            jpaUserProfile.setUser(jpaUser);
+            jpaUserProfileRepository.save(jpaUserProfile);
+        }
+
+        JpaUserProfile existingJpaUserProfile = jpaUserProfileRepository.findByUser(jpaUser)
+            .orElseThrow(ProfileNotFoundException::new);
+
+        userDomainMapper.updateProfileEntityFromDomain(user.profile(), existingJpaUserProfile);
+        jpaUserProfileRepository.save(existingJpaUserProfile);
+    }
+
+    @Override
+    public void deactivate(User user) {
+        if (!user.isActive()) {
+            return;
+        }
+        jpaUserRepository.save(userDomainMapper.toEntity(user));
     }
 
 }

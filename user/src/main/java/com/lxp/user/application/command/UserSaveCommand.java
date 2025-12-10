@@ -1,4 +1,4 @@
-package com.lxp.user.application.user.command;
+package com.lxp.user.application.command;
 
 import com.lxp.common.application.cqrs.Command;
 

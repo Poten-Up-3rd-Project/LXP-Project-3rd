@@ -60,7 +60,7 @@ public class User extends AggregateRoot<UserId> {
             return;
         }
 
-        this.name = Objects.requireNonNull(name, "userName은 null일 수 없습니다.");
+        this.name = name == null ? this.name : name;
         this.userProfile.update(level, tags, job);
     }
 

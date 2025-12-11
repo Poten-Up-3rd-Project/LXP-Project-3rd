@@ -1,8 +1,8 @@
 package com.lxp.content.course.application.service;
 
 import com.lxp.content.course.application.mapper.CourseResultMapper;
-import com.lxp.content.course.application.port.provided.external.ExternalCourseSummaryPort;
-import com.lxp.content.course.application.port.provided.dto.result.CourseResult;
+import com.lxp.api.content.course.port.external.ExternalCourseSummaryPort;
+import com.lxp.api.content.course.port.dto.result.CourseResult;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)

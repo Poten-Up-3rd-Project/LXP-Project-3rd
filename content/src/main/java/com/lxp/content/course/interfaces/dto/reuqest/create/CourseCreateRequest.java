@@ -1,7 +1,6 @@
 package com.lxp.content.course.interfaces.dto.reuqest.create;
 
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
-
+import com.lxp.common.enums.Level;
 import java.util.List;
 
 //TODO("valid 체크 ")
@@ -10,7 +9,7 @@ public record CourseCreateRequest(
     String description,
     String instructorId,
     String thumbnailUrl,
-    CourseDifficulty level,
+    Level level,
     List<Long> tags,
     List<SectionCreateRequest> sections
 ) {

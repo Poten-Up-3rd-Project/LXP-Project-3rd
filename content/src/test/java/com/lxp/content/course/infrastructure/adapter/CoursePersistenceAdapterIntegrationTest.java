@@ -1,10 +1,10 @@
 package com.lxp.content.course.infrastructure.adapter;
 
+import com.lxp.common.enums.Level;
 import com.lxp.content.config.JpaTestConfig;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.model.collection.CourseSections;
 import com.lxp.content.course.domain.model.collection.CourseTags;
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
 import com.lxp.content.course.domain.model.id.CourseUUID;
 import com.lxp.content.course.domain.model.id.InstructorUUID;
 import com.lxp.content.course.domain.model.id.TagId;
@@ -51,7 +51,7 @@ public class CoursePersistenceAdapterIntegrationTest {
                 "https://example.com/thumbnail.jpg",
                 "통합 테스트 강의",
                 "통합 테스트 설명",
-                CourseDifficulty.JUNIOR,
+                Level.JUNIOR,
                 new CourseSections(Collections.emptyList()),
                 new CourseTags(List.of(new TagId(1L), new TagId(2L)))
         );

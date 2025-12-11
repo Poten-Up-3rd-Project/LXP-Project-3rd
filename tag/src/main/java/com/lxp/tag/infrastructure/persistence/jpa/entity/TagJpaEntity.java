@@ -1,6 +1,6 @@
 package com.lxp.tag.infrastructure.persistence.jpa.entity;
 
-import com.lxp.tag.application.port.query.TagResult;
+import com.lxp.tag.application.port.dto.TagView;
 import com.lxp.tag.infrastructure.persistence.jpa.enums.TagState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -33,8 +33,16 @@ public class TagJpaEntity {
     @JoinColumn(name = "category", nullable = false)
     private TagCategoryJpaEntity category;
 
-    public static TagResult toResult(TagJpaEntity entity) {
-        return new TagResult(
+    public TagJpaEntity(String name, String color, String variant, TagState state, TagCategoryJpaEntity category) {
+        this.name = name;
+        this.color = color;
+        this.variant = variant;
+        this.state = state;
+        this.category = category;
+    }
+
+    public static TagView from(TagJpaEntity entity) {
+        return new TagView(
                 entity.id,
                 entity.name,
                 entity.state.toString(),

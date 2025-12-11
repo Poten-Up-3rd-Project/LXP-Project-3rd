@@ -1,5 +1,6 @@
 package com.lxp.user.application.service;
 
+import com.lxp.common.enums.Level;
 import com.lxp.user.application.port.required.command.ExecuteUpdateUserCommand;
 import com.lxp.user.application.port.required.dto.UserInfoDto;
 import com.lxp.user.application.port.required.usecase.UpdateUserProfileUseCase;
@@ -7,7 +8,6 @@ import com.lxp.user.domain.common.exception.UserInactiveException;
 import com.lxp.user.domain.common.exception.UserNotFoundException;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.profile.model.entity.UserProfile;
-import com.lxp.user.domain.profile.model.vo.LearnerLevel;
 import com.lxp.user.domain.user.model.entity.User;
 import com.lxp.user.domain.user.model.vo.UserName;
 import com.lxp.user.domain.user.repository.UserRepository;
@@ -33,7 +33,7 @@ public class UpdateUserService implements UpdateUserProfileUseCase {
         }
 
         UserName userName = command.name() == null ? null : UserName.of(command.name());
-        LearnerLevel learnerLevel = LearnerLevel.fromString(command.level()).orElseGet(null);
+        Level learnerLevel = Level.valueOf(command.level());
 
         user.update(userName, learnerLevel, command.tags(), command.job());
 

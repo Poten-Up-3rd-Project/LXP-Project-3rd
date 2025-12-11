@@ -1,8 +1,8 @@
 package com.lxp.user.domain.user.model.entity;
 
+import com.lxp.common.enums.Level;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.profile.model.entity.UserProfile;
-import com.lxp.user.domain.profile.model.vo.LearnerLevel;
 import com.lxp.user.domain.profile.model.vo.Tags;
 import com.lxp.user.domain.user.model.vo.UserEmail;
 import com.lxp.user.domain.user.model.vo.UserName;
@@ -27,7 +27,7 @@ class UserTest {
     private UserName initialName;
     private UserEmail userEmail;
     private UserProfile initialProfile;
-    private LearnerLevel initialLevel;
+    private Level initialLevel;
     private Tags initialTags;
     private String initialJob;
 
@@ -38,7 +38,7 @@ class UserTest {
         userEmail = new UserEmail("initial@example.com");
 
         // 💡 UserProfile 초기화에 필요한 데이터 설정
-        initialLevel = LearnerLevel.MIDDLE;
+        initialLevel = Level.MIDDLE;
         initialTags = new Tags(List.of(1L, 2L, 3L));
         initialJob = "Engineer";
 
@@ -121,7 +121,7 @@ class UserTest {
         // given
         User learner = User.createLearner(userId, initialName, userEmail, initialProfile);
         UserName newName = new UserName("new");
-        LearnerLevel newLevel = LearnerLevel.EXPERT;
+        Level newLevel = Level.EXPERT;
         List<Long> newTags = List.of(99L, 100L, 33L);
         String newJob = "CTO";
 
@@ -145,7 +145,7 @@ class UserTest {
         learner.withdraw(); // DELETED 상태로 변경
 
         UserName newName = new UserName("new");
-        LearnerLevel newLevel = LearnerLevel.EXPERT;
+        Level newLevel = Level.EXPERT;
 
         // when
         learner.update(newName, newLevel, List.of(), "CTO");

@@ -1,8 +1,8 @@
 package com.lxp.content.course.infrastructure.event.handler;
 
+import com.lxp.common.enums.Level;
 import com.lxp.common.event.integration.CourseCreatedIntegrationEvent;
 import com.lxp.content.course.domain.event.CourseCreatedEvent;
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
 import com.lxp.content.course.infrastructure.event.integration.CourseIntegrationEventPublisher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ public class CourseCreatedEventHandlerTest {
                 "테스트 강의",
                 "설명",
                 "https://thumbnail.url",
-                CourseDifficulty.JUNIOR,
+                Level.JUNIOR,
                 List.of(1L, 2L)
         );
 

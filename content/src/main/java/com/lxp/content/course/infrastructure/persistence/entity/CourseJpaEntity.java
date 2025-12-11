@@ -1,7 +1,7 @@
 package com.lxp.content.course.infrastructure.persistence.entity;
 
+import com.lxp.common.enums.Level;
 import com.lxp.common.infrastructure.persistence.BaseVersionedJpaEntity;
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -55,7 +55,7 @@ public class CourseJpaEntity extends BaseVersionedJpaEntity {
 
     @Getter
     @Enumerated(EnumType.STRING)
-    private CourseDifficulty difficulty;
+    private Level difficulty;
 
     @Getter
     @ElementCollection
@@ -71,7 +71,7 @@ public class CourseJpaEntity extends BaseVersionedJpaEntity {
     @Builder
     public CourseJpaEntity(String uuid, String instructorUUID, String title,
                            String description, String thumbnailUrl,
-                           CourseDifficulty difficulty, List<Long> tags) {
+                           Level difficulty, List<Long> tags) {
         this.uuid = uuid;
         this.instructorUUID = instructorUUID;
         this.title = title;

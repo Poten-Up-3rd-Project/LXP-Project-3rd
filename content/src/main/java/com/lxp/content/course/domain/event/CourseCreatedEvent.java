@@ -1,7 +1,7 @@
 package com.lxp.content.course.domain.event;
 
 import com.lxp.common.domain.event.BaseDomainEvent;
-import com.lxp.content.course.domain.model.enums.CourseDifficulty;
+import com.lxp.common.enums.Level;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,10 +14,10 @@ public class CourseCreatedEvent extends BaseDomainEvent {
     private final String title;
     private final String description;
     private final String thumbnailUrl;
-    private final CourseDifficulty difficulty;
+    private final Level difficulty;
     private final List<Long> tagIds;
 
-    public CourseCreatedEvent(String courseUuid, String instructorUuid, String title, String description, String thumbnailUrl, CourseDifficulty difficulty, List<Long> tagIds) {
+    public CourseCreatedEvent(String courseUuid, String instructorUuid, String title, String description, String thumbnailUrl, Level difficulty, List<Long> tagIds) {
         super(courseUuid);
         this.instructorUuid = instructorUuid;
         this.title = title;
@@ -27,7 +27,7 @@ public class CourseCreatedEvent extends BaseDomainEvent {
         this.tagIds = tagIds;
     }
 
-    public CourseCreatedEvent(String eventId, LocalDateTime occurredAt, String courseUuid, String instructorUuid, String title, String description, String thumbnailUrl, CourseDifficulty difficulty, List<Long> tagIds) {
+    public CourseCreatedEvent(String eventId, LocalDateTime occurredAt, String courseUuid, String instructorUuid, String title, String description, String thumbnailUrl, Level difficulty, List<Long> tagIds) {
         super(eventId, courseUuid, occurredAt);
         this.instructorUuid = instructorUuid;
         this.title = title;

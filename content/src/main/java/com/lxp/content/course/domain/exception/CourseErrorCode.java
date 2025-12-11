@@ -23,6 +23,8 @@ public enum CourseErrorCode implements ErrorCode {
     TAG_DUPLICATE("COURSE_011", "Duplicate tag", "CONFLICT"),
     // 1개 이상 5개 이하 제약조건
     TAG_VIOLATION("COURSE_012", "Course must have at least one tag and at most five tags", "BAD_REQUEST"),
+
+    INVALID_INSTRUCTOR("COURSE_013", "Invalid instructor", "BAD_REQUEST")
     ;
 
     private final String code;

@@ -16,6 +16,10 @@ public class CourseException extends DomainException {
         super(errorCode, message, cause);
     }
 
+    public static CourseException InvalidInstructorException() {
+        return new CourseException(CourseErrorCode.INVALID_INSTRUCTOR);
+    }
+
     public static CourseException sectionMinCountViolation() {
         return new CourseException(CourseErrorCode.SECTION_MIN_COUNT_VIOLATION);
     }

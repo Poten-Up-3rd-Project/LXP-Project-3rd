@@ -7,6 +7,8 @@ import com.lxp.content.course.application.mapper.CourseResultMapper;
 import com.lxp.api.content.course.port.dto.command.CourseCreateCommand;
 import com.lxp.api.content.course.port.dto.command.LectureCreateCommand;
 import com.lxp.api.content.course.port.dto.result.CourseInfoResult;
+import com.lxp.content.course.application.port.required.UserQueryPort;
+import com.lxp.content.course.application.port.required.dto.InstructorInfo;
 import com.lxp.content.course.application.service.CourseCreateService;
 import com.lxp.content.course.domain.event.CourseCreatedEvent;
 import com.lxp.content.course.domain.model.Course;
@@ -46,6 +48,9 @@ public class CourseCreateServiceTest {
     @Mock
     private DomainEventPublisher domainEventPublisher;
 
+    @Mock
+    private UserQueryPort userQueryPort;
+
     @InjectMocks
     private CourseCreateService courseCreateService;
 
@@ -59,16 +64,28 @@ public class CourseCreateServiceTest {
         CourseCreateCommand command = createCommand();
         Course course = createCourseWithEvent();  // 이벤트 포함
         CourseInfoResult expectedResult = createExpectedResult();
+        InstructorInfo instructorInfo = createInstructorInfo();
 
-        when(courseCreateDomainService.create(command)).thenReturn(course);
+
+        when(courseCreateDomainService.create(command,instructorInfo)).thenReturn(course);
         when(courseRepository.save(course)).thenReturn(course);
         when(resultMapper.toInfoResult(course)).thenReturn(expectedResult);
-
+        when(userQueryPort.getInstructorInfo(command.instructorId())).thenReturn(instructorInfo);  // 추가
+        when(courseCreateDomainService.create(command, instructorInfo)).thenReturn(course);
         // When
         courseCreateService.handle(command);
 
         // Then
         verify(domainEventPublisher, times(1)).publish(any(CourseCreatedEvent.class));
+    }
+
+    private InstructorInfo createInstructorInfo() {
+        return new InstructorInfo(
+                "instructor-uuid",
+                "강사 이름",
+                "INSTRUCTOR",
+               "JUNIOR"
+        );
     }
 
     private CourseCreateCommand createCommand() {

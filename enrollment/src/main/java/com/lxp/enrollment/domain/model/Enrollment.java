@@ -19,6 +19,14 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
 
     private Enrollment() {}
 
+    private Enrollment(EnrollmentId enrollmentId, EnrollmentState state, UserId userId, CourseId courseId, EnrollmentDate enrollmentDate) {
+        this.enrollmentId = enrollmentId;
+        this.state = state;
+        this.userId = userId;
+        this.courseId = courseId;
+        this.enrollmentDate = enrollmentDate;
+    }
+
     @Override
     public EnrollmentId getId() {
         return this.enrollmentId;
@@ -29,6 +37,22 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         this.userId = userId;
         this.courseId = courseId;
         this.enrollmentDate = new EnrollmentDate(LocalDateTime.now());
+    }
+
+    public static Enrollment reconstruct(
+            long enrollmentId,
+            String state,
+            String userId,
+            String courseId,
+            LocalDateTime createdAt
+    ) {
+        return new Enrollment(
+                new EnrollmentId(enrollmentId),
+                EnrollmentState.valueOf(state),
+                new UserId(userId),
+                new CourseId(courseId),
+                new EnrollmentDate(createdAt)
+        );
     }
 
     public static Enrollment create(UserId userId, CourseId courseId) {
@@ -68,6 +92,14 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
 
     public EnrollmentState state() {
         return this.state;
+    }
+
+    public String userId() {
+        return this.userId.value();
+    }
+
+    public String courseId() {
+        return this.courseId.value();
     }
 
     public EnrollmentDate enrollmentDate() {

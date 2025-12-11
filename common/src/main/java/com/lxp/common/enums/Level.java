@@ -11,4 +11,9 @@ public enum Level {
     Level(String description) {
         this.description = description;
     }
+
+    public String description() {
+        return description;
+    }
+
 }

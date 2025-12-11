@@ -1,6 +1,5 @@
 package com.lxp.api.user.port.dto.result;
 
-
 import java.util.List;
 
 public record UserInfoResponse(
@@ -12,7 +11,6 @@ public record UserInfoResponse(
 ) {
 
     public record ProfileDto(
-        String profileId,
         List<Long> tags,
         String level,
         String job

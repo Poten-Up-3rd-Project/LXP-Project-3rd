@@ -2,10 +2,12 @@ package com.lxp.api.user.port.external;
 
 import com.lxp.api.user.port.dto.result.UserAuthResponse;
 
+import java.util.Optional;
+
 public interface ExternalUserAuthPort {
 
-    UserAuthResponse userAuth(String userId);
+    Optional<UserAuthResponse> userAuth(String userId);
 
-    UserAuthResponse getUserInfoByEmail(String email);
+    Optional<UserAuthResponse> getUserInfoByEmail(String email);
 
 }

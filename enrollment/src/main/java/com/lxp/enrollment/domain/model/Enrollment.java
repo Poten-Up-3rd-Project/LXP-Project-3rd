@@ -16,15 +16,17 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
     private UserId userId;
     private CourseId courseId;
     private EnrollmentDate enrollmentDate;
+    private String cancelReason;
 
     private Enrollment() {}
 
-    private Enrollment(EnrollmentId enrollmentId, EnrollmentState state, UserId userId, CourseId courseId, EnrollmentDate enrollmentDate) {
+    private Enrollment(EnrollmentId enrollmentId, EnrollmentState state, UserId userId, CourseId courseId, EnrollmentDate enrollmentDate, String cancelReason) {
         this.enrollmentId = enrollmentId;
         this.state = state;
         this.userId = userId;
         this.courseId = courseId;
         this.enrollmentDate = enrollmentDate;
+        this.cancelReason = cancelReason;
     }
 
     @Override
@@ -44,14 +46,16 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
             String state,
             String userId,
             String courseId,
-            LocalDateTime createdAt
+            LocalDateTime createdAt,
+            String cancelReason
     ) {
         return new Enrollment(
                 new EnrollmentId(enrollmentId),
                 EnrollmentState.valueOf(state),
                 new UserId(userId),
                 new CourseId(courseId),
-                new EnrollmentDate(createdAt)
+                new EnrollmentDate(createdAt),
+                cancelReason
         );
     }
 
@@ -72,7 +76,7 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         this.state = EnrollmentState.COMPLETED;
     }
 
-    public void cancel(LocalDateTime now) {
+    public void cancel(LocalDateTime now, String cancelReason) {
         Objects.requireNonNull(now, "now must not be null");
 
         if (this.state == EnrollmentState.CANCELLED) {
@@ -88,6 +92,7 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         }
 
         this.state = EnrollmentState.CANCELLED;
+        this.cancelReason = cancelReason;
     }
 
     public EnrollmentState state() {
@@ -104,5 +109,9 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
 
     public EnrollmentDate enrollmentDate() {
         return this.enrollmentDate;
+    }
+
+    public String cancelReason() {
+        return this.cancelReason;
     }
 }

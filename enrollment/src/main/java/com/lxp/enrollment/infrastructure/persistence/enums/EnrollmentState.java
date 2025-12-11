@@ -3,7 +3,7 @@ package com.lxp.enrollment.infrastructure.persistence.enums;
 import java.util.Arrays;
 
 public enum EnrollmentState {
-    ENROLLED, COMPLETED, CANCELED;
+    ENROLLED, COMPLETED, CANCELLED;
 
     public static EnrollmentState from(String val) {
         return Arrays.stream(values())

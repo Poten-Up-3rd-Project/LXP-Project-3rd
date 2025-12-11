@@ -14,8 +14,10 @@ import com.lxp.enrollment.domain.model.vo.CourseId;
 import com.lxp.enrollment.domain.model.vo.UserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class EnrollCourseService implements EnrollCourseUseCase {
     private final EnrollCoursePort enrollCoursePort;

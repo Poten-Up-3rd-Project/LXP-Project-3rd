@@ -6,6 +6,7 @@ import com.lxp.enrollment.infrastructure.persistence.enums.EnrollmentState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Table(name = "enrollment")
@@ -22,10 +23,14 @@ public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
     @Column(nullable = false)
     private String courseId;
 
-    private EnrollmentJpaEntity(EnrollmentState state, String userId, String courseId) {
+    @Column(name = "reason")
+    private String cancelReason;
+
+    private EnrollmentJpaEntity(EnrollmentState state, String userId, String courseId, String cancelReason) {
         this.state = state;
         this.userId = userId;
         this.courseId = courseId;
+        this.cancelReason = cancelReason;
     }
 
 //    public static EnrollmentResult toResult(EnrollmentJpaEntity entity) {
@@ -39,13 +44,14 @@ public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
 //
     public static EnrollmentJpaEntity from(Enrollment enrollment) {
         return new EnrollmentJpaEntity(
-                EnrollmentState.valueOf(enrollment.state().toString()),
+                EnrollmentState.from(enrollment.state().toString()),
                 enrollment.userId(),
-                enrollment.courseId()
+                enrollment.courseId(),
+                enrollment.cancelReason()
         );
     }
 
     public Enrollment toDomain() {
-        return Enrollment.reconstruct(this.getId(), this.state.toString(), this.userId, this.courseId, this.getCreatedAt());
+        return Enrollment.reconstruct(this.getId(), this.state.toString(), this.userId, this.courseId, this.getCreatedAt(), this.cancelReason);
     }
 }

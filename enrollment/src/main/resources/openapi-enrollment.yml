@@ -132,11 +132,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
   # 진행률 API
-  /enrollments/progress/{courseId}:
+  /api/vi/enrollments/progress/{courseId}:
     get:
       tags:
         - Enrollment
       summary: 강의 진행률 조회
+      description: 로그인 된 사용자의 수강중인 강의의 전체 진행률을 조회합니다.
       parameters:
         - name: courseId
           in: path
@@ -151,19 +152,59 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProgressResponse'
         '404':
-          description: 강의를 찾을 수 없음
+          description: 수강정보를 찾을 수 없음
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    example: "COURSE_NOT_FOUND"
-                  message:
-                    type: string
-                    example: "강의를 찾을 수 없습니다."
-                    # 오류 메시지 예시(Domain 오류 뽑으면 정의하기)
+                $ref: '#/components/schemas/EnrollmentNotFoundResponse'
+
+  /api/v1/enrollments/progress/{courseId}/{lectureId}:
+    post:
+      tags:
+        - Enrollment
+      summary: 강의 내 강좌 진행도 처리
+      description: 로그인 된 사용자가 수강중인 강의 내 특정 강좌 진행 정도를 업데이트 합니다. 전부 봤을시에는 완료 처리 됩니다.
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: lectureId
+          in: path
+          required: true
+          schema:
+            type: string
+            in: path
+            required: true
+            schema:
+              type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lastPlayedTime:
+                  type: string
+                  description: 마지막 강좌 진행 시간
+                  example: true
+      responses:
+        '200':
+          description: 성공
+        '400':
+          description: 잘못된 요청(이미 완료 된 강의 / 전체 강의 시간 초과 요청)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IlligalLectureProgressRequestError'
+        '404':
+          description: 강좌 내 강의진행 정보를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LectureProgressNotFoundError'
 components:
   schemas:
     # ==================== Request ====================
@@ -392,3 +433,34 @@ components:
               type: number
               format: float
               description: 진행률 (0.0 ~ 100.0)
+      description: 진행률 응답 객체
+
+    EnrollmentNotFoundResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "ENROLLMENT_NOT_FOUND"
+        message:
+          type: string
+          example: "수강 정보를 찾을 수 없습니다."
+
+    LectureProgressNotFoundError:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "LECTURE_PROGRESS_NOT_FOUND"
+        message:
+          type: string
+          example: "강의 진행 정보를 찾을 수 없습니다."
+
+    IlligalLectureProgressRequestError:
+        type: object
+        properties:
+          code:
+            type: string
+            example: "ILLEGAL_LECTURE_PROGRESS_REQUEST"
+          message:
+            type: string
+            example: "잘못된 강의 진행 요청입니다."

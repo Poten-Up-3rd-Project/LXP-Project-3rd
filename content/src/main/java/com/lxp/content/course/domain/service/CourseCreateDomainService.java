@@ -5,6 +5,8 @@ import com.lxp.common.domain.policy.BusinessRuleValidator;
 import com.lxp.common.util.UUIdGenerator;
 import com.lxp.api.content.course.port.dto.command.CourseCreateCommand;
 import com.lxp.api.content.course.port.dto.command.LectureCreateCommand;
+import com.lxp.content.course.application.port.required.dto.InstructorInfo;
+import com.lxp.content.course.domain.exception.CourseException;
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.model.Lecture;
 import com.lxp.content.course.domain.model.Section;
@@ -20,15 +22,17 @@ import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
 import com.lxp.content.course.domain.policy.SectionMinCountRule;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @DomainService
 public class CourseCreateDomainService {
 
-    // 추후 user Active 인지 확인 로직 추가
-    // user가 강사인지 확인작업
-    public Course create(CourseCreateCommand command){
+    public Course create(CourseCreateCommand command, InstructorInfo instructor) {
+
+        validateInstructorInfo(instructor);
+
         Course course =  Course.create(
                 new CourseUUID(UUIdGenerator.createString()),
                 new InstructorUUID(command.instructorId()),
@@ -91,5 +95,14 @@ public class CourseCreateDomainService {
                         .map(TagId::new)
                         .toList()
         );
+    }
+
+    private void validateInstructorInfo(InstructorInfo instructor) {
+        if (!Objects.equals(instructor.status(), "ACTIVE")) {
+            throw CourseException.InvalidInstructorException();
+        }
+        if (!Objects.equals(instructor.role(), "INSTRUCTOR")) {
+            throw CourseException.InvalidInstructorException();
+        }
     }
 }

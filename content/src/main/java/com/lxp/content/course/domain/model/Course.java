@@ -204,6 +204,7 @@ public class Course extends AggregateRoot<CourseUUID> {
     public InstructorUUID instructorUUID() { return instructorUUID; }
     public Instant createdAt() { return createdAt; }
     public Instant updatedAt() { return updatedAt; }
+    public Level level() { return difficulty; }
 
     public CourseDuration totalDuration() {
         return sections.totalDuration();

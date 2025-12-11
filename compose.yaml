@@ -8,13 +8,20 @@ services:
       - 'MYSQL_USER=lxp'
     ports:
       - '3307:3306'
+
   redis:
-    image: 'redis:7-alpine'
+    image: redis:7-alpine
     ports:
       - '6379:6379'
-    command: redis-server --appendonly yes
     volumes:
       - redis-data:/data
+      - ./boot/seed.redis:/data/seed.redis
+    command: >
+      sh -c "redis-server --appendonly yes &
+             sleep 2 &&
+             redis-cli < /data/seed.redis &&
+             echo 'Seed loaded' &&
+             wait"
 
 volumes:
   redis-data:

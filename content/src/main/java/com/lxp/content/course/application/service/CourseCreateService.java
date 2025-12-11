@@ -1,5 +1,7 @@
 package com.lxp.content.course.application.service;
 
+import com.lxp.api.tag.port.dto.result.TagResult;
+import com.lxp.api.tag.port.external.TagCachePort;
 import com.lxp.common.application.port.out.DomainEventPublisher;
 import com.lxp.content.course.application.mapper.CourseResultMapper;
 import com.lxp.api.content.course.port.dto.command.CourseCreateCommand;
@@ -11,6 +13,9 @@ import com.lxp.content.course.domain.service.CourseCreateDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional

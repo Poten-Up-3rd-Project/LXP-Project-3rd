@@ -2,7 +2,6 @@ spring:
   docker:
     compose:
       enabled: true
-      file: "application/compose.yaml"
   modulith:
     events:
       jdbc-schema-initialization:
@@ -10,7 +9,7 @@ spring:
         platform: mysql
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

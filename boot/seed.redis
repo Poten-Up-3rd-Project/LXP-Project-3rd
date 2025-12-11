@@ -1,0 +1,15 @@
+SET tag:id:1 "{\"tagId\":1,\"name\":\"Spring\",\"color\":\"green\",\"variant\":\"SOLID\",\"state\":\"ACTIVE\"}"
+SET tag:id:2 "{\"tagId\":2,\"name\":\"DDD\",\"color\":\"blue\",\"variant\":\"SOLID\",\"state\":\"ACTIVE\"}"
+SET tag:id:3 "{\"tagId\":3,\"name\":\"Redis\",\"color\":\"red\",\"variant\":\"SOLID\",\"state\":\"ACTIVE\"}"
+
+SET tag:name:spring "1"
+SET tag:name:ddd "2"
+SET tag:name:redis "3"
+
+EXPIRE tag:id:1 86400
+EXPIRE tag:id:2 86400
+EXPIRE tag:id:3 86400
+
+EXPIRE tag:name:spring 86400
+EXPIRE tag:name:ddd 86400
+EXPIRE tag:name:redis 86400

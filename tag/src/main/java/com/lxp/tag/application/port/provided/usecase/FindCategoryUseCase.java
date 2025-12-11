@@ -1,4 +1,4 @@
-package com.lxp.api.tag.port.usecase;
+package com.lxp.tag.application.port.provided.usecase;
 
 import com.lxp.api.tag.port.dto.result.CategoryResult;
 

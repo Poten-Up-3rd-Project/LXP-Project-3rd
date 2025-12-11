@@ -12,12 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -163,7 +158,7 @@ class UserProfileTest {
     void update_ShouldMaintainCurrentJobWhenJobIsNull() {
         // given
         String initialJob = "Initial Job";
-        UserProfile userProfile = UserProfile.create(userId, initialLevel, initialTags, initialJob);
+        UserProfile userProfile = UserProfile.create(userId, initialLevel, initialTags, null);
         Level newLevel = Level.EXPERT;
         List<Long> tags = Arrays.asList(1L);
 
@@ -178,16 +173,14 @@ class UserProfileTest {
     @DisplayName("Getter 메소드 검증")
     void getters_ShouldReturnCorrectValues() {
         // when
-        UserProfile userProfile = UserProfile.create(userProfileId, userId, initialLevel, initialTags, initialJob);
+        UserProfile userProfile = UserProfile.create(userId, initialLevel, initialTags, initialJob);
 
         // then
         assertAll(
-            () -> assertEquals(userProfileId, userProfile.id(), "id()는 정확한 UserProfileId를 반환해야 합니다."),
             () -> assertEquals(userId, userProfile.userId(), "userId()는 정확한 UserId를 반환해야 합니다."),
             () -> assertEquals(initialLevel, userProfile.level(), "level()은 정확한 LearnerLevel을 반환해야 합니다."),
             () -> assertEquals(initialTags, userProfile.tags(), "tags()는 정확한 Tags를 반환해야 합니다."),
-            () -> assertEquals(initialJob, userProfile.job(), "job()은 정확한 job을 반환해야 합니다."),
-            () -> assertEquals(userProfileId, userProfile.getId(), "getId()는 정확한 UserProfileId를 반환해야 합니다.")
+            () -> assertEquals(initialJob, userProfile.job(), "job()은 정확한 job을 반환해야 합니다.")
         );
     }
 }

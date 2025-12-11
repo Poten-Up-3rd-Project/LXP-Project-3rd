@@ -14,6 +14,8 @@ public class Tag extends AggregateRoot<TagId> {
     private TagCategoryId tagCategoryId;
     private String name;
     private TagState state;
+    private String color;
+    private String variant;
 
     private Tag() {}
 
@@ -22,16 +24,20 @@ public class Tag extends AggregateRoot<TagId> {
         return this.tagId;
     }
 
-    private Tag(TagCategoryId tagCategoryId, String name, TagState state) {
+    private Tag(TagCategoryId tagCategoryId, String name, TagState state, String color, String variant) {
         this.tagCategoryId = tagCategoryId;
         this.name = name;
         this.state = state;
+        this.color = color;
+        this.variant = variant;
     }
 
-    public static Tag create(TagCategoryId tagCategoryId, String name) {
+    public static Tag create(TagCategoryId tagCategoryId, String name, String color, String variant) {
         Objects.requireNonNull(name, "name must not be null");
         Objects.requireNonNull(tagCategoryId, "tagCategoryId must not be null");
-        return new Tag(tagCategoryId, name, TagState.ACTIVE);
+        Objects.requireNonNull(color, "color must not be null");
+        Objects.requireNonNull(variant, "variant must not be null");
+        return new Tag(tagCategoryId, name, TagState.ACTIVE, color, variant);
     }
 
     public void changeCategory(TagCategoryId tagCategoryId) {
@@ -64,5 +70,12 @@ public class Tag extends AggregateRoot<TagId> {
 
     public boolean isActive() {
         return this.state == TagState.ACTIVE;
+    }
+
+    public String color() {
+        return this.color;
+    }
+    public String variant() {
+        return this.variant;
     }
 }

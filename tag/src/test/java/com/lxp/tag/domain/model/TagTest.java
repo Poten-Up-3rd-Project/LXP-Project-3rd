@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TagTest {
 
     public Tag tag(String name) {
-        return Tag.create(new TagCategoryId(1L), "java");
+        return Tag.create(new TagCategoryId(1L), "java", "blue", "light");
     }
 
     @Test
@@ -36,7 +36,7 @@ class TagTest {
         String name = null;
         // when
         NullPointerException exception = assertThrows(NullPointerException.class,
-                () -> Tag.create(tagCategoryId, null));
+                () -> Tag.create(tagCategoryId, null, "blue", "light"));
 
         // then
         assertEquals("name must not be null", exception.getMessage());

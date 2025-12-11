@@ -31,7 +31,6 @@ public class TagCategoryJpaEntity {
     )
     private List<TagJpaEntity> tags = new ArrayList<>();
 
-
     public static CategoryView from(TagCategoryJpaEntity entity) {
         return new CategoryView(
                 entity.id,

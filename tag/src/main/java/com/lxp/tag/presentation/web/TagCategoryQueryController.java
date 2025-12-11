@@ -1,6 +1,6 @@
 package com.lxp.tag.presentation.web;
 
-import com.lxp.api.tag.port.usecase.FindCategoryUseCase;
+import com.lxp.tag.application.port.provided.usecase.FindCategoryUseCase;
 import com.lxp.tag.presentation.web.dto.TagCategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

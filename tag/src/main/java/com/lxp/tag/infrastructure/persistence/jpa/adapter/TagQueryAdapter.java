@@ -1,4 +1,4 @@
-package com.lxp.tag.infrastructure.external;
+package com.lxp.tag.infrastructure.persistence.jpa.adapter;
 
 import com.lxp.tag.application.port.dto.TagView;
 import com.lxp.tag.application.port.required.TagQueryPort;

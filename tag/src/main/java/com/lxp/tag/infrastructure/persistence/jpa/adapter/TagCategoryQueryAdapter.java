@@ -1,4 +1,4 @@
-package com.lxp.tag.infrastructure.external;
+package com.lxp.tag.infrastructure.persistence.jpa.adapter;
 
 import com.lxp.tag.application.port.dto.CategoryView;
 import com.lxp.tag.application.port.required.TagCategoryQueryPort;
@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -19,5 +20,10 @@ public class TagCategoryQueryAdapter implements TagCategoryQueryPort {
         return tagCategoryJpaRepository.findAllWithTags()
                 .stream().map(TagCategoryJpaEntity::from)
                 .toList();
+    }
+
+    @Override
+    public Optional<CategoryView> findById(Long id) {
+        return tagCategoryJpaRepository.findById(id).map(TagCategoryJpaEntity::from);
     }
 }

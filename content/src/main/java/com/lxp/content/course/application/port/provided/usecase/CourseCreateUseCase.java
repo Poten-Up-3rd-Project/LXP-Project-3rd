@@ -1,4 +1,4 @@
-package com.lxp.api.content.course.port.usecase;
+package com.lxp.content.course.application.port.provided.usecase;
 
 import com.lxp.common.application.cqrs.CommandWithResultHandler;
 import com.lxp.api.content.course.port.dto.command.CourseCreateCommand;

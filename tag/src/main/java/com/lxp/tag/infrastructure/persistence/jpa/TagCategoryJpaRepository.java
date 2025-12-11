@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+
 public interface TagCategoryJpaRepository extends JpaRepository<TagCategoryJpaEntity, Long> {
     @Query("""
         select distinct c

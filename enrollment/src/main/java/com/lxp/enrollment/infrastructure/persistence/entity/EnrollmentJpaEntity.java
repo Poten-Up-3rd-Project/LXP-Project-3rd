@@ -6,12 +6,13 @@ import com.lxp.enrollment.infrastructure.persistence.enums.EnrollmentState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
 
 @Entity
 @Table(name = "enrollment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
+    @Column(nullable = false, unique = true)
+    private String uuid;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -26,24 +27,17 @@ public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
     @Column(name = "reason")
     private String cancelReason;
 
-    private EnrollmentJpaEntity(EnrollmentState state, String userId, String courseId, String cancelReason) {
+    private EnrollmentJpaEntity(String uuid, EnrollmentState state, String userId, String courseId, String cancelReason) {
+        this.uuid = uuid;
         this.state = state;
         this.userId = userId;
         this.courseId = courseId;
         this.cancelReason = cancelReason;
     }
 
-//    public static EnrollmentResult toResult(EnrollmentJpaEntity entity) {
-//        return new EnrollmentResult(
-//                entity.getId(),
-//                entity.state.toString(),
-//                entity.userId,
-//                entity.courseId
-//        );
-//    }
-//
     public static EnrollmentJpaEntity from(Enrollment enrollment) {
         return new EnrollmentJpaEntity(
+                enrollment.enrollmentUUID(),
                 EnrollmentState.from(enrollment.state().toString()),
                 enrollment.userId(),
                 enrollment.courseId(),
@@ -52,6 +46,6 @@ public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
     }
 
     public Enrollment toDomain() {
-        return Enrollment.reconstruct(this.getId(), this.state.toString(), this.userId, this.courseId, this.getCreatedAt(), this.cancelReason);
+        return Enrollment.reconstruct(this.uuid, this.getId(), this.state.toString(), this.userId, this.courseId, this.getCreatedAt(), this.cancelReason);
     }
 }

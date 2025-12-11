@@ -2,6 +2,7 @@ package com.lxp.enrollment.application.service;
 
 import com.lxp.api.content.course.port.external.ExternalCourseInfoPort;
 import com.lxp.api.user.port.external.ExternalUserStatusPort;
+import com.lxp.common.application.port.out.DomainEventPublisher;
 import com.lxp.enrollment.application.port.provided.dto.command.EnrollCourseCommand;
 import com.lxp.enrollment.application.port.provided.dto.enums.UserStatus;
 import com.lxp.enrollment.application.port.provided.dto.result.EnrollCourseResult;
@@ -23,6 +24,7 @@ public class EnrollCourseService implements EnrollCourseUseCase {
     private final EnrollCoursePort enrollCoursePort;
     private final ExternalUserStatusPort externalUserStatusPort;
     private final ExternalCourseInfoPort externalCourseInfoPort;
+    private final DomainEventPublisher domainEventPublisher;
 
     public EnrollCourseResult enroll(EnrollCourseCommand command) {
 
@@ -32,7 +34,8 @@ public class EnrollCourseService implements EnrollCourseUseCase {
             throw new EnrollmentException(EnrollmentErrorCode.INVALID_USER_ENROLL_FAIL);
         }
 
-        externalCourseInfoPort.getCourseInfo(command.courseId()) // 존재 여부만 판별 할 수 있는 port가 없어서 해당 port 사용됨
+        // Course 존재 여부 판단
+        externalCourseInfoPort.getCourseInfo(command.courseId())
                 .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.INVALID_COURSE_ENROLL_FAIL));
 
         Enrollment enrollment = Enrollment.create(
@@ -41,6 +44,8 @@ public class EnrollCourseService implements EnrollCourseUseCase {
         );
 
         Enrollment saved = enrollCoursePort.save(enrollment);
+        enrollment.getDomainEvents().forEach(domainEventPublisher::publish);
+        enrollment.clearDomainEvents();
 
         return new EnrollCourseResult(
                 saved.getId().value(),

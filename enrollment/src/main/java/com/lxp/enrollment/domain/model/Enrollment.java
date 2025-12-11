@@ -1,16 +1,17 @@
 package com.lxp.enrollment.domain.model;
 
 import com.lxp.common.domain.event.AggregateRoot;
+import com.lxp.common.util.UUIdGenerator;
+import com.lxp.enrollment.domain.event.CancelEnrollmentEvent;
+import com.lxp.enrollment.domain.event.EnrollmentCreatedEvent;
 import com.lxp.enrollment.domain.model.enums.EnrollmentState;
-import com.lxp.enrollment.domain.model.vo.CourseId;
-import com.lxp.enrollment.domain.model.vo.EnrollmentDate;
-import com.lxp.enrollment.domain.model.vo.EnrollmentId;
-import com.lxp.enrollment.domain.model.vo.UserId;
+import com.lxp.enrollment.domain.model.vo.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Enrollment extends AggregateRoot<EnrollmentId> {
+    private EnrollmentUUID enrollmentUUID;
     private EnrollmentId enrollmentId;
     private EnrollmentState state;
     private UserId userId;
@@ -20,7 +21,8 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
 
     private Enrollment() {}
 
-    private Enrollment(EnrollmentId enrollmentId, EnrollmentState state, UserId userId, CourseId courseId, EnrollmentDate enrollmentDate, String cancelReason) {
+    private Enrollment(EnrollmentUUID enrollmentUUID, EnrollmentId enrollmentId, EnrollmentState state, UserId userId, CourseId courseId, EnrollmentDate enrollmentDate, String cancelReason) {
+        this.enrollmentUUID = enrollmentUUID;
         this.enrollmentId = enrollmentId;
         this.state = state;
         this.userId = userId;
@@ -34,7 +36,8 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         return this.enrollmentId;
     }
 
-    private Enrollment(EnrollmentState state, UserId userId, CourseId courseId) {
+    private Enrollment(EnrollmentUUID enrollmentUUID, EnrollmentState state, UserId userId, CourseId courseId) {
+        this.enrollmentUUID = enrollmentUUID;
         this.state = state;
         this.userId = userId;
         this.courseId = courseId;
@@ -42,6 +45,7 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
     }
 
     public static Enrollment reconstruct(
+            String enrollmentUUID,
             long enrollmentId,
             String state,
             String userId,
@@ -50,6 +54,7 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
             String cancelReason
     ) {
         return new Enrollment(
+                new EnrollmentUUID(enrollmentUUID),
                 new EnrollmentId(enrollmentId),
                 EnrollmentState.valueOf(state),
                 new UserId(userId),
@@ -59,10 +64,23 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         );
     }
 
-    public static Enrollment create(UserId userId, CourseId courseId) {
+    public static Enrollment create(
+            UserId userId,
+            CourseId courseId
+    ) {
         Objects.requireNonNull(userId, "UserId must not be null");
         Objects.requireNonNull(courseId, "CourseId must not be null");
-        return new Enrollment(EnrollmentState.ENROLLED, userId, courseId);
+
+        EnrollmentUUID enrollmentUUID = new EnrollmentUUID(UUIdGenerator.createString());
+        Enrollment enrollment = new Enrollment(enrollmentUUID, EnrollmentState.ENROLLED, userId, courseId);
+
+        enrollment.registerEvent(new EnrollmentCreatedEvent(
+                enrollmentUUID.value(),
+                courseId.value(),
+                userId.value()
+        ));
+
+        return enrollment;
     }
 
     public void complete() {
@@ -93,10 +111,16 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
 
         this.state = EnrollmentState.CANCELLED;
         this.cancelReason = cancelReason;
+
+        registerEvent(new CancelEnrollmentEvent(enrollmentUUID.value(), userId.value(), courseId.value()));
     }
 
     public EnrollmentState state() {
         return this.state;
+    }
+
+    public String enrollmentUUID() {
+        return this.enrollmentUUID.value();
     }
 
     public String userId() {

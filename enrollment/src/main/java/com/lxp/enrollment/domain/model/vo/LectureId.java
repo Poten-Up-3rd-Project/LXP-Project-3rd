@@ -6,4 +6,8 @@ public record LectureId (String value) {
             throw new IllegalArgumentException("LectureId cannot be null and blank");
         }
     }
+
+    public static LectureId from(String value) {
+        return new LectureId(value);
+    }
 }

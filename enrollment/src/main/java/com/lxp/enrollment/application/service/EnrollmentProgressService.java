@@ -40,7 +40,7 @@ public class EnrollmentProgressService {
         courseProgress.updateProgress(lectureId);
 
         if(courseProgress.isCompleted()) {
-            domainEventPublisher.publish(ProgressCompletedEvent.of(courseProgress));
+            domainEventPublisher.publish(ProgressCompletedEvent.of(courseProgress.getId(), userId, courseId));
         }
     }
 

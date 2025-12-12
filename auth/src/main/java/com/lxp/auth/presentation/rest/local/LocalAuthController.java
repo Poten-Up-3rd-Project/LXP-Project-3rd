@@ -1,11 +1,10 @@
 package com.lxp.auth.presentation.rest.local;
 
-import com.lxp.auth.application.local.port.required.command.HandleLogoutCommand;
-import com.lxp.auth.application.local.port.required.dto.AuthTokenInfo;
-import com.lxp.auth.application.local.port.required.usecase.AuthenticateUserUseCase;
-import com.lxp.auth.application.local.port.required.usecase.LogoutUserUseCase;
-import com.lxp.auth.application.local.port.required.usecase.RegisterUserUseCase;
-import com.lxp.auth.domain.common.policy.JwtPolicy;
+import com.lxp.auth.application.local.port.provided.usecase.AuthenticateUserUseCase;
+import com.lxp.auth.application.local.port.provided.usecase.LogoutUserUseCase;
+import com.lxp.auth.application.local.port.provided.usecase.RegisterUserUseCase;
+import com.lxp.auth.application.local.port.provided.command.HandleLogoutCommand;
+import com.lxp.auth.domain.common.model.vo.AuthTokenInfo;
 import com.lxp.auth.infrastructure.security.adapter.AuthHeaderResolver;
 import com.lxp.auth.presentation.rest.local.dto.reqeust.LoginRequest;
 import com.lxp.auth.presentation.rest.local.dto.reqeust.RegisterRequest;
@@ -30,7 +29,6 @@ public class LocalAuthController {
     private final RegisterUserUseCase registerUserUseCase;
     private final LogoutUserUseCase logoutUserUseCase;
     private final AuthHeaderResolver authHeaderResolver;
-    private final JwtPolicy jwtPolicy;
 
     @PostMapping("/login")
     public ApiResponse<Void> login(@RequestBody LoginRequest request, HttpServletResponse response) {
@@ -57,16 +55,12 @@ public class LocalAuthController {
     @PostMapping("/logout")
     public ApiResponse<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         String token = authHeaderResolver.resolveToken(request);
-
         if (token == null) {
             return ApiResponse.success();
         }
 
-        long expirationTimeMillis = jwtPolicy.getExpirationTimeMillis(token);
-        long currentTimeMillis = System.currentTimeMillis();
-        long remainingSeconds = (expirationTimeMillis - currentTimeMillis) / 1000;
+        logoutUserUseCase.execute(new HandleLogoutCommand(token));
 
-        logoutUserUseCase.execute(new HandleLogoutCommand(token, remainingSeconds));
         deleteCookie(response);
         return ApiResponse.success();
     }

@@ -1,6 +1,6 @@
 package com.lxp.auth.infrastructure.security.jwt;
 
-import com.lxp.auth.application.local.port.required.dto.AuthTokenInfo;
+import com.lxp.auth.domain.common.model.vo.AuthTokenInfo;
 import com.lxp.auth.domain.common.exception.InvalidTokenException;
 import com.lxp.auth.domain.common.exception.JwtAuthException;
 import com.lxp.auth.domain.common.model.vo.TokenClaims;
@@ -117,8 +117,7 @@ public class JwtTokenProvider implements JwtPolicy {
             // 서명 오류, 토큰 형식 오류 등은 예외 처리
             throw new InvalidTokenException("Invalid JWT signature or format.");
         } catch (Exception e) {
-            // 기타 모든 파싱 오류 (IllegalArgumentException 등)
-            throw new InvalidTokenException("Invalid or unsupported JWT.");
+            return null;
         }
     }
 }

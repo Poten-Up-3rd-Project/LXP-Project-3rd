@@ -7,6 +7,7 @@ import com.lxp.common.infrastructure.exception.ApiResponse;
 import com.lxp.user.application.port.required.command.ExecuteSearchUserCommand;
 import com.lxp.user.application.port.required.command.ExecuteUpdateUserCommand;
 import com.lxp.user.application.port.required.command.ExecuteWithdrawUserCommand;
+import com.lxp.user.application.port.required.command.UpdateUserRoleCommand;
 import com.lxp.user.application.port.required.dto.UserInfoDto;
 import com.lxp.user.application.port.required.usecase.SearchUserProfileUseCase;
 import com.lxp.user.application.port.required.usecase.UpdateUserProfileUseCase;
@@ -60,9 +61,10 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ROLE_LEARNER')")
     @PutMapping("/role")
-    public ApiResponse<Void> updateUserToInstructor(@CurrentUserId String userId, HttpServletResponse response) {
-        AuthenticationResponse execute = updateUserRoleUseCase.execute(userId);
-        ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, "")
+    public ApiResponse<Void> updateUserToInstructor(@CurrentUserId String userId, HttpServletRequest request, HttpServletResponse response) {
+        String token = getCookie(request);
+        AuthenticationResponse execute = updateUserRoleUseCase.execute(new UpdateUserRoleCommand(userId, token));
+        ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, execute.accessToken())
             .httpOnly(CookieConstants.HTTP_ONLY)
             .secure(true)
             .path(CookieConstants.DEFAULT_PATH)

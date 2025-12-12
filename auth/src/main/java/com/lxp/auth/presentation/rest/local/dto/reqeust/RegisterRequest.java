@@ -1,6 +1,6 @@
 package com.lxp.auth.presentation.rest.local.dto.reqeust;
 
-import com.lxp.auth.application.local.port.required.command.HandleRegisterAuthCommand;
+import com.lxp.auth.application.local.port.provided.command.HandleRegisterAuthCommand;
 
 import java.util.List;
 

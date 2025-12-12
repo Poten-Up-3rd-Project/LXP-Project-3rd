@@ -1,31 +1,28 @@
 package com.lxp.auth.application.local.service;
 
 import com.lxp.api.user.port.dto.command.UserRegisterCommand;
-import com.lxp.auth.application.local.port.required.adapter.UserSavePortHandler;
-import com.lxp.auth.application.local.port.required.command.HandleRegisterAuthCommand;
-import com.lxp.auth.application.local.port.required.usecase.RegisterUserUseCase;
+import com.lxp.auth.application.local.port.provided.command.HandleRegisterAuthCommand;
+import com.lxp.auth.application.local.port.provided.usecase.RegisterUserUseCase;
+import com.lxp.auth.application.local.port.required.UserSavePort;
+import com.lxp.auth.application.local.port.required.dto.UserRegistrationInfo;
 import com.lxp.auth.domain.local.model.entity.LocalAuth;
 import com.lxp.auth.domain.local.model.vo.HashedPassword;
 import com.lxp.auth.domain.local.policy.PasswordPolicy;
 import com.lxp.auth.domain.local.repository.LocalAuthRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class LocalRegisterService implements RegisterUserUseCase {
 
     private final LocalAuthRepository localAuthRepository;
     private final PasswordPolicy passwordPolicy;
-    private final UserSavePortHandler userSavePortHandler;
-
-    public LocalRegisterService(LocalAuthRepository localAuthRepository,
-                                PasswordPolicy passwordPolicy,
-                                UserSavePortHandler userSavePortHandler) {
-        this.localAuthRepository = localAuthRepository;
-        this.passwordPolicy = passwordPolicy;
-        this.userSavePortHandler = userSavePortHandler;
-    }
+    private final UserSavePort userSavePort;
 
     @Override
     public Void execute(HandleRegisterAuthCommand command) {
@@ -35,11 +32,10 @@ public class LocalRegisterService implements RegisterUserUseCase {
         LocalAuth register = LocalAuth.register(command.email(), hashedPassword);
         localAuthRepository.save(register);
 
-        userSavePortHandler.handle(new UserRegisterCommand(
-            register.userId().asString(),
-            command.email(),
-            command.password(),
+        userSavePort.save(new UserRegistrationInfo(
+            register.userId().value(),
             command.name(),
+            command.email(),
             command.role(),
             command.tags(),
             command.level(),

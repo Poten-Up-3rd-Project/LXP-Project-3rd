@@ -16,13 +16,7 @@ public class ExternalUserWithdrawService implements ExternalUserWithdrawPort {
 
     @Override
     public void invalidate(UserWithdrawCommand command) {
-        long expirationTimeMillis = jwtPolicy.getExpirationTimeMillis(command.accessToken());
-        long remainingSeconds = 0;
-        long nowMillis = System.currentTimeMillis();
-
-        if (expirationTimeMillis > nowMillis) {
-            remainingSeconds = (expirationTimeMillis - nowMillis) / 1000;
-        }
+        long remainingSeconds = jwtPolicy.getRemainingSeconds(command.accessToken());
 
         if (remainingSeconds > 0) {
             tokenRevocationPolicy.revokeAccessToken(command.accessToken(), remainingSeconds);

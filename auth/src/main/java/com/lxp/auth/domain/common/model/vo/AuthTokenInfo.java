@@ -1,4 +1,4 @@
-package com.lxp.auth.application.local.port.required.dto;
+package com.lxp.auth.domain.common.model.vo;
 
 public record AuthTokenInfo(String accessToken, long expiresIn) {
 }

@@ -39,8 +39,8 @@ public class EnrollmentJpaEntity extends BaseVersionedJpaEntity {
         return new EnrollmentJpaEntity(
                 enrollment.enrollmentUUID(),
                 EnrollmentState.from(enrollment.state().toString()),
-                enrollment.userId(),
-                enrollment.courseId(),
+                enrollment.userId().value(),
+                enrollment.courseId().value(),
                 enrollment.cancelReason()
         );
     }

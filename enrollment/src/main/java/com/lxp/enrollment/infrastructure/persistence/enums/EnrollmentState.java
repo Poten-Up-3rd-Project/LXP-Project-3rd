@@ -9,6 +9,6 @@ public enum EnrollmentState {
         return Arrays.stream(values())
                 .filter(type -> type.name().equals(val))
                 .findAny()
-                .orElse(null);
+                .orElse(ENROLLED);
     }
 }

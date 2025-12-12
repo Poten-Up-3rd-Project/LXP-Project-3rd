@@ -115,6 +115,10 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         registerEvent(new CancelEnrollmentEvent(enrollmentUUID.value(), userId.value(), courseId.value()));
     }
 
+    public EnrollmentId enrollmentId() {
+        return this.enrollmentId;
+    }
+
     public EnrollmentState state() {
         return this.state;
     }
@@ -123,12 +127,12 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         return this.enrollmentUUID.value();
     }
 
-    public String userId() {
-        return this.userId.value();
+    public UserId userId() {
+        return this.userId;
     }
 
-    public String courseId() {
-        return this.courseId.value();
+    public CourseId courseId() {
+        return this.courseId;
     }
 
     public EnrollmentDate enrollmentDate() {

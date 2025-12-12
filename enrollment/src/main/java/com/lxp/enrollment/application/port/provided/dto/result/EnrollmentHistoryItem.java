@@ -1,4 +1,4 @@
-package com.lxp.api.enrollment.dto.result;
+package com.lxp.enrollment.application.port.provided.dto.result;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +11,8 @@ public record EnrollmentHistoryItem(
     float totalProgress,
     String courseTitle,
     String courseDescription,
-    List<TagResult> level,
+    String level,
+    List<TagResult> tags,
     LocalDateTime enrolledAt
 ) {
 

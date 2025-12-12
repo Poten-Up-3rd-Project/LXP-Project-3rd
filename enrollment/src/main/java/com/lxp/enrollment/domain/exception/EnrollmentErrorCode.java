@@ -10,6 +10,9 @@ public enum EnrollmentErrorCode implements ErrorCode {
     INVALID_USER_ENROLL_FAIL("ENROLLMENT_005", "유효하지 않은 사용자는 수강 신청을 할 수 없습니다", "BAD_REQUEST"),
     INVALID_COURSE_ENROLL_FAIL("ENROLLMENT_006", "유효하지 않은 강의는 수강 신청을 할 수 없습니다", "BAD_REQUEST"),
     INVALID_USER_STATUS("ENROLLMENT_007", "잘 못된 사용자 상태 값입니다.", "BAD_REQUEST"),
+    INVALID_USER("ENROLLMENT_008", "유효하지 않은 사용자 입니다", "BAD_REQUEST"),
+    ERROR_PARSING_ENROLLMENT("ENROLLMENT_009", "강의 정보를 가져오는데 실패 했습니다", "NOT_FOUND"),
+    ERROR_PARSING_PROGRESS("ENROLLMENT_010", "수강률 정보를 가져오는데 실패 했습니다", "NOT_FOUND"),
     ;
 
     private final String code;

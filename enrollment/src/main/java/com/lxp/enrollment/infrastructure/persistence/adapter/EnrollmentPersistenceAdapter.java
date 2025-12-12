@@ -1,10 +1,14 @@
 package com.lxp.enrollment.infrastructure.persistence.adapter;
 
+import com.lxp.common.domain.pagination.Page;
+import com.lxp.common.domain.pagination.PageRequest;
+import com.lxp.common.infrastructure.persistence.PageConverter;
 import com.lxp.enrollment.domain.exception.EnrollmentErrorCode;
 import com.lxp.enrollment.domain.exception.EnrollmentException;
 import com.lxp.enrollment.domain.model.Enrollment;
 import com.lxp.enrollment.domain.repository.EnrollmentRepository;
 import com.lxp.enrollment.infrastructure.persistence.entity.EnrollmentJpaEntity;
+import com.lxp.enrollment.infrastructure.persistence.enums.EnrollmentState;
 import com.lxp.enrollment.infrastructure.persistence.repository.EnrollmentJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,5 +30,15 @@ public class EnrollmentPersistenceAdapter implements EnrollmentRepository {
         EnrollmentJpaEntity entity = EnrollmentJpaEntity.from(enrollment);
         enrollmentJpaRepository.save(entity);
         return entity.toDomain();
+    }
+
+    @Override
+    public Page<Enrollment> findByUserIdAndState(String userId, String state, PageRequest pageRequest) {
+        EnrollmentState enrollmentState = EnrollmentState.from(state);
+
+        return PageConverter.toDomainPage(
+                enrollmentJpaRepository.findByUserIdAndState(userId, enrollmentState, PageConverter.toSpringPageable(pageRequest))
+                        .map(EnrollmentJpaEntity::toDomain)
+        );
     }
 }

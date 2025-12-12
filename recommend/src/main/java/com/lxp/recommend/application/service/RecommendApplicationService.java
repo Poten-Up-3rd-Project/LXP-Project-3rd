@@ -1,5 +1,6 @@
 package com.lxp.recommend.application.service;
 
+import com.lxp.common.enums.Level;  // ← 추가
 import com.lxp.recommend.application.dto.RecommendedCourseDto;
 import com.lxp.recommend.application.mapper.CourseMetaMapper;
 import com.lxp.recommend.application.mapper.LearnerProfileMapper;
@@ -10,8 +11,8 @@ import com.lxp.recommend.application.port.required.LearningHistoryQueryPort;
 import com.lxp.recommend.application.port.required.dto.CourseMetaData;
 import com.lxp.recommend.application.port.required.dto.LearnerProfileData;
 import com.lxp.recommend.application.port.required.dto.LearningHistoryData;
-import com.lxp.recommend.domain.dto.DifficultyLevel;
 import com.lxp.recommend.domain.dto.LearnerLevel;
+import com.lxp.recommend.domain.dto.LevelMapper;  // ← 추가
 import com.lxp.recommend.domain.model.*;
 import com.lxp.recommend.domain.model.ids.MemberId;
 import com.lxp.recommend.domain.repository.MemberRecommendationRepository;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,9 +41,6 @@ public class RecommendApplicationService {
     private final MemberRecommendationRepository recommendationRepository;
     private final RecommendScoringService scoringService;
 
-    /**
-     * 추천 계산 및 저장 (배치용)
-     */
     @Transactional
     public void refreshRecommendation(String rawLearnerId) {
         log.info("[추천 계산 시작] learnerId={}", rawLearnerId);
@@ -53,11 +50,10 @@ public class RecommendApplicationService {
                 .orElseThrow(() -> new IllegalArgumentException("학습자 프로필을 찾을 수 없습니다: " + rawLearnerId));
 
         List<CourseMetaData> courseDataList = courseMetaQueryPort.findByDifficulties(
-                determineTargetDifficulties(profileData.learnerLevel()),
+                determineTargetDifficulties(profileData.learnerLevel()),  // ← 수정됨
                 CANDIDATE_LIMIT
         );
 
-        // 임시: Course API 미구현으로 빈 리스트 반환 → 추천 중단
         if (courseDataList.isEmpty()) {
             log.info("[추천 계산 중단] 강좌 후보가 없습니다. (Course BC API 미구현)");
             return;
@@ -111,74 +107,56 @@ public class RecommendApplicationService {
         log.info("[추천 계산 완료] learnerId={}, 추천 수={}", rawLearnerId, scoredCourses.size());
     }
 
-    /**
-     * 추천 결과 조회 (API용)
-     *
-     * @param memberId 회원 ID
-     * @return 추천 강좌 목록 (Top 10)
-     */
     @Transactional(readOnly = true)
     public List<RecommendedCourseDto> getTopRecommendations(String memberId) {
         return getTopRecommendations(memberId, DEFAULT_TOP_N);
     }
 
-    /**
-     * 추천 결과 조회 (개수 지정)
-     *
-     * @param memberId 회원 ID
-     * @param topN 조회할 개수
-     * @return 추천 강좌 목록
-     */
     @Transactional(readOnly = true)
     public List<RecommendedCourseDto> getTopRecommendations(String memberId, int topN) {
         log.info("[추천 조회] memberId={}, topN={}", memberId, topN);
 
         MemberId memberIdObj = MemberId.of(memberId);
 
-        // 1. Repository에서 저장된 추천 조회
         MemberRecommendation recommendation = recommendationRepository
                 .findByMemberId(memberIdObj)
                 .orElse(null);
 
-        // 2. 추천이 없으면 빈 리스트 반환
         if (recommendation == null || recommendation.isEmpty()) {
             log.info("[추천 없음] memberId={}", memberId);
             return Collections.emptyList();
         }
 
-        // 3. Domain → DTO 변환 (Top N개만)
-        return recommendation.getItems().stream()  // ← getRecommendedCourses() → getItems()
+        return recommendation.getItems().stream()
                 .limit(topN)
                 .map(this::toDto)
                 .toList();
     }
 
-    /**
-     * Domain 객체 → DTO 변환
-     */
     private RecommendedCourseDto toDto(RecommendedCourse course) {
         return new RecommendedCourseDto(
                 course.getCourseId().getValue(),
                 course.getScore(),
-                course.getRank()  // ← reason 대신 rank
+                course.getRank()
         );
     }
 
     /**
      * 학습자 레벨 → 타겟 난이도 결정
+     *
+     * 리팩토링: common.enums.Level 사용
      */
     private Set<String> determineTargetDifficulties(String learnerLevel) {
+        // 1. String → LearnerLevel Enum 변환
         LearnerLevel level = LearnerLevel.valueOf(learnerLevel);
 
-        Set<DifficultyLevel> difficulties = switch (level) {
-            case JUNIOR -> Set.of(DifficultyLevel.JUNIOR, DifficultyLevel.MIDDLE);
-            case MIDDLE -> Set.of(DifficultyLevel.MIDDLE, DifficultyLevel.SENIOR);
-            case SENIOR -> Set.of(DifficultyLevel.SENIOR, DifficultyLevel.EXPERT);
-            case EXPERT -> Set.of(DifficultyLevel.EXPERT);
-        };
+        // 2. LearnerLevel → common.Level 변환
+        Level commonLevel = level.toCommonLevel();
 
-        return difficulties.stream()
-                .map(Enum::name)
-                .collect(Collectors.toSet());
+        // 3. 추천 타겟 Level 결정 (정책)
+        Set<Level> targetLevels = LevelMapper.determineTargetLevels(commonLevel);
+
+        // 4. Level → String 변환 (Port 호출용)
+        return LevelMapper.toStringSet(targetLevels);
     }
 }

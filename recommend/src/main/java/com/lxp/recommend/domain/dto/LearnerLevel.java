@@ -1,7 +1,11 @@
 package com.lxp.recommend.domain.dto;
 
+import com.lxp.common.enums.Level;
+
 /**
- * 학습자 레벨 (사용자의 현재 수준)
+ * 학습자 레벨 (Recommend BC 전용)
+ *
+ * Note: Course의 Level과 동일한 값 사용 (common.enums.Level)
  */
 public enum LearnerLevel {
     JUNIOR,
@@ -10,15 +14,16 @@ public enum LearnerLevel {
     EXPERT;
 
     /**
-     * 현재 레벨과 한 단계 위 레벨을 반환
-     * @return 추천 대상 난이도 목록 (최대 2개)
+     * common.enums.Level로 변환
      */
-    public DifficultyLevel[] getRecommendedDifficulties() {
-        return switch (this) {
-            case JUNIOR -> new DifficultyLevel[]{DifficultyLevel.JUNIOR, DifficultyLevel.MIDDLE};
-            case MIDDLE -> new DifficultyLevel[]{DifficultyLevel.MIDDLE, DifficultyLevel.SENIOR};
-            case SENIOR -> new DifficultyLevel[]{DifficultyLevel.SENIOR, DifficultyLevel.EXPERT};
-            case EXPERT -> new DifficultyLevel[]{DifficultyLevel.EXPERT}; // 최고 레벨, 자기 레벨만
-        };
+    public Level toCommonLevel() {
+        return Level.valueOf(this.name());
+    }
+
+    /**
+     * common.enums.Level에서 변환
+     */
+    public static LearnerLevel fromCommonLevel(Level level) {
+        return LearnerLevel.valueOf(level.name());
     }
 }

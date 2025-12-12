@@ -307,3 +307,20 @@ Port는 100% Recommend BC 용어 (외부 의존 제로)
 Adapter는 ACL 역할 (외부 → 내부 변환)
 
 MSA 전환 시 Adapter만 교체 (Port는 불변)
+
+# 4개월차 추천 담당 참고사항 
+level enum -> Option 1: ACL에서만 변환 (권장) ⭐
+1. Domain 레벨 정의 (기존 유지 또는 간소화)
+   Option 1-A: 기존 Enum 유지 (가장 안전)
+   recommend/domain/dto/LearnerLevel.java (변경 없음)
+2. recommend/domain/dto/DifficultyLevel.java (변경 없음)
+원칙:
+
+Domain은 common.Level에 의존하지 않음
+Adapter(ACL)에서만 common.Level → domain.Level 변환
+
+장점:
+
+Domain 독립성 유지
+MSA 전환 시 유리 (common 패키지 제거 가능)
+

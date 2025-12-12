@@ -15,14 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Course BC 강좌 메타 조회 Adapter (Anti-Corruption Layer)
- *
- * 임시 구현: Course BC에 난이도별 조회 API가 없어 빈 리스트 반환
- * TODO: api 패키지에 ExternalCourseQueryPort.findByDifficulties() 추가 필요
- *
- * @see <a href="./ADAPTER_STATUS.md">API 추가 요청 사항</a>
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -49,15 +41,21 @@ public class CourseMetaAdapter implements CourseMetaQueryPort {
         }
     }
 
+    /**
+     * ACL: CourseInfoResult → CourseMetaData 변환
+     */
     private CourseMetaData toInternalData(CourseInfoResult courseInfo) {
         return new CourseMetaData(
                 courseInfo.courseUUID(),
                 resolveTagNames(courseInfo.tags()),
-                courseInfo.difficulty().name(),
+                courseInfo.difficulty().name(),  // ← Level Enum → String (ACL)
                 true
         );
     }
 
+    /**
+     * Tag ID 목록 → Tag 이름 목록 변환
+     */
     private Set<String> resolveTagNames(List<Long> tagIds) {
         if (tagIds == null || tagIds.isEmpty()) {
             return Set.of();

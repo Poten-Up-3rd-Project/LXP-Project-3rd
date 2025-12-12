@@ -2,12 +2,17 @@ package com.lxp.recommend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
+/**
+ * Recommend BC 통합 테스트
+ */
 @SpringBootTest
+@ContextConfiguration(classes = RecommendApplication.class)  // ← 메인 클래스 명시
 class RecommendApplicationTests {
 
     @Test
     void contextLoads() {
-        // 스프링 컨텍스트가 정상적으로 로드되는지만 확인
+        // Spring Context 로딩 테스트
     }
 }

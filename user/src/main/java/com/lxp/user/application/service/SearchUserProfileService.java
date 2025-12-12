@@ -1,8 +1,8 @@
 package com.lxp.user.application.service;
 
-import com.lxp.user.application.port.required.command.ExecuteSearchUserCommand;
-import com.lxp.user.application.port.required.dto.UserInfoDto;
-import com.lxp.user.application.port.required.usecase.SearchUserProfileUseCase;
+import com.lxp.user.application.port.provided.command.ExecuteSearchUserCommand;
+import com.lxp.user.application.port.provided.dto.UserInfoDto;
+import com.lxp.user.application.port.provided.usecase.SearchUserProfileUseCase;
 import com.lxp.user.domain.common.exception.UserNotFoundException;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.profile.model.entity.UserProfile;

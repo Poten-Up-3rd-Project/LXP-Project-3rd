@@ -1,4 +1,4 @@
-package com.lxp.user.application.port.required.dto;
+package com.lxp.user.application.port.provided.dto;
 
 import java.util.List;
 

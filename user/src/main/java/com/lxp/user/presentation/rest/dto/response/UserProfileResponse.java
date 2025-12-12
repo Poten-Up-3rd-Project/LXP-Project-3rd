@@ -1,6 +1,6 @@
 package com.lxp.user.presentation.rest.dto.response;
 
-import com.lxp.user.application.port.required.dto.UserInfoDto;
+import com.lxp.user.application.port.provided.dto.UserInfoDto;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package com.lxp.user.application.service;
 
 import com.lxp.common.enums.Level;
-import com.lxp.user.application.port.required.command.ExecuteUpdateUserCommand;
-import com.lxp.user.application.port.required.dto.UserInfoDto;
-import com.lxp.user.application.port.required.usecase.UpdateUserProfileUseCase;
+import com.lxp.user.application.port.provided.command.ExecuteUpdateUserCommand;
+import com.lxp.user.application.port.provided.dto.UserInfoDto;
+import com.lxp.user.application.port.provided.usecase.UpdateUserProfileUseCase;
 import com.lxp.user.domain.common.exception.UserInactiveException;
 import com.lxp.user.domain.common.exception.UserNotFoundException;
 import com.lxp.user.domain.common.model.vo.UserId;

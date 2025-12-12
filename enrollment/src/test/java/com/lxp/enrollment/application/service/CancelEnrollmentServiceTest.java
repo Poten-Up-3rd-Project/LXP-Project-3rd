@@ -3,9 +3,9 @@ package com.lxp.enrollment.application.service;
 import com.lxp.common.application.port.out.DomainEventPublisher;
 import com.lxp.enrollment.application.port.provided.dto.command.CancelEnrollmentCommand;
 import com.lxp.enrollment.application.port.provided.dto.result.CancelEnrollmentResult;
-import com.lxp.enrollment.application.port.required.CancelEnrollmentPort;
 import com.lxp.enrollment.domain.event.CancelEnrollmentEvent;
 import com.lxp.enrollment.domain.model.Enrollment;
+import com.lxp.enrollment.domain.repository.EnrollmentRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CancelEnrollmentServiceTest {
     @Mock
-    private CancelEnrollmentPort cancelEnrollmentPort;
+    private EnrollmentRepository enrollmentRepository;
 
     @Mock
     private DomainEventPublisher domainEventPublisher;
@@ -49,7 +49,7 @@ class CancelEnrollmentServiceTest {
         // given
         CancelEnrollmentResult cancelEnrollmentResult = cancelEnrollmentResult();
         CancelEnrollmentCommand cancelEnrollmentCommand = cancelEnrollmentCommand();
-        when(cancelEnrollmentPort.findById(1L))
+        when(enrollmentRepository.findById(1L))
                 .thenReturn(Enrollment.reconstruct("enrollment-uuid", 1L, "ENROLLED", "user-uuid", "course-uuid", LocalDateTime.now(), null));
 
         // when

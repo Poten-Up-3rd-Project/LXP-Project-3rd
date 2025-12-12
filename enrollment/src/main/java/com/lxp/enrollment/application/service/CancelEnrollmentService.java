@@ -3,9 +3,9 @@ package com.lxp.enrollment.application.service;
 import com.lxp.common.application.port.out.DomainEventPublisher;
 import com.lxp.enrollment.application.port.provided.dto.command.CancelEnrollmentCommand;
 import com.lxp.enrollment.application.port.provided.dto.result.CancelEnrollmentResult;
-import com.lxp.enrollment.application.port.required.CancelEnrollmentPort;
 import com.lxp.enrollment.application.usecase.CancelEnrollmentUseCase;
 import com.lxp.enrollment.domain.model.Enrollment;
+import com.lxp.enrollment.domain.repository.EnrollmentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 @Transactional
 @RequiredArgsConstructor
 public class CancelEnrollmentService implements CancelEnrollmentUseCase {
-    private final CancelEnrollmentPort cancelEnrollmentPort;
+    private final EnrollmentRepository enrollmentRepository;
     private final DomainEventPublisher domainEventPublisher;
 
     public CancelEnrollmentResult cancel(CancelEnrollmentCommand command) {
-        Enrollment enrollment = cancelEnrollmentPort.findById(command.enrollmentId());
+        Enrollment enrollment = enrollmentRepository.findById(command.enrollmentId());
         enrollment.cancel(LocalDateTime.now(), command.reason());
 
-        cancelEnrollmentPort.cancel(enrollment);
+        enrollmentRepository.save(enrollment);
 
         enrollment.getDomainEvents().forEach(domainEventPublisher::publish);
         enrollment.clearDomainEvents();

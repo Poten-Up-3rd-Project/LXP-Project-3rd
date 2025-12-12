@@ -1,18 +1,19 @@
 package com.lxp.enrollment.application.service;
 
 import com.lxp.api.content.course.port.dto.result.CourseInfoResult;
-import com.lxp.api.content.course.port.external.ExternalCourseInfoPort;
-import com.lxp.api.user.port.external.ExternalUserStatusPort;
 import com.lxp.common.application.port.out.DomainEventPublisher;
 import com.lxp.common.enums.Level;
 import com.lxp.enrollment.application.port.provided.dto.command.EnrollCourseCommand;
-import com.lxp.enrollment.application.port.provided.dto.enums.UserStatus;
 import com.lxp.enrollment.application.port.provided.dto.result.EnrollCourseResult;
-import com.lxp.enrollment.application.port.required.EnrollCoursePort;
+import com.lxp.enrollment.application.port.required.UserStatusQueryPort;
 import com.lxp.enrollment.domain.event.EnrollmentCreatedEvent;
+import com.lxp.enrollment.domain.exception.EnrollmentException;
 import com.lxp.enrollment.domain.model.Enrollment;
+import com.lxp.enrollment.domain.model.enums.EnrollmentState;
 import com.lxp.enrollment.domain.model.vo.CourseId;
 import com.lxp.enrollment.domain.model.vo.UserId;
+import com.lxp.enrollment.domain.repository.EnrollmentRepository;
+import com.lxp.enrollment.infrastructure.external.adapter.CourseStatusQueryAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,21 +23,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EnrollCourseServiceTest {
     @Mock
-    private EnrollCoursePort enrollCoursePort;
+    private EnrollmentRepository enrollmentRepository;
     
     @Mock
-    private ExternalUserStatusPort externalUserStatusPort;
+    private UserStatusQueryPort userStatusQueryPort;
     
     @Mock
-    private ExternalCourseInfoPort externalCourseInfoPort;
+    private CourseStatusQueryAdapter courseStatusQueryAdapter;
 
     @Mock
     private DomainEventPublisher domainEventPublisher;
@@ -88,12 +90,12 @@ class EnrollCourseServiceTest {
         EnrollCourseCommand command = createCommand();
         Enrollment enrollmentWithEvent = createEnrollmentWithEvent();
         
-        when(externalUserStatusPort.getStatusByUserId(command.userId()))
-                .thenReturn(Optional.of(UserStatus.ACTIVE.name()));
-        when(externalCourseInfoPort.getCourseInfo(command.courseId()))
-                .thenReturn(Optional.of(createCourseInfoResult()));
+        when(userStatusQueryPort.isActiveUser(command.userId()))
+                .thenReturn(true);
+        when(courseStatusQueryAdapter.isActiveCourse(command.courseId()))
+                .thenReturn(true);
         
-        when(enrollCoursePort.save(any(Enrollment.class)))
+        when(enrollmentRepository.save(any(Enrollment.class)))
                 .thenReturn(Enrollment.reconstruct(
                         "enrollment-uuid",
                         1L,
@@ -111,5 +113,67 @@ class EnrollCourseServiceTest {
         verify(domainEventPublisher, times(1)).publish(any(EnrollmentCreatedEvent.class));
 
     }
+
+    @Test
+    @DisplayName("유효한 사용자가 아닌 경우 DomainException이 발생한다")
+    void invalidUser_shouldPublishDomainEvent() {
+        // given
+        EnrollCourseCommand command = createCommand();
+        when(userStatusQueryPort.isActiveUser(command.userId())).thenReturn(false);
+
+        // when
+        EnrollmentException exception = assertThrows(
+                EnrollmentException.class,
+                () -> enrollCourseService.enroll(command)
+        );
+
+        // then
+        assertEquals("유효하지 않은 사용자는 수강 신청을 할 수 없습니다", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 강의로 수강신청을 하면 DomainException이 발생한다")
+    void invalidCourse_shouldPublishDomainEvent() {
+        // given
+        EnrollCourseCommand command = createCommand();
+        when(userStatusQueryPort.isActiveUser(command.userId())).thenReturn(true);
+        when(courseStatusQueryAdapter.isActiveCourse(command.courseId())).thenReturn(false);
+
+        // when
+        EnrollmentException exception = assertThrows(
+                EnrollmentException.class,
+                () -> enrollCourseService.enroll(command)
+        );
+
+        // then
+        assertEquals("유효하지 않은 강의는 수강 신청을 할 수 없습니다", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("유효한 사용자는 존재하는 강의를 수강할 수 있다")
+    void success_enroll_withActiveUserAndActiveCourse() {
+        // given
+        EnrollCourseCommand command = createCommand();
+        when(userStatusQueryPort.isActiveUser(command.userId())).thenReturn(true);
+        when(courseStatusQueryAdapter.isActiveCourse(command.courseId())).thenReturn(true);
+        when(enrollmentRepository.save(any(Enrollment.class)))
+                .thenReturn(Enrollment.reconstruct(
+                        "enrollment-uuid",
+                        1L,
+                        EnrollmentState.ENROLLED.name(),
+                        command.userId(),
+                        command.courseId(),
+                        LocalDateTime.now(),
+                        null
+                ));
+
+        // when
+        EnrollCourseResult result = enrollCourseService.enroll(command);
+
+        // then
+        assertEquals(1L, result.enrollmentId());
+        assertEquals(EnrollmentState.ENROLLED.name(), result.state());
+    }
+
 
 }

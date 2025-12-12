@@ -1,8 +1,7 @@
 package com.lxp.auth.infrastructure.security.adapter;
 
-import com.lxp.api.user.port.dto.result.UserAuthResponse;
-import com.lxp.auth.application.local.port.required.adapter.UserAuthorityInfoHandler;
-import com.lxp.auth.application.local.port.required.command.HandleUserAuthorityCommand;
+import com.lxp.auth.application.local.port.required.UserAuthSearchPort;
+import com.lxp.auth.application.local.port.required.dto.AuthDomainInfo;
 import com.lxp.auth.infrastructure.security.model.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,20 +18,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserAuthorityInfoHandler userAuthorityInfoHandler;
+    private final UserAuthSearchPort userAuthSearchPort;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserAuthResponse userInfoByEmail = userAuthorityInfoHandler.handle(new HandleUserAuthorityCommand(username));
+        AuthDomainInfo authDomainInfo = userAuthSearchPort.retrieveAuthorityByEmail(username);
 
         Collection<? extends GrantedAuthority> authorities = List.of(
-            new SimpleGrantedAuthority(userInfoByEmail.role())
+            new SimpleGrantedAuthority(authDomainInfo.role())
         );
 
         return new CustomUserDetails(
-            userInfoByEmail.userId(),
-            userInfoByEmail.email(),
-            userInfoByEmail.email(),
+            authDomainInfo.userId(),
+            authDomainInfo.email(),
+            authDomainInfo.email(),
             "",
             authorities
         );

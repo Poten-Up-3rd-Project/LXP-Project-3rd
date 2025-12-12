@@ -1,6 +1,6 @@
-package com.lxp.auth.application.local.port.required.usecase;
+package com.lxp.auth.application.local.port.provided.usecase;
 
-import com.lxp.auth.application.local.port.required.command.HandleRegisterAuthCommand;
+import com.lxp.auth.application.local.port.provided.command.HandleRegisterAuthCommand;
 import com.lxp.common.application.port.in.CommandWithResultUseCase;
 
 @FunctionalInterface

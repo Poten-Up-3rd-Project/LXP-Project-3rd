@@ -3,6 +3,7 @@ package com.lxp.user.application.service;
 import com.lxp.api.auth.port.dto.result.AuthenticationResponse;
 import com.lxp.user.application.port.required.adapter.RegenerateTokenPortHandler;
 import com.lxp.user.application.port.required.command.ExecuteUpdateRoleUserCommand;
+import com.lxp.user.application.port.required.command.UpdateUserRoleCommand;
 import com.lxp.user.application.port.required.usecase.UpdateUserRoleUseCase;
 import com.lxp.user.domain.common.exception.UserNotFoundException;
 import com.lxp.user.domain.common.model.vo.UserId;
@@ -21,12 +22,12 @@ public class UpdateUserRoleService implements UpdateUserRoleUseCase {
     private final RegenerateTokenPortHandler regenerateTokenPortHandler;
 
     @Override
-    public AuthenticationResponse execute(String userId) {
-        User user = userRepository.findUserById(UserId.of(userId))
+    public AuthenticationResponse execute(UpdateUserRoleCommand command) {
+        User user = userRepository.findUserById(UserId.of(command.userId()))
             .orElseThrow(UserNotFoundException::new);
         user.makeInstructor();
         userRepository.save(user);
 
-        return regenerateTokenPortHandler.handle(new ExecuteUpdateRoleUserCommand(userId, user.email(), user.role().name()));
+        return regenerateTokenPortHandler.handle(new ExecuteUpdateRoleUserCommand(command.userId(), user.email(), user.role().name(), command.token()));
     }
 }

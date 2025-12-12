@@ -1,6 +1,6 @@
 package com.lxp.auth.domain.common.policy;
 
-import com.lxp.auth.application.local.port.required.dto.AuthTokenInfo;
+import com.lxp.auth.domain.common.model.vo.AuthTokenInfo;
 import com.lxp.auth.domain.common.model.vo.TokenClaims;
 
 public interface JwtPolicy {
@@ -33,7 +33,25 @@ public interface JwtPolicy {
      * JWT 토큰을 복호화하여 만료 시간(exp) 클레임을 추출합니다.
      *
      * @param token JWT 문자열
-     * @return 만료 시간 (밀리초 단위의 Unix Timestamp)
+     * @return 토큰에 기록된 만료 시점 (밀리초 단위의 Unix Timestamp)
      */
     long getExpirationTimeMillis(String token);
+
+    /**
+     * 현재 시간을 기준으로 JWT 토큰의 남은 유효 기간을 초 단위로 계산합니다.
+     * 토큰이 이미 만료되었거나 유효하지 않으면 0을 반환합니다.
+     *
+     * @param token JWT 문자열
+     * @return 남은 유효 기간 (초 단위)
+     */
+    default long getRemainingSeconds(String token) {
+        long expirationTimeMillis = getExpirationTimeMillis(token);
+        long nowMillis = System.currentTimeMillis();
+
+        if (expirationTimeMillis <= nowMillis) {
+            return 0;
+        }
+
+        return (expirationTimeMillis - nowMillis) / 1000;
+    }
 }

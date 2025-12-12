@@ -20,7 +20,7 @@ public class RegenerateTokenPortHandler implements CommandWithResultHandler<Exec
     @Override
     public AuthenticationResponse handle(ExecuteUpdateRoleUserCommand command) {
         return externalRegenerateTokenPort.regenerateToken(new RegenerateTokenCommand(
-            command.userId(), command.email(), command.role()
+            command.userId(), command.email(), command.role(), command.token()
         )).orElseThrow(UserNotFoundException::new);
     }
 }

@@ -15,7 +15,7 @@ services:
       - '6379:6379'
     volumes:
       - redis-data:/data
-      - ./boot/seed.redis:/data/seed.redis
+      - ./init/seed.redis:/data/seed.redis
     command: >
       sh -c "redis-server --appendonly yes &
              sleep 2 &&

@@ -13,8 +13,14 @@ public record CourseReadModel(
         String title,
         String description,
         Level difficulty,
-        List<Long> tags,
+        List<TagReadModel> tags,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
+    public record TagReadModel(
+            Long id,
+            String content,
+            String color,
+            String variant
+    ){}
 }

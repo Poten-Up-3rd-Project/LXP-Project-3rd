@@ -1,5 +1,6 @@
 package com.lxp.content.course.infrastructure.persistence.read.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -33,7 +34,7 @@ public class CourseReadJpaEntity {
     private String difficulty;
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "JSON")
-    private List<Long> tagIds;
+    private List<Tag> tags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

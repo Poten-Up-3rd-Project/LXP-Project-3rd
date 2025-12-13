@@ -4,6 +4,7 @@ import com.lxp.common.application.port.out.DomainMapper;
 import com.lxp.common.enums.Level;
 import com.lxp.content.course.application.port.required.dto.CourseReadModel;
 import com.lxp.content.course.infrastructure.persistence.read.entity.CourseReadJpaEntity;
+import com.lxp.content.course.infrastructure.persistence.read.entity.Tag;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +19,9 @@ public class CourseReadEntityMapper implements DomainMapper<CourseReadModel, Cou
                 entity.getTitle(),
                 entity.getDescription(),
                 Level.valueOf(entity.getDifficulty()),
-                entity.getTagIds(),
+                entity.getTags().stream()
+                        .map(t -> new CourseReadModel.TagReadModel(t.id(), t.content(), t.color(), t.variant()))
+                        .toList(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -34,7 +37,9 @@ public class CourseReadEntityMapper implements DomainMapper<CourseReadModel, Cou
                 .title(domain.title())
                 .description(domain.description())
                 .difficulty(domain.difficulty().name())
-                .tagIds(domain.tags())
+                .tags(domain.tags().stream()
+                        .map(t -> new Tag(t.id(), t.content(), t.color(), t.variant()))
+                        .toList())
                 .createdAt(domain.createdAt())
                 .updatedAt(domain.updatedAt())
                 .build();

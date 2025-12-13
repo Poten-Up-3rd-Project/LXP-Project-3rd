@@ -2,8 +2,8 @@ package com.lxp.content.course.application.service;
 
 import com.lxp.api.content.course.port.usecase.dto.result.CourseDetailView;
 import com.lxp.common.application.port.out.DomainEventPublisher;
-import com.lxp.content.course.application.mapper.CourseResultMapper;
 import com.lxp.api.content.course.port.usecase.dto.command.CourseCreateCommand;
+import com.lxp.content.course.application.mapper.CourseViewMapper;
 import com.lxp.content.course.application.port.provided.usecase.CourseCreateUseCase;
 import com.lxp.content.course.application.port.required.TagQueryPort;
 import com.lxp.content.course.application.port.required.UserQueryPort;
@@ -25,7 +25,7 @@ import java.util.List;
 public class CourseCreateService implements CourseCreateUseCase {
     private final CourseRepository courseRepository;
     private final CourseCreateDomainService courseCreateDomainService;
-    private final CourseResultMapper resultMapper;
+    private final CourseViewMapper viewMapper;
     private final DomainEventPublisher domainEventPublisher;
     private final UserQueryPort userQueryPort;
     private final TagQueryPort tagQueryPort;
@@ -43,6 +43,6 @@ public class CourseCreateService implements CourseCreateUseCase {
         course.getDomainEvents().forEach(domainEventPublisher::publish);
         course.clearDomainEvents();
 
-        return resultMapper.toCourseDetailView(course,tagResults,instructorInfo);
+        return viewMapper.toCourseDetailView(course,tagResults,instructorInfo);
     }
 }

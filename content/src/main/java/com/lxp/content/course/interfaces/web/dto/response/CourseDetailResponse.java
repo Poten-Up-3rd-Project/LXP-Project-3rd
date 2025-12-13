@@ -4,6 +4,7 @@ import com.lxp.common.response.EnumResponse;
 import lombok.Getter;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -19,9 +20,11 @@ public class CourseDetailResponse extends CourseResponse {
                                 EnumResponse level,
                                 List<TagResponse> tags,
                                 List<SectionResponse> sections,
-                                long durationInHours
+                                long durationInHours,
+                                Instant createdAt,
+                                Instant updatedAt
     ) {
-        super(id, instructor, title, description, thumbnailUrl, level, tags);
+        super(id, instructor, title, description, thumbnailUrl, level, tags, createdAt,updatedAt);
         this.sections = sections;
         this.durationInHours = durationInHours;
     }

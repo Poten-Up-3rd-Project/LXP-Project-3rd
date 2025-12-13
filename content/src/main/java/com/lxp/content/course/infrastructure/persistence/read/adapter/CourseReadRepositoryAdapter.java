@@ -2,6 +2,7 @@ package com.lxp.content.course.infrastructure.persistence.read.adapter;
 
 import com.lxp.common.domain.pagination.Page;
 import com.lxp.common.domain.pagination.PageRequest;
+import com.lxp.common.infrastructure.persistence.PageConverter;
 import com.lxp.content.course.application.port.required.CourseReadModelPort;
 import com.lxp.content.course.application.port.required.dto.CourseReadModel;
 import com.lxp.content.course.infrastructure.persistence.read.mapper.CourseReadEntityMapper;
@@ -17,10 +18,15 @@ public class CourseReadRepositoryAdapter implements CourseReadModelPort {
     private final CourseReadJpaRepository courseReadJpaRepository;
     private final CourseReadEntityMapper courseReadMapper;
 
+
+    @Override
+    public Page<CourseReadModel> search(String keyword, PageRequest pageable) {
+        return null;
+    }
+
     @Override
     public void save(CourseReadModel course) {
-        var entity = courseReadMapper.toEntity(course);
-        courseReadJpaRepository.save(entity);
+        courseReadJpaRepository.save(courseReadMapper.toEntity(course));
     }
 
     @Override
@@ -30,6 +36,9 @@ public class CourseReadRepositoryAdapter implements CourseReadModelPort {
 
     @Override
     public Page<CourseReadModel> findAll(PageRequest pageRequest) {
-        return null;
+        return PageConverter.toDomainPage(
+                courseReadJpaRepository.findAll(PageConverter.toSpringPageable(pageRequest))
+        ).map(courseReadMapper::toDomain);
+
     }
 }

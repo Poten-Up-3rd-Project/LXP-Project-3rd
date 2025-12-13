@@ -2,8 +2,10 @@ package com.lxp.content.course.application.event;
 
 import com.lxp.common.infrastructure.cqrs.ReadModelUpdater;
 import com.lxp.content.course.application.port.required.CourseReadModelPort;
+import com.lxp.content.course.application.port.required.TagQueryPort;
 import com.lxp.content.course.application.port.required.UserQueryPort;
 import com.lxp.content.course.application.port.required.dto.CourseReadModel;
+import com.lxp.content.course.application.port.required.dto.TagResult;
 import com.lxp.content.course.domain.event.CourseCreatedEvent;
 import com.lxp.content.course.domain.event.CrudEvent;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +15,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.List;
+
 
 @Component
 @RequiredArgsConstructor
 public class CourseReadModelUpdateHandler implements ReadModelUpdater<CrudEvent> {
     private final CourseReadModelPort courseReadModelPort;
     private final UserQueryPort userQueryPort;
+    private final TagQueryPort tagQueryPort;
+
 
     @Retryable
     @TransactionalEventListener
@@ -38,9 +44,14 @@ public class CourseReadModelUpdateHandler implements ReadModelUpdater<CrudEvent>
     }
 
     private void onCreate(CourseCreatedEvent event) {
-
+        System.out.println("Handling CourseCreatedEvent for course ID: " + event.getAggregateId());
         String instructorName = userQueryPort.getInstructorInfo(event.getInstructorUuid())
                 .name();
+        List<TagResult> tagResults = tagQueryPort.findTagByIds(event.getTagIds());
+        List<CourseReadModel.TagReadModel> tags = tagResults.stream()
+                .map(t -> new CourseReadModel.TagReadModel(t.id(), t.content(), t.color(), t.variant()))
+                .toList();
+
         CourseReadModel model = new CourseReadModel(
                 event.getAggregateId(),
                 event.getInstructorUuid(),
@@ -49,7 +60,7 @@ public class CourseReadModelUpdateHandler implements ReadModelUpdater<CrudEvent>
                 event.getTitle(),
                 event.getDescription(),
                 event.getDifficulty(),
-                event.getTagIds(),
+                tags,
                 event.getOccurredAt(),
                 event.getOccurredAt()
         );

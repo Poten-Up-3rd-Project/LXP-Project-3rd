@@ -1,4 +1,5 @@
 ### Create Course
+
 POST http://localhost:8080/api-v1/courses
 Content-Type: application/json
 
@@ -36,3 +37,15 @@ Content-Type: application/json
 }
 
 
+### GET Courses
+GET http://localhost:8080/api-v1/courses
+
+### Get Courses (페이지네이션)
+GET http://localhost:8080/api-v1/courses?page=0&size=8
+
+
+### Get Courses (페이지네이션)
+GET http://localhost:8080/api-v1/courses?page=0&size=10&sort=createdAt&dir=ASC
+
+### Get Courses (페이지 2, 사이즈 5)
+GET http://localhost:8080/api-v1/courses?page=0&size=5&sort=title&dir=ASC

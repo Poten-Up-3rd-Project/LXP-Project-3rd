@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +20,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        String jsonResponse = String.format(
-            "{\"status\": 403, \"message\": \"Access Denied. You do not have sufficient permissions to access this resource.\", \"error\": \"%s\"}",
-            accessDeniedException.getMessage()
-        );
-        response.getWriter().write(jsonResponse);
+        request.setAttribute(WebAttributes.ACCESS_DENIED_403, accessDeniedException);
+        request.getRequestDispatcher("/api-v1/error/access-denied").forward(request, response);
     }
 }

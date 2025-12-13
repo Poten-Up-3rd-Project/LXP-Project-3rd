@@ -21,8 +21,8 @@ public class CourseApplicationFacade {
     private final CommandBus commandBus;
     private final QueryBus queryBus;
 
-    public CourseDetailResponse createCourse(CourseCreateRequest request) {
-        CourseCreateCommand command = mapper.toCreateCommand(request);
+    public CourseDetailResponse createCourse(String userId, CourseCreateRequest request) {
+        CourseCreateCommand command = mapper.toCreateCommand(userId,request);
         CourseDetailView result = commandBus.dispatchWithResult(command);
         return mapper.toDetailResponse(result);
     }

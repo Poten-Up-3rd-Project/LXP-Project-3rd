@@ -20,11 +20,11 @@ import java.util.List;
 @Component
 public class CourseWebMapper {
 
-    public CourseCreateCommand toCreateCommand(CourseCreateRequest request) {
+    public CourseCreateCommand toCreateCommand(String userId, CourseCreateRequest request) {
         return new CourseCreateCommand(
+                userId,
                 request.title(),
                 request.description(),
-                request.instructorId(),
                 request.thumbnailUrl(),
                 request.level(),
                 request.tags(),

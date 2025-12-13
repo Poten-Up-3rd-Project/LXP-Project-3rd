@@ -7,9 +7,9 @@ import java.util.List;
 
 //TODO("InstructorId 따로 가져오기")
 public record CourseCreateCommand(
+        String instructorId,
         String title,
         String description,
-        String instructorId,
         String thumbnailUrl,
         Level level,
         List<Long> tags,

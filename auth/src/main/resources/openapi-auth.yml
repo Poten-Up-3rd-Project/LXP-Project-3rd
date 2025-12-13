@@ -17,17 +17,17 @@ paths:
             schema:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
-        '201':
+        '200':
           description: 회원가입 성공
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  userId:
-                    type: string
-                    format: uuid
-                    description: 등록된 사용자 ID (UUID 형식)
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                data: null
+                error: null
+                success: true
+                timestamp: "2025-12-14T03:19:09.9777"
         '400':
           $ref: '#/components/responses/RegisterBadRequestError' # 구체적인 400 에러를 참조
         '409':
@@ -59,7 +59,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                data: null
+                error: null
+                success: true
+                timestamp: "2025-12-14T03:19:09.9777"
+
         '401':
           $ref: '#/components/responses/LoginUnauthorizedError' # 구체적인 401 에러를 참조
         '400':
@@ -74,8 +80,17 @@ paths:
       security:
         - cookieAuth: [ ]
       responses:
-        '204':
+        '200':
           description: 로그아웃 성공 (Content-Type이 없는 응답)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                data: null
+                error: null
+                success: true
+                timestamp: "2025-12-14T03:19:09.9777"
         '401':
           $ref: '#/components/responses/UnauthorizedError' # 토큰이 없거나 유효하지 않음 (AUTH_002)
 components:
@@ -125,7 +140,7 @@ components:
             type: integer
             format: int64
           description: 관심사 태그 ID 목록 (최소 3개, 최대 5개)
-          example: [1, 2, 3]
+          example: [ 1, 2, 3 ]
           minItems: 3 # 제약 조건 명시
           maxItems: 5 # 제약 조건 명시
         level:
@@ -151,6 +166,7 @@ components:
 
     LoginResponse:
       type: object
+      description: 로그인 성공 응답 (토큰은 쿠키로 전달)
 
     ErrorResponse:
       type: object

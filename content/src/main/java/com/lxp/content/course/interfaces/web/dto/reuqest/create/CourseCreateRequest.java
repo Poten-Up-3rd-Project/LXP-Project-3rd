@@ -7,7 +7,6 @@ import java.util.List;
 public record CourseCreateRequest(
     String title,
     String description,
-    String instructorId,
     String thumbnailUrl,
     Level level,
     List<Long> tags,

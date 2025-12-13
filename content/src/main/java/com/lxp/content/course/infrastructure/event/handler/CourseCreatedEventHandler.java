@@ -5,6 +5,7 @@ import com.lxp.common.util.UUIdGenerator;
 import com.lxp.content.course.domain.event.CourseCreatedEvent;
 import com.lxp.content.course.infrastructure.event.integration.CourseIntegrationEventPublisher;
 import lombok.RequiredArgsConstructor;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 public class CourseCreatedEventHandler {
     private final CourseIntegrationEventPublisher integrationEventPublisher;
 
+    @Retryable
     @Async
     @TransactionalEventListener
     public void handle(CourseCreatedEvent event) {

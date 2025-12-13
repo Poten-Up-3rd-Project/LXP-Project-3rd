@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class CourseCreatedEvent extends BaseDomainEvent {
+public class CourseCreatedEvent extends BaseDomainEvent implements CrudEvent {
 
     private final String instructorUuid;
     private final String title;
@@ -35,5 +35,10 @@ public class CourseCreatedEvent extends BaseDomainEvent {
         this.thumbnailUrl = thumbnailUrl;
         this.difficulty = difficulty;
         this.tagIds = tagIds;
+    }
+
+    @Override
+    public CrudType getCrudType() {
+        return CrudType.CREATED;
     }
 }

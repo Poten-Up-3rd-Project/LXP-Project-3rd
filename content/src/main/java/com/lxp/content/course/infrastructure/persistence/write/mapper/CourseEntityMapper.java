@@ -1,4 +1,4 @@
-package com.lxp.content.course.infrastructure.persistence.mapper;
+package com.lxp.content.course.infrastructure.persistence.write.mapper;
 
 import com.lxp.common.application.port.out.DomainMapper;
 import com.lxp.content.course.domain.model.Course;
@@ -13,9 +13,9 @@ import com.lxp.content.course.domain.model.id.LectureUUID;
 import com.lxp.content.course.domain.model.id.SectionUUID;
 import com.lxp.content.course.domain.model.id.TagId;
 import com.lxp.content.course.domain.model.vo.duration.LectureDuration;
-import com.lxp.content.course.infrastructure.persistence.entity.CourseJpaEntity;
-import com.lxp.content.course.infrastructure.persistence.entity.LectureJpaEntity;
-import com.lxp.content.course.infrastructure.persistence.entity.SectionJpaEntity;
+import com.lxp.content.course.infrastructure.persistence.write.entity.CourseJpaEntity;
+import com.lxp.content.course.infrastructure.persistence.write.entity.LectureJpaEntity;
+import com.lxp.content.course.infrastructure.persistence.write.entity.SectionJpaEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;

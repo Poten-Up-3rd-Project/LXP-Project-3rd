@@ -10,6 +10,7 @@ import com.lxp.content.course.application.mapper.CourseResultMapper;
 import com.lxp.api.content.course.port.usecase.dto.command.CourseCreateCommand;
 import com.lxp.api.content.course.port.usecase.dto.command.LectureCreateCommand;
 import com.lxp.api.content.course.port.external.dto.result.CourseInfoResult;
+import com.lxp.content.course.application.mapper.CourseViewMapper;
 import com.lxp.content.course.application.port.required.TagQueryPort;
 import com.lxp.content.course.application.port.required.UserQueryPort;
 import com.lxp.content.course.application.port.required.dto.InstructorResult;
@@ -51,6 +52,9 @@ public class CourseCreateServiceTest {
     private CourseResultMapper resultMapper;
 
     @Mock
+    private CourseViewMapper courseViewMapper;
+
+    @Mock
     private DomainEventPublisher domainEventPublisher;
 
     @Mock
@@ -77,7 +81,7 @@ public class CourseCreateServiceTest {
         when(courseCreateDomainService.create(command, instructorInfo)).thenReturn(course);
         when(courseRepository.save(course)).thenReturn(course);  // 같은 객체 반환
         when(tagQueryPort.findTagByIds(command.tags())).thenReturn(tagResults);
-        when(resultMapper.toCourseDetailView(course, tagResults, instructorInfo)).thenReturn(expectedResult);
+        when(courseViewMapper.toCourseDetailView(course, tagResults, instructorInfo)).thenReturn(expectedResult);
 
         // When
         courseCreateService.handle(command);

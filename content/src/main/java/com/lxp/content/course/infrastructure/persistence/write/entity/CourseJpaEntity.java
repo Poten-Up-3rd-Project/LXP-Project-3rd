@@ -1,4 +1,4 @@
-package com.lxp.content.course.infrastructure.persistence.entity;
+package com.lxp.content.course.infrastructure.persistence.write.entity;
 
 import com.lxp.common.enums.Level;
 import com.lxp.common.infrastructure.persistence.BaseVersionedJpaEntity;

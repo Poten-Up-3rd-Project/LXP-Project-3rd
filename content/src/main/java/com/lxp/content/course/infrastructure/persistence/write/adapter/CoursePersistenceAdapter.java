@@ -1,10 +1,10 @@
-package com.lxp.content.course.infrastructure.persistence.adapter;
+package com.lxp.content.course.infrastructure.persistence.write.adapter;
 
 import com.lxp.content.course.domain.model.Course;
 import com.lxp.content.course.domain.repository.CourseRepository;
-import com.lxp.content.course.infrastructure.persistence.entity.CourseJpaEntity;
-import com.lxp.content.course.infrastructure.persistence.mapper.CourseEntityMapper;
-import com.lxp.content.course.infrastructure.persistence.repository.CourseJpaRepository;
+import com.lxp.content.course.infrastructure.persistence.write.entity.CourseJpaEntity;
+import com.lxp.content.course.infrastructure.persistence.write.mapper.CourseEntityMapper;
+import com.lxp.content.course.infrastructure.persistence.write.repository.CourseJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

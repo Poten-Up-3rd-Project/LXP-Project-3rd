@@ -150,9 +150,9 @@ public class CourseCreateDomainServiceTest {
 
     private CourseCreateCommand createValidCommand() {
         return new CourseCreateCommand(
+                "instructor-uuid",
                 "테스트 강좌",
                 "테스트 설명",
-                "instructor-uuid",
                 "https://thumbnail.url",
                 Level.JUNIOR,
                 List.of(1L,2L,3L),
@@ -163,11 +163,11 @@ public class CourseCreateDomainServiceTest {
     private CourseCreateCommand createCommandWithSectionsAndLectures() {
         return new CourseCreateCommand(
                 "instructor-uuid",
-                "https://thumbnail.url",
                 "테스트 강좌",
                 "테스트 설명",
+                "https://thumbnail.url",
                 Level.JUNIOR,
-                List.of(1L, 2L),
+                List.of(1L, 2L, 3L, 4L),
                 List.of(
                         createSectionCommandWithLectures("섹션1", 3),
                         createSectionCommandWithLectures("섹션2", 2)
@@ -177,12 +177,12 @@ public class CourseCreateDomainServiceTest {
 
     private CourseCreateCommand createCommandWithoutSections() {
         return new CourseCreateCommand(
+                "instructor-uuid",
                 "테스트 강좌",
                 "테스트 설명",
-                "instructor-uuid",
                 "https://thumbnail.url",
                 Level.JUNIOR,
-                List.of(1L, 2L),
+                List.of(1L, 2L,3L ,4L),
                 List.of()
         );
     }

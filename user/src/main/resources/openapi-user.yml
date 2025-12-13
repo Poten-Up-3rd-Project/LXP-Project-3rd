@@ -4,10 +4,10 @@ info:
   version: 1.0.0
   description: "유저 모듈의 paths와 components 명세 (RegisterRequest 필드 확장 반영)"
 paths:
-  /users:
+  /api-v1/users:
     get:
       tags:
-        - UserProfile
+        - User
       summary: 특정 사용자의 프로필 정보 조회
       operationId: getUserProfile
       security:
@@ -29,7 +29,7 @@ paths:
 
     patch:
       tags:
-        - UserProfile
+        - User
       summary: 사용자 프로필 정보 업데이트 (레벨, 태그, 직업)
       operationId: updateUserProfile
       security:
@@ -45,21 +45,22 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
+                  description: 변경하고자 하는 사용자 이름
+                  nullable: true
                 level:
                   type: string
                   description: 변경하고자 하는 새로운 학습자 레벨
                   nullable: true # 부분 업데이트이므로 null 허용
                   enum: [ "JUNIOR", "MIDDLE", "SENIOR", "EXPERT" ]
-                tags:
+                tagIds:
                   type: array
                   description: 사용자가 관심 있는 태그 목록 (전체 교체)
                   nullable: true
                   items:
-                    type: string
-                job:
-                  type: string
-                  description: 사용자의 직업 정보
-                  nullable: true
+                    type: integer
+                    format: int64
       responses:
         '200':
           description: 프로필 업데이트 성공
@@ -92,11 +93,11 @@ paths:
         '404':
           description: 사용자를 찾을 수 없음
 
-  /users/role:
+  /api-v1/users/role:
     put: # 새로운 정보를 서버에 보낼 때 (로그인, 회원가입 등)
       tags:
         - User
-      summary: 사용자 role로 변경
+      summary: 사용자 role을 변경
       operationId: promoteToInstructor
       security:
         - cookieAuth: [ ]
@@ -117,6 +118,7 @@ paths:
                   description:
                     변경하고자 하는 새로운 역할 ("INSTRUCTOR")
                   enum: [ "LEARNER", "INSTRUCTOR" ]
+                  example: INSTRUCTOR
       responses:
         '200':
           description: 역할 변경 성공
@@ -142,8 +144,15 @@ schemas:
       tags:
         type: array
         items:
-          type: string
+          type: TagDto
         description: 관심 태그 목록
-      job:
+  TagDto:
+    type: object
+    properties:
+      id:
+        type: long
+        description: Tag의 Id
+      content:
         type: string
-        description: 직업
+        description: Tag의 이름
+

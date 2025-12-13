@@ -1,5 +1,4 @@
 ### Create Course
-
 POST http://localhost:8080/api-v1/courses
 Content-Type: application/json
 

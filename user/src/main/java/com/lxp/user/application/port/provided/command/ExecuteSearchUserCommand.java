@@ -1,4 +1,4 @@
-package com.lxp.user.application.port.required.command;
+package com.lxp.user.application.port.provided.command;
 
 import com.lxp.common.application.cqrs.Command;
 

@@ -1,8 +1,9 @@
 package com.lxp.user.application.service;
 
-import com.lxp.user.application.port.required.adapter.UserWithdrawHandler;
-import com.lxp.user.application.port.required.command.ExecuteWithdrawUserCommand;
-import com.lxp.user.application.port.required.usecase.WithdrawUserUseCase;
+import com.lxp.user.application.port.provided.command.ExecuteWithdrawUserCommand;
+import com.lxp.user.application.port.provided.usecase.WithdrawUserUseCase;
+import com.lxp.user.application.port.required.AuthUserWithdrawPort;
+import com.lxp.user.application.port.required.dto.WithdrawalRequest;
 import com.lxp.user.domain.common.exception.UserNotFoundException;
 import com.lxp.user.domain.common.model.vo.UserId;
 import com.lxp.user.domain.user.model.entity.User;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WithdrawUserService implements WithdrawUserUseCase {
 
     private final UserRepository userRepository;
-    private final UserWithdrawHandler userWithdrawHandler;
+    private final AuthUserWithdrawPort authUserWithdrawPort;
 
     @Override
     @Transactional
@@ -25,7 +26,7 @@ public class WithdrawUserService implements WithdrawUserUseCase {
         user.withdraw();
         userRepository.deactivate(user);
 
-        userWithdrawHandler.handle(command);
+        authUserWithdrawPort.invalidateUser(new WithdrawalRequest(command.userId(), command.cookie()));
         return null;
     }
 }

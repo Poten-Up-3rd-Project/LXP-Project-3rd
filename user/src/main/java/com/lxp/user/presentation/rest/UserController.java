@@ -1,20 +1,21 @@
 package com.lxp.user.presentation.rest;
 
-import com.lxp.api.auth.port.dto.result.AuthenticationResponse;
 import com.lxp.common.annotation.CurrentUserId;
 import com.lxp.common.constants.CookieConstants;
 import com.lxp.common.infrastructure.exception.ApiResponse;
-import com.lxp.user.application.port.required.command.ExecuteSearchUserCommand;
-import com.lxp.user.application.port.required.command.ExecuteUpdateUserCommand;
-import com.lxp.user.application.port.required.command.ExecuteWithdrawUserCommand;
-import com.lxp.user.application.port.required.command.UpdateUserRoleCommand;
-import com.lxp.user.application.port.required.dto.UserInfoDto;
-import com.lxp.user.application.port.required.usecase.SearchUserProfileUseCase;
-import com.lxp.user.application.port.required.usecase.UpdateUserProfileUseCase;
-import com.lxp.user.application.port.required.usecase.UpdateUserRoleUseCase;
-import com.lxp.user.application.port.required.usecase.WithdrawUserUseCase;
+import com.lxp.user.application.port.provided.command.ExecuteSearchUserCommand;
+import com.lxp.user.application.port.provided.command.ExecuteUpdateUserCommand;
+import com.lxp.user.application.port.provided.command.ExecuteWithdrawUserCommand;
+import com.lxp.user.application.port.provided.command.UpdateUserRoleCommand;
+import com.lxp.user.application.port.provided.dto.UserInfoDto;
+import com.lxp.user.application.port.provided.usecase.SearchUserProfileUseCase;
+import com.lxp.user.application.port.provided.usecase.UpdateUserProfileUseCase;
+import com.lxp.user.application.port.provided.usecase.UpdateUserRoleUseCase;
+import com.lxp.user.application.port.provided.usecase.WithdrawUserUseCase;
+import com.lxp.user.application.port.required.dto.AuthTokenResult;
 import com.lxp.user.presentation.rest.dto.request.UserUpdateRequest;
 import com.lxp.user.presentation.rest.dto.response.UserProfileResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,23 +48,29 @@ public class UserController {
     private final WithdrawUserUseCase withdrawUserUseCase;
 
     @GetMapping
-    public ApiResponse<UserProfileResponse> getUserInfo(@CurrentUserId String userId) {
+    public ApiResponse<UserProfileResponse> getUserInfo(
+        @Parameter(hidden = true)
+        @CurrentUserId String userId) {
         UserInfoDto userInfoDto = searchUserProfileUseCase.execute(new ExecuteSearchUserCommand(userId));
         return ApiResponse.success(UserProfileResponse.to(userInfoDto));
     }
 
     @PatchMapping
-    public ApiResponse<UserProfileResponse> updateUserInfo(@CurrentUserId String userId,
+    public ApiResponse<UserProfileResponse> updateUserInfo(@Parameter(hidden = true) @CurrentUserId String userId,
                                                            @RequestBody UserUpdateRequest request) {
-        UserInfoDto userInfoDto = updateUserProfileUseCase.execute(new ExecuteUpdateUserCommand(userId, request.name(), request.level(), request.tagIds(), request.job()));
+        UserInfoDto userInfoDto = updateUserProfileUseCase.execute(
+            new ExecuteUpdateUserCommand(userId, request.name(), request.level(), request.tagIds(), request.job())
+        );
         return ApiResponse.success(UserProfileResponse.to(userInfoDto));
     }
 
     @PreAuthorize("hasAuthority('ROLE_LEARNER')")
     @PutMapping("/role")
-    public ApiResponse<Void> updateUserToInstructor(@CurrentUserId String userId, HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<Void> updateUserToInstructor(@Parameter(hidden = true) @CurrentUserId String userId,
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse response) {
         String token = getCookie(request);
-        AuthenticationResponse execute = updateUserRoleUseCase.execute(new UpdateUserRoleCommand(userId, token));
+        AuthTokenResult execute = updateUserRoleUseCase.execute(new UpdateUserRoleCommand(userId, token));
         ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, execute.accessToken())
             .httpOnly(CookieConstants.HTTP_ONLY)
             .secure(true)
@@ -78,7 +85,9 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ApiResponse<Void> deleteUserInfo(@CurrentUserId String userId, HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<Void> deleteUserInfo(@Parameter(hidden = true) @CurrentUserId String userId,
+                                            HttpServletRequest request,
+                                            HttpServletResponse response) {
         String cookie = getCookie(request);
         withdrawUserUseCase.execute(new ExecuteWithdrawUserCommand(userId, cookie));
 

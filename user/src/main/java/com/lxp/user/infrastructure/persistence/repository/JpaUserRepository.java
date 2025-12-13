@@ -12,7 +12,8 @@ public interface JpaUserRepository extends JpaRepository<JpaUser, String> {
 
     boolean existsById(String id);
 
-    Optional<UserStatus> findUserStatusById(String userId);
+    @Query("select u.userStatus from JpaUser u where u.id = :id")
+    Optional<UserStatus> findUserStatusById(@Param("id") String id);
 
     Optional<JpaUser> findByEmail(String email);
 

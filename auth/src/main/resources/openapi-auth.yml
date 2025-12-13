@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: "인증 모듈의 paths와 components 명세 (RegisterRequest 필드 확장 반영)"
 paths:
-  /auth/register:
+  /api-v1/auth/register:
     post:
       tags:
         - Auth
@@ -40,7 +40,7 @@ paths:
                 code: "AUTH_004"
                 message: "이미 사용 중인 사용자 ID입니다."
 
-  /auth/login:
+  /api-v1/auth/login:
     post:
       tags:
         - Auth
@@ -64,7 +64,7 @@ paths:
           $ref: '#/components/responses/LoginUnauthorizedError' # 구체적인 401 에러를 참조
         '400':
           $ref: '#/components/responses/BadRequestError' # 일반적인 400 에러 참조
-  /auth/logout: # 💡 [수정] /auth/login과 동일 레벨로 경로 수정
+  /api-v1/auth/logout: # 💡 [수정] /auth/login과 동일 레벨로 경로 수정
     post:
       tags:
         - Auth
@@ -88,8 +88,8 @@ components:
         - password
         - name
         - role
-        - tags
-        - learnerLevel
+        - tagIds
+        - level
       properties:
         email:
           type: string
@@ -110,7 +110,7 @@ components:
           description: 사용자 역할 (LEARNER, INSTRUCTOR)
           example: "LEARNER"
           enum: [ "LEARNER", "INSTRUCTOR", "ADMIN" ]
-        tags:
+        tagIds:
           type: array
           items:
             type: integer
@@ -118,14 +118,11 @@ components:
           description: 관심사 태그 ID 목록 (최소 3개, 최대 5개)
           minItems: 3 # 제약 조건 명시
           maxItems: 5 # 제약 조건 명시
-        learnerLevel:
+        level:
           type: string
           description: 학습자 수준
           example: "JUNIOR"
           enum: [ "JUNIOR", "MIDDLE", "SENIOR", "EXPERT" ]
-        job:
-          type: string
-          description: 직업/직무
 
     LoginRequest:
       type: object

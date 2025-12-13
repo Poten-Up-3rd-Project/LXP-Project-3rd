@@ -19,8 +19,10 @@ import com.lxp.enrollment.infrastructure.external.adapter.CourseSummaryQueryAdap
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,53 +30,78 @@ public class GetEnrollmentListService implements GetEnrollmentListUseCase {
     private final EnrollmentRepository enrollmentRepository;
     private final UserStatusQueryPort userStatusQueryPort;
     private final CourseSummaryQueryAdapter courseSummaryQueryAdapter;
-    private final CourseProgressRepository courseProgressRepository;
+    // TODO:
+    // private final CourseProgressRepository courseProgressRepository;
     private final TagQueryPort tagQueryPort;
 
     @Override
     public Page<EnrollmentHistoryItem> getEnrollmentHistory(GetEnrollmentHistoryQuery query) {
-        boolean isActiveUser = userStatusQueryPort.isActiveUser(query.userId());
-        if (!isActiveUser) {
+        validateActiveUser(query.userId());
+
+        Page<Enrollment> pageResult = enrollmentRepository.findByUserIdAndState(
+                query.userId(),
+                query.state(),
+                createPageRequest(query)
+        );
+
+        List<String> courseIds = pageResult.content().stream()
+                .map(enrollment -> enrollment.courseId().value())
+                .distinct()
+                .toList();
+
+        Map<String, CourseSummaryResult> courseSummaryById = courseSummaryQueryAdapter.getCourseSummaryList(courseIds)
+                .stream()
+                .collect(Collectors.toMap(CourseSummaryResult::courseId, Function.identity(), (a, b) -> a));
+
+        List<EnrollmentHistoryItem> enrollmentHistoryItems = pageResult.content().stream()
+                .map(enrollment -> toEnrollmentHistoryItem(enrollment, courseSummaryById))
+                .toList();
+
+        return Page.of(enrollmentHistoryItems, pageResult.pageNumber(), pageResult.pageSize(), pageResult.totalElements());
+    }
+
+    private void validateActiveUser(String userId) {
+        if (!userStatusQueryPort.isActiveUser(userId)) {
             throw new EnrollmentException(EnrollmentErrorCode.INVALID_USER);
         }
-        Page<Enrollment> pageResult = enrollmentRepository.findByUserIdAndState(query.userId(), query.state(), PageRequest.of(
-                query.page(),
-                query.size(),
-                Sort.by(Sort.Order.asc("createdAt"))
-        ));
+    }
 
-        List<String> courseIds = pageResult.content().stream().map(e -> e.courseId().value()).toList();
-        List<CourseSummaryResult> courseResult = courseSummaryQueryAdapter.getCourseSummaryList(courseIds);
+    private PageRequest createPageRequest(GetEnrollmentHistoryQuery query) {
+        Sort.Order order = isLatestSort(query.sort())
+                ? Sort.Order.desc("createdAt")
+                : Sort.Order.asc("createdAt");
 
-        List<EnrollmentHistoryItem> enrollmentHistoryItems = new ArrayList<>();
-        for (Enrollment enrollment: pageResult.content()) {
-            CourseSummaryResult courseSummaryResult = courseResult.stream()
-                    .filter(c -> c.courseId().equals(enrollment.courseId()))
-                    .findFirst().orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.ERROR_PARSING_ENROLLMENT));
+        return PageRequest.of(query.page(), query.size(), Sort.by(order));
+    }
 
-            CourseProgress progress = courseProgressRepository.findByUserIdAndCourseId(enrollment.userId(), enrollment.courseId())
-                    .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.ERROR_PARSING_PROGRESS));
+    private boolean isLatestSort(String sort) {
+        return sort == null || sort.equalsIgnoreCase("LATEST");
+    }
 
-            EnrollmentHistoryItem item = new EnrollmentHistoryItem(
-                    enrollment.enrollmentId().value(),
-                    enrollment.state().toString(),
-                    enrollment.courseId().value(),
-                    courseSummaryResult.thumbnailUrl(),
-                    progress.totalProgress(), //progress
-                    courseSummaryResult.title(),
-                    courseSummaryResult.description(),
-                    courseSummaryResult.difficulty().toString(),
-                    tagQueryPort.findByIds(courseSummaryResult.tags()),
-                    enrollment.enrollmentDate().value()
-            );
-            enrollmentHistoryItems.add(item);
+    private EnrollmentHistoryItem toEnrollmentHistoryItem(
+            Enrollment enrollment,
+            Map<String, CourseSummaryResult> courseSummaryById
+    ) {
+        CourseSummaryResult courseSummaryResult = courseSummaryById.get(enrollment.courseId().value());
+        if (courseSummaryResult == null) {
+            throw new EnrollmentException(EnrollmentErrorCode.ERROR_PARSING_ENROLLMENT);
         }
 
-        return Page.of(
-                enrollmentHistoryItems,
-                pageResult.pageNumber(),
-                pageResult.pageSize(),
-                pageResult.totalElements()
+//        CourseProgress progress = courseProgressRepository.findByUserIdAndCourseId(enrollment.userId(), enrollment.courseId())
+//                .orElseThrow(() -> new EnrollmentException(EnrollmentErrorCode.ERROR_PARSING_PROGRESS));
+
+        return new EnrollmentHistoryItem(
+                enrollment.enrollmentId().value(),
+                enrollment.state().toString(),
+                enrollment.courseId().value(),
+                courseSummaryResult.thumbnailUrl(),
+                0, //progress.totalProgress(),
+                courseSummaryResult.title(),
+                courseSummaryResult.description(),
+                courseSummaryResult.instructorName(),
+                courseSummaryResult.difficulty().toString(),
+                tagQueryPort.findByIds(courseSummaryResult.tags()),
+                enrollment.enrollmentDate().value()
         );
     }
 }

@@ -11,6 +11,7 @@ public record EnrollmentHistoryItem(
     float totalProgress,
     String courseTitle,
     String courseDescription,
+    String instructorName,
     String level,
     List<TagResult> tags,
     LocalDateTime enrolledAt

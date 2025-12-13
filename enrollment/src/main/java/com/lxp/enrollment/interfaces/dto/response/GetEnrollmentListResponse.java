@@ -4,7 +4,7 @@ import java.util.List;
 
 public record GetEnrollmentListResponse(
         List<EnrollmentSummaryResponse> content,
-        int totalElements,
+        long totalElements,
         int totalPage,
         int size
 ) {

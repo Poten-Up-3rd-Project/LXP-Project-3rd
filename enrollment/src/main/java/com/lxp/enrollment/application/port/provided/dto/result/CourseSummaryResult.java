@@ -7,16 +7,18 @@ import java.util.List;
 public record CourseSummaryResult(
         String courseId,
         String instructorId,
+        String instructorName,
         String title,
         String thumbnailUrl,
         String description,
         Level difficulty,
         List<Long> tags
 ) {
-    public static CourseSummaryResult from(CourseResult result) {
+    public static CourseSummaryResult from(CourseResult result, String instructorName) {
         return new CourseSummaryResult(
                 result.courseUUID(),
                 result.instructorUUID(),
+                instructorName,
                 result.title(),
                 result.thumbnailUrl(),
                 result.description(),

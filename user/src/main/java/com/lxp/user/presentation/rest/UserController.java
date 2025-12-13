@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,27 +49,33 @@ public class UserController {
     private final WithdrawUserUseCase withdrawUserUseCase;
 
     @GetMapping
-    public ApiResponse<UserProfileResponse> getUserInfo(
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserInfo(
         @Parameter(hidden = true)
         @CurrentUserId String userId) {
         UserInfoDto userInfoDto = searchUserProfileUseCase.execute(new ExecuteSearchUserCommand(userId));
-        return ApiResponse.success(UserProfileResponse.to(userInfoDto));
+        return ResponseEntity.ok(ApiResponse.success(UserProfileResponse.to(userInfoDto)));
     }
 
     @PatchMapping
-    public ApiResponse<UserProfileResponse> updateUserInfo(@Parameter(hidden = true) @CurrentUserId String userId,
-                                                           @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<ApiResponse<UserProfileResponse>> updateUserInfo(
+        @Parameter(hidden = true)
+        @CurrentUserId String userId,
+        @RequestBody UserUpdateRequest request
+    ) {
         UserInfoDto userInfoDto = updateUserProfileUseCase.execute(
             new ExecuteUpdateUserCommand(userId, request.name(), request.level(), request.tagIds(), request.job())
         );
-        return ApiResponse.success(UserProfileResponse.to(userInfoDto));
+        return ResponseEntity.ok(ApiResponse.success(UserProfileResponse.to(userInfoDto)));
     }
 
     @PreAuthorize("hasAuthority('ROLE_LEARNER')")
     @PutMapping("/role")
-    public ApiResponse<Void> updateUserToInstructor(@Parameter(hidden = true) @CurrentUserId String userId,
-                                                    HttpServletRequest request,
-                                                    HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<Void>> updateUserToInstructor(
+        @Parameter(hidden = true)
+        @CurrentUserId String userId,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) {
         String token = getCookie(request);
         AuthTokenResult execute = updateUserRoleUseCase.execute(new UpdateUserRoleCommand(userId, token));
         ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, execute.accessToken())
@@ -81,18 +88,18 @@ public class UserController {
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         response.setStatus(HttpServletResponse.SC_OK);
-        return ApiResponse.success();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     @DeleteMapping
-    public ApiResponse<Void> deleteUserInfo(@Parameter(hidden = true) @CurrentUserId String userId,
-                                            HttpServletRequest request,
-                                            HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<Void>> deleteUserInfo(@Parameter(hidden = true) @CurrentUserId String userId,
+                                                            HttpServletRequest request,
+                                                            HttpServletResponse response) {
         String cookie = getCookie(request);
         withdrawUserUseCase.execute(new ExecuteWithdrawUserCommand(userId, cookie));
 
         removeCookie(response);
-        return ApiResponse.success();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     private void removeCookie(HttpServletResponse response) {

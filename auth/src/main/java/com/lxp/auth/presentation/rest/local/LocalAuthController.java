@@ -36,7 +36,7 @@ public class LocalAuthController {
 
         ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, tokenInfo.accessToken())
             .httpOnly(CookieConstants.HTTP_ONLY)
-            .secure(true)
+            .secure(false)
             .path(CookieConstants.DEFAULT_PATH)
             .maxAge(tokenInfo.expiresIn())
             .sameSite("Lax")
@@ -68,7 +68,7 @@ public class LocalAuthController {
     private void deleteCookie(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, "") // 값은 비움
             .httpOnly(CookieConstants.HTTP_ONLY)
-            .secure(true)
+            .secure(false)
             .path(CookieConstants.DEFAULT_PATH)
             .maxAge(0)
             .sameSite("Lax")

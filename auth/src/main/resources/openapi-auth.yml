@@ -64,7 +64,7 @@ paths:
           $ref: '#/components/responses/LoginUnauthorizedError' # 구체적인 401 에러를 참조
         '400':
           $ref: '#/components/responses/BadRequestError' # 일반적인 400 에러 참조
-  /api-v1/auth/logout: # 💡 [수정] /auth/login과 동일 레벨로 경로 수정
+  /api-v1/auth/logout:
     post:
       tags:
         - Auth
@@ -79,6 +79,15 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError' # 토큰이 없거나 유효하지 않음 (AUTH_002)
 components:
+  # --- Security Schemes (인증 방식) ---
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token # 서버가 사용하는 쿠키의 이름 (예시)
+      description: '인증 토큰을 HTTP-only 쿠키(ACCESS_TOKEN)를 통해 전송합니다.'
+
+
   # --- Schemas (데이터 모델) ---
   schemas:
     RegisterRequest:
@@ -116,6 +125,7 @@ components:
             type: integer
             format: int64
           description: 관심사 태그 ID 목록 (최소 3개, 최대 5개)
+          example: [1, 2, 3]
           minItems: 3 # 제약 조건 명시
           maxItems: 5 # 제약 조건 명시
         level:
@@ -133,9 +143,11 @@ components:
         email:
           type: string
           format: email
+          example: "user@example.com"
         password:
           type: string
           format: password
+          example: "StrongP@ss123"
 
     LoginResponse:
       type: object
@@ -151,16 +163,6 @@ components:
           type: string
           description: 사용자 친화적인 에러 메시지
           example: "이미 사용 중인 사용자 ID입니다."
-
-
-  # --- Security Schemes (인증 방식) ---
-  securitySchemes:
-    securitySchemes:
-      cookieAuth:
-        type: apiKey
-        in: cookie
-        name: access_token # 서버가 사용하는 쿠키의 이름 (예시)
-        description: '인증 토큰을 HTTP-only 쿠키(ACCESS_TOKEN)를 통해 전송합니다.'
 
   # --- Responses (공통 응답) ---
   responses:

@@ -73,7 +73,7 @@ public class UserController {
         AuthTokenResult execute = updateUserRoleUseCase.execute(new UpdateUserRoleCommand(userId, token));
         ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, execute.accessToken())
             .httpOnly(CookieConstants.HTTP_ONLY)
-            .secure(true)
+            .secure(false)
             .path(CookieConstants.DEFAULT_PATH)
             .maxAge(execute.expiresIn())
             .sameSite("Lax")
@@ -98,7 +98,7 @@ public class UserController {
     private void removeCookie(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from(CookieConstants.ACCESS_TOKEN_NAME, "")
             .httpOnly(CookieConstants.HTTP_ONLY)
-            .secure(true)
+            .secure(false)
             .path(CookieConstants.DEFAULT_PATH)
             .maxAge(0)
             .sameSite("Lax")

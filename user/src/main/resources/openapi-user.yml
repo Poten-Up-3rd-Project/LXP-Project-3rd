@@ -33,7 +33,7 @@ paths:
       summary: 사용자 프로필 정보 업데이트 (레벨, 태그, 직업)
       operationId: updateUserProfile
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       description: |
         **접근 조건:** 1. 요청에 유효한 인증 쿠키가 포함되어야 합니다.
         2. 이 요청은 **인증 쿠키에 포함된 사용자 ID**와 일치하는 본인 프로필만 수정 가능합니다.
@@ -49,6 +49,7 @@ paths:
                   type: string
                   description: 변경하고자 하는 사용자 이름
                   nullable: true
+                  example: "new"
                 level:
                   type: string
                   description: 변경하고자 하는 새로운 학습자 레벨
@@ -61,6 +62,7 @@ paths:
                   items:
                     type: integer
                     format: int64
+                  example: [1, 2, 3]
       responses:
         '200':
           description: 프로필 업데이트 성공

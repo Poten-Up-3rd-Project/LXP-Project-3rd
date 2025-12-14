@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class CourseCreatedEventHandler {
     private final CourseIntegrationEventPublisher integrationEventPublisher;
 
+    //TODO("이벤트 발행 실패시")
     @Retryable
     @Async
     @TransactionalEventListener

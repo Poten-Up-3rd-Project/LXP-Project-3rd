@@ -20,8 +20,13 @@ public class CourseReadRepositoryAdapter implements CourseReadModelPort {
 
 
     @Override
-    public Page<CourseReadModel> search(String keyword, PageRequest pageable) {
-        return null;
+    public Page<CourseReadModel> search(String keyword, PageRequest pageRequest) {
+        return PageConverter.toDomainPage(
+                courseReadJpaRepository.searchCoursesByKeyword(
+                        keyword,
+                        PageConverter.toSpringPageable(pageRequest)
+                )
+        ).map(courseReadMapper::toDomain);
     }
 
     @Override

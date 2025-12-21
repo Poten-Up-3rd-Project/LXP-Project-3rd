@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @DomainService
 public class CourseCreateDomainService {
 
+    // TODO("command와 결합 되어 있음. 분리 필요")
     public Course create(CourseCreateCommand command, InstructorResult instructor) {
 
         validateInstructorInfo(instructor);

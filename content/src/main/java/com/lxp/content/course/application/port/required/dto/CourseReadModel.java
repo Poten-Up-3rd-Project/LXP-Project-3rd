@@ -5,6 +5,7 @@ import com.lxp.common.enums.Level;
 import java.time.LocalDateTime;
 import java.util.List;
 
+//TODO("나중에 readModel로 분리")
 public record CourseReadModel(
         String uuid,
         String instructorId,

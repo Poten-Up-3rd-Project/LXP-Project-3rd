@@ -44,4 +44,6 @@ public interface TagCachePort {
      * 캐시 무효화
      */
     void evictAll();
+
+    List<Long> searchIdsByNameContaining(String keyword);
 }

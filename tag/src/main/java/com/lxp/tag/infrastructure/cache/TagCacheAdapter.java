@@ -146,6 +146,21 @@ public class TagCacheAdapter implements TagCachePort {
         log.info("[TagCache] 전체 캐시 삭제 완료");
     }
 
+    @Override
+    public List<Long> searchIdsByNameContaining(String keyword) {
+        Set<String> nameKeys = redisTemplate.keys(TAG_NAME_KEY + "*" + keyword.toLowerCase() + "*");
+        if (nameKeys == null || nameKeys.isEmpty()) {
+            return List.of();
+        }
+        List<String> ids = redisTemplate.opsForValue().multiGet(nameKeys);
+
+        return ids.stream()
+                .filter(Objects::nonNull)
+                .map(Long::valueOf)
+                .toList();
+
+    }
+
     private TagResult toTagResult(String json) {
         try {
             return objectMapper.readValue(json, TagResult.class);

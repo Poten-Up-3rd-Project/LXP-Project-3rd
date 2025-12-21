@@ -27,4 +27,8 @@ public class CourseTagQueryAdapter implements TagQueryPort {
                 ).toList();
     }
 
+    @Override
+    public List<Long> findTagsIdsByNameIn(String tagName) {
+        return tagCachePort.searchIdsByNameContaining(tagName);
+    }
 }

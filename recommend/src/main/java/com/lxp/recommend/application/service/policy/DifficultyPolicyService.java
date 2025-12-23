@@ -1,7 +1,6 @@
 package com.lxp.recommend.application.service.policy;
 
-import com.lxp.recommend.domain.dto.DifficultyLevel;
-import com.lxp.recommend.domain.dto.LearnerLevel;
+import com.lxp.recommend.domain.model.ids.LearnerLevel;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;

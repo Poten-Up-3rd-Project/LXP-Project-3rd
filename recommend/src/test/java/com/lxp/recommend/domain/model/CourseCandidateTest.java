@@ -1,6 +1,5 @@
 package com.lxp.recommend.domain.model;
 
-import com.lxp.recommend.domain.dto.DifficultyLevel;
 import com.lxp.recommend.domain.model.ids.CourseId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

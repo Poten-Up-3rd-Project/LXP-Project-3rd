@@ -1,4 +1,6 @@
-package com.lxp.recommend.domain.dto;
+package com.lxp.recommend.infrastructure.external.user;
+
+import com.lxp.recommend.domain.model.ids.LearnerLevel;
 
 import java.util.Set;
 

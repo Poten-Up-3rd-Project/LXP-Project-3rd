@@ -1,5 +1,7 @@
-package com.lxp.recommend.domain.dto;
+package com.lxp.recommend.infrastructure.external.enrollment;
 
+
+import com.lxp.recommend.domain.model.ids.EnrollmentStatus;
 
 public record LearningStatusView(
         String memberId,

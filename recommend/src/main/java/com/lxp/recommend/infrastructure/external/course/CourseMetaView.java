@@ -1,4 +1,4 @@
-package com.lxp.recommend.domain.dto;
+package com.lxp.recommend.infrastructure.external.course;
 
 import java.util.Set;
 

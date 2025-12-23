@@ -1,7 +1,6 @@
 package com.lxp.recommend.application.port.required;
 
-import com.lxp.recommend.domain.dto.CourseMetaView;
-import com.lxp.recommend.domain.dto.DifficultyLevel;
+import com.lxp.recommend.infrastructure.external.course.CourseMetaView;
 
 import java.util.List;
 import java.util.Set;

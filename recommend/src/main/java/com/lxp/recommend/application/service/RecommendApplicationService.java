@@ -11,8 +11,8 @@ import com.lxp.recommend.application.port.required.LearningHistoryQueryPort;
 import com.lxp.recommend.application.port.required.dto.CourseMetaData;
 import com.lxp.recommend.application.port.required.dto.LearnerProfileData;
 import com.lxp.recommend.application.port.required.dto.LearningHistoryData;
-import com.lxp.recommend.domain.dto.LearnerLevel;
-import com.lxp.recommend.domain.dto.LevelMapper;  // ← 추가
+import com.lxp.recommend.domain.model.ids.LearnerLevel;
+import com.lxp.recommend.infrastructure.external.common.LevelMapper;  // ← 추가
 import com.lxp.recommend.domain.model.*;
 import com.lxp.recommend.domain.model.ids.MemberId;
 import com.lxp.recommend.application.port.provided.persistence.MemberRecommendationRepository;

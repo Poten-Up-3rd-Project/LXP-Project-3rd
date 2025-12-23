@@ -10,7 +10,7 @@ import com.lxp.recommend.application.port.required.dto.CourseMetaData;
 import com.lxp.recommend.application.port.required.dto.LearnerProfileData;
 import com.lxp.recommend.application.port.required.dto.LearningHistoryData;
 import com.lxp.recommend.application.service.policy.DifficultyPolicyService;
-import com.lxp.recommend.domain.dto.LearnerProfileView;
+import com.lxp.recommend.infrastructure.external.user.LearnerProfileView;
 import com.lxp.recommend.domain.model.CourseCandidate;
 import com.lxp.recommend.domain.model.RecommendContext;
 import lombok.RequiredArgsConstructor;

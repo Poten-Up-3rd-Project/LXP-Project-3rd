@@ -1,4 +1,4 @@
-package com.lxp.recommend.interfaces;
+package com.lxp.recommend.infrastructure.web;
 
 import com.lxp.recommend.application.service.RecommendFacadeService;  // ← 변경
 import com.lxp.recommend.application.dto.RecommendedCourseDto;

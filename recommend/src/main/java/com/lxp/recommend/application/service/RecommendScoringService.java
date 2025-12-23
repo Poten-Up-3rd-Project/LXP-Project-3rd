@@ -1,4 +1,4 @@
-package com.lxp.recommend.domain.service;
+package com.lxp.recommend.application.service;
 
 import com.lxp.common.domain.annotation.DomainService;
 import com.lxp.recommend.domain.model.*;

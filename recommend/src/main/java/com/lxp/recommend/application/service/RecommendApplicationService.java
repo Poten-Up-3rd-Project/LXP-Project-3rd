@@ -16,7 +16,6 @@ import com.lxp.recommend.domain.dto.LevelMapper;  // ← 추가
 import com.lxp.recommend.domain.model.*;
 import com.lxp.recommend.domain.model.ids.MemberId;
 import com.lxp.recommend.application.port.provided.persistence.MemberRecommendationRepository;
-import com.lxp.recommend.domain.service.RecommendScoringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

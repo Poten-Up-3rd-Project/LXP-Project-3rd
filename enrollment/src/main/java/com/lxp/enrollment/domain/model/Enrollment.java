@@ -1,7 +1,6 @@
 package com.lxp.enrollment.domain.model;
 
 import com.lxp.common.domain.event.AggregateRoot;
-import com.lxp.common.util.UUIdGenerator;
 import com.lxp.enrollment.domain.event.CancelEnrollmentEvent;
 import com.lxp.enrollment.domain.event.EnrollmentCreatedEvent;
 import com.lxp.enrollment.domain.model.enums.EnrollmentState;
@@ -9,6 +8,7 @@ import com.lxp.enrollment.domain.model.vo.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Enrollment extends AggregateRoot<EnrollmentId> {
     private EnrollmentUUID enrollmentUUID;
@@ -71,7 +71,7 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         Objects.requireNonNull(userId, "UserId must not be null");
         Objects.requireNonNull(courseId, "CourseId must not be null");
 
-        EnrollmentUUID enrollmentUUID = new EnrollmentUUID(UUIdGenerator.createString());
+        EnrollmentUUID enrollmentUUID = new EnrollmentUUID(UUID.randomUUID().toString());
         Enrollment enrollment = new Enrollment(enrollmentUUID, EnrollmentState.ENROLLED, userId, courseId);
 
         enrollment.registerEvent(new EnrollmentCreatedEvent(
@@ -115,6 +115,10 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         registerEvent(new CancelEnrollmentEvent(enrollmentUUID.value(), userId.value(), courseId.value()));
     }
 
+    public EnrollmentId enrollmentId() {
+        return this.enrollmentId;
+    }
+
     public EnrollmentState state() {
         return this.state;
     }
@@ -123,12 +127,12 @@ public class Enrollment extends AggregateRoot<EnrollmentId> {
         return this.enrollmentUUID.value();
     }
 
-    public String userId() {
-        return this.userId.value();
+    public UserId userId() {
+        return this.userId;
     }
 
-    public String courseId() {
-        return this.courseId.value();
+    public CourseId courseId() {
+        return this.courseId;
     }
 
     public EnrollmentDate enrollmentDate() {

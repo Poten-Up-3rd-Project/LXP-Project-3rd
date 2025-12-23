@@ -1,7 +1,6 @@
 package com.lxp.enrollment.application.service;
-import com.lxp.api.content.course.port.external.dto.result.CourseInfoResult;
+
 import com.lxp.common.application.port.out.DomainEventPublisher;
-import com.lxp.common.enums.Level;
 import com.lxp.enrollment.application.port.provided.dto.command.EnrollCourseCommand;
 import com.lxp.enrollment.application.port.provided.dto.result.EnrollCourseResult;
 import com.lxp.enrollment.application.port.required.UserStatusQueryPort;
@@ -66,21 +65,7 @@ class EnrollCourseServiceTest {
                 LocalDateTime.now()
         );
     }
-    
-    private CourseInfoResult createCourseInfoResult() {
-        return new CourseInfoResult(
-                UUID.randomUUID().toString(),
-                1L,
-                "instructor-uuid",
-                "테스트 강의",
-                "https://example.com/thumbnail.jpg",
-                "테스트 설명",
-                3000L,
-                Level.JUNIOR,
-                List.of(),
-                List.of(1L)
-        );
-    }
+
 
     @Test
     @DisplayName("수강 신청 시 도메인 이벤트가 발행된다")
@@ -99,8 +84,8 @@ class EnrollCourseServiceTest {
                         "enrollment-uuid",
                         1L,
                         enrollmentWithEvent.state().name(),
-                        enrollmentWithEvent.userId(),
-                        enrollmentWithEvent.courseId(),
+                        enrollmentWithEvent.userId().value(),
+                        enrollmentWithEvent.courseId().value(),
                         enrollmentWithEvent.enrollmentDate().value(),
                         enrollmentWithEvent.cancelReason()
                 ));

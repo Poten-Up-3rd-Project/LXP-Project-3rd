@@ -1,4 +1,4 @@
-package com.lxp.recommend.infrastructure.persistence.jpa.entity;
+package com.lxp.recommend.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

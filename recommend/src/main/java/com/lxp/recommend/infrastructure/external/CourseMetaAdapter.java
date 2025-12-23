@@ -1,4 +1,4 @@
-package com.lxp.recommend.infrastructure.external.adapter;
+package com.lxp.recommend.infrastructure.external;
 
 import com.lxp.api.content.course.port.dto.result.CourseInfoResult;
 import com.lxp.api.content.course.port.external.ExternalCourseInfoPort;

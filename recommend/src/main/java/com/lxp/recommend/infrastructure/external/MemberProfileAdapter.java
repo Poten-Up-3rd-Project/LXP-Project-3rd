@@ -1,4 +1,4 @@
-package com.lxp.recommend.infrastructure.external.adapter;
+package com.lxp.recommend.infrastructure.external;
 
 import com.lxp.api.tag.port.external.TagCachePort;
 import com.lxp.api.user.port.dto.result.UserInfoResponse;

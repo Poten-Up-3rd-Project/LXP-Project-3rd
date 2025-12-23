@@ -1,11 +1,11 @@
-package com.lxp.recommend.infrastructure.persistence.adapter;
+package com.lxp.recommend.infrastructure.persistence;
 
 import com.lxp.recommend.domain.model.MemberRecommendation;
 import com.lxp.recommend.domain.model.ids.MemberId;
-import com.lxp.recommend.domain.repository.MemberRecommendationRepository;
-import com.lxp.recommend.infrastructure.persistence.jpa.entity.RecommendedCourseItemJpaEntity;
-import com.lxp.recommend.infrastructure.persistence.jpa.mapper.MemberRecommendationMapper;
-import com.lxp.recommend.infrastructure.persistence.jpa.repository.JpaMemberRecommendationRepository;
+import com.lxp.recommend.application.port.provided.persistence.MemberRecommendationRepository;
+import com.lxp.recommend.infrastructure.persistence.entity.RecommendedCourseItemJpaEntity;
+import com.lxp.recommend.infrastructure.persistence.mapper.MemberRecommendationMapper;
+import com.lxp.recommend.infrastructure.persistence.repository.JpaMemberRecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

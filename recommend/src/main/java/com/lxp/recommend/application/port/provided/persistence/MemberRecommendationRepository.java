@@ -1,4 +1,4 @@
-package com.lxp.recommend.domain.repository;
+package com.lxp.recommend.application.port.provided.persistence;
 
 import com.lxp.recommend.domain.model.MemberRecommendation;
 import com.lxp.recommend.domain.model.ids.MemberId;

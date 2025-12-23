@@ -4,7 +4,7 @@ import com.lxp.recommend.application.dto.RecommendedCourseDto;
 import com.lxp.recommend.application.mapper.RecommendedCourseMapper;
 import com.lxp.recommend.domain.model.MemberRecommendation;
 import com.lxp.recommend.domain.model.ids.MemberId;
-import com.lxp.recommend.domain.repository.MemberRecommendationRepository;
+import com.lxp.recommend.application.port.provided.persistence.MemberRecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

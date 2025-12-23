@@ -1,11 +1,11 @@
-package com.lxp.recommend.infrastructure.persistence.jpa.mapper;
+package com.lxp.recommend.infrastructure.persistence.mapper;
 
 import com.lxp.recommend.domain.model.MemberRecommendation;
 import com.lxp.recommend.domain.model.RecommendedCourse;
 import com.lxp.recommend.domain.model.ids.CourseId;
 import com.lxp.recommend.domain.model.ids.MemberId;
-import com.lxp.recommend.infrastructure.persistence.jpa.entity.MemberRecommendationJpaEntity;
-import com.lxp.recommend.infrastructure.persistence.jpa.entity.RecommendedCourseItemJpaEntity;
+import com.lxp.recommend.infrastructure.persistence.entity.MemberRecommendationJpaEntity;
+import com.lxp.recommend.infrastructure.persistence.entity.RecommendedCourseItemJpaEntity;
 
 import java.util.stream.Collectors;
 

@@ -1,4 +1,4 @@
-package com.lxp.recommend.infrastructure.external.adapter;
+package com.lxp.recommend.infrastructure.external;
 
 import com.lxp.recommend.application.port.required.LearningHistoryQueryPort;
 import com.lxp.recommend.application.port.required.dto.LearningHistoryData;

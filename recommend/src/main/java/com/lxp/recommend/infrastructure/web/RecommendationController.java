@@ -1,14 +1,12 @@
 package com.lxp.recommend.infrastructure.web;
 
-import com.lxp.recommend.application.service.RecommendFacadeService;  // ← 변경
 import com.lxp.recommend.application.dto.RecommendedCourseDto;
+import com.lxp.recommend.application.service.RecommendCommandService;
+import com.lxp.recommend.application.service.RecommendQueryService;
+import com.lxp.common.infrastructure.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,17 +16,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecommendationController {
 
-    private final RecommendFacadeService recommendFacadeService;  // ← 변경
+    private final RecommendCommandService commandService;
+    private final RecommendQueryService queryService;
+
+    // ✅ POST 요청으로 명시적 호출
+    @PostMapping("/refresh")
+    public ApiResponse<Void> refreshRecommendation(
+            @RequestHeader("X-MEMBER-ID") String memberId
+    ) {
+        commandService.refreshRecommendation(memberId);
+        return ApiResponse.success();
+    }
 
     @GetMapping("/me")
-    public ResponseEntity<List<RecommendedCourseDto>> getMyRecommendations(
+    public ApiResponse<List<RecommendedCourseDto>> getMyRecommendations(
             @RequestHeader(value = "X-MEMBER-ID", required = false) String memberIdHeader
     ) {
         String memberId = memberIdHeader != null ? memberIdHeader : "test-member-uuid-001";
-        log.info("추천 요청 수신: memberId={}", memberId);
 
-        List<RecommendedCourseDto> result = recommendFacadeService.getTopRecommendations(memberId);  // ← 변경
-
-        return ResponseEntity.ok(result);
+        List<RecommendedCourseDto> result = queryService.getTopRecommendations(memberId);
+        return ApiResponse.success(result);
     }
 }

@@ -12,6 +12,7 @@ import com.lxp.recommend.application.dto.CourseMetaData;
 import com.lxp.recommend.application.dto.LearnerProfileData;
 import com.lxp.recommend.application.dto.LearningHistoryData;
 import com.lxp.recommend.domain.model.ids.LearnerLevel;
+import com.lxp.recommend.domain.policy.ScoringPolicy;
 import com.lxp.recommend.infrastructure.external.common.LevelMapper;  // ← 추가
 import com.lxp.recommend.domain.model.*;
 import com.lxp.recommend.domain.model.ids.MemberId;

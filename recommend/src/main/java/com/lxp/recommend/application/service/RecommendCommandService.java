@@ -1,87 +1,115 @@
 package com.lxp.recommend.application.service;
 
-import com.lxp.recommend.application.service.assembler.RecommendDataAssembler;
-import com.lxp.recommend.application.service.policy.DifficultyPolicyService;
-import com.lxp.recommend.domain.model.*;
-import com.lxp.recommend.domain.model.ids.MemberId;
+import com.lxp.recommend.application.dto.CourseMetaData;
+import com.lxp.recommend.application.dto.LearnerProfileData;
+import com.lxp.recommend.application.dto.LearningHistoryData;
+import com.lxp.recommend.application.port.provided.external.CourseMetaQueryPort;
+import com.lxp.recommend.application.port.provided.external.LearnerProfileQueryPort;
+import com.lxp.recommend.application.port.provided.external.LearningHistoryQueryPort;
 import com.lxp.recommend.application.port.provided.persistence.MemberRecommendationRepository;
-import com.lxp.recommend.application.service.RecommendScoringService;
+import com.lxp.recommend.domain.model.*;
+import com.lxp.recommend.domain.model.ids.CourseId;
+import com.lxp.recommend.domain.model.ids.EnrollmentStatus;
+import com.lxp.recommend.domain.model.ids.MemberId;
+import com.lxp.recommend.domain.policy.ScoringPolicy;  // 가정: ScoringPolicy 로직 내장된 경우
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-/**
- * 추천 계산 Command Service
- *
- * 책임:
- * - 추천 계산 프로세스 오케스트레이션
- * - Aggregate 생명주기 관리
- *
- * 원칙:
- * - 읽기 전용 메서드 금지 (Query는 별도 Service)
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RecommendCommandService {
 
-    private final RecommendDataAssembler dataAssembler;
-    private final DifficultyPolicyService difficultyPolicy;
-    private final RecommendScoringService scoringService;
+    // ✅ Port 직접 주입 (Assembler 제거)
     private final MemberRecommendationRepository recommendationRepository;
+    private final LearnerProfileQueryPort userPort;
+    private final CourseMetaQueryPort coursePort;
+    private final LearningHistoryQueryPort historyPort;
 
-    /**
-     * 추천 계산 및 저장
-     *
-     * @param learnerId 학습자 ID
-     */
+    // ✅ ScoringService 제거 -> Policy 직접 사용 (또는 Service 내 private method)
+    // private final RecommendScoringService scoringService; (제거)
+
     @Transactional
     public void refreshRecommendation(String learnerId) {
         log.info("[추천 계산 시작] learnerId={}", learnerId);
 
-        // 1. 추천 계산에 필요한 데이터 수집 (Assembler 위임)
-        RecommendContext context = dataAssembler.assembleContext(learnerId);
+        // 1. 외부 데이터 수집 (Assembler 로직 흡수)
+        RecommendContext context = assembleContext(learnerId);
 
-        // 2. 컨텍스트 검증
         if (!context.hasValidContext()) {
-            log.info("[추천 계산 중단] 유효한 컨텍스트 없음. learnerId={}", learnerId);
+            log.info("[추천 계산 중단] 유효한 컨텍스트 없음.");
             return;
         }
 
-        // 3. 도메인 서비스 호출 (점수 계산 + 순위 결정)
-        List<RecommendedCourse> scoredCourses = scoringService.scoreAndRank(
-                context,
-                ScoringPolicy.defaultPolicy()
-        );
+        // 2. 도메인 로직 (점수 계산)
+        // ScoringPolicy가 도메인 모델 내에서 동작하도록 변경 권장
+        List<RecommendedCourse> scoredCourses = calculateScores(context);
 
         if (scoredCourses.isEmpty()) {
-            log.info("[추천 계산 중단] 점수 계산 결과 없음. learnerId={}", learnerId);
             return;
         }
 
-        // 4. Aggregate 생명주기 관리
-        MemberId memberId = MemberId.of(learnerId);
-        MemberRecommendation recommendation = findOrCreateRecommendation(memberId);
-
-        // 5. 불변식 검증 후 저장 (Aggregate 내부에서 검증)
+        // 3. 저장
+        MemberRecommendation recommendation = findOrCreateRecommendation(MemberId.of(learnerId));
         recommendation.updateItems(scoredCourses);
         recommendationRepository.save(recommendation);
 
-        log.info("[추천 계산 완료] learnerId={}, 추천 수={}", learnerId, scoredCourses.size());
+        log.info("[추천 계산 완료]");
     }
 
-    /**
-     * Aggregate 조회 또는 생성
-     */
+    // 🔴 과거 Assembler의 로직을 여기로 가져옴
+    private RecommendContext assembleContext(String learnerId) {
+        // 1. 프로필 조회
+        LearnerProfileData profile = userPort.getProfile(learnerId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 2. 학습 이력 조회
+        List<LearningHistoryData> historyDtos = historyPort.findByLearnerId(learnerId);
+        List<LearningHistory> histories = historyDtos.stream()
+                .map(d -> new LearningHistory(CourseId.of(d.courseId()), EnrollmentStatus.valueOf(d.status())))
+                .toList();
+
+        // 3. 후보 강좌 조회 (난이도 기반)
+        // LevelMapper 로직 활용 필요 (infrastructure.external.common.LevelMapper -> static method)
+        // Set<String> targetLevels = LevelMapper.toStringSet(LevelMapper.determineTargetLevels(Level.valueOf(profile.learnerLevel())));
+        Set<String> targetLevels = Set.of("JUNIOR", "MIDDLE"); // 임시 (LevelMapper 가져와야 함)
+
+        List<CourseMetaData> courseDtos = coursePort.findByDifficulties(targetLevels, 50);
+        List<CourseCandidate> candidates = courseDtos.stream()
+                .map(d -> new CourseCandidate(
+                        CourseId.of(d.courseId()),
+                        d.tags(),
+                        com.lxp.common.enums.Level.valueOf(d.difficulty()),
+                        d.isPublic()
+                ))
+                .toList();
+
+        return RecommendContext.create(profile.interestTags(), histories, candidates);
+    }
+
+    // 🔴 과거 ScoringService의 로직 흡수
+    private List<RecommendedCourse> calculateScores(RecommendContext context) {
+        ScoringPolicy policy = ScoringPolicy.defaultPolicy();
+
+        return context.getFilteredCandidates().stream()
+                .map(candidate -> {
+                    double score = policy.calculateScore(candidate.getTags(), context.getTagContext());
+                    return new RecommendedCourse(candidate.getCourseId(), score);
+                })
+                .filter(rc -> rc.getScore() > 0)
+                .sorted((c1, c2) -> Double.compare(c2.getScore(), c1.getScore())) // 내림차순
+                .limit(10)
+                .toList();
+    }
+
     private MemberRecommendation findOrCreateRecommendation(MemberId memberId) {
-        return recommendationRepository
-                .findByMemberId(memberId)
-                .orElseGet(() -> {
-                    log.info("[신규 추천 생성] memberId={}", memberId.getValue());
-                    return new MemberRecommendation(memberId);
-                });
+        return recommendationRepository.findByMemberId(memberId)
+                .orElseGet(() -> new MemberRecommendation(memberId));
     }
 }

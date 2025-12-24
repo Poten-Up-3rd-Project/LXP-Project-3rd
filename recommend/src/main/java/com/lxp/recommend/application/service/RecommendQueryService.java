@@ -1,10 +1,10 @@
-package com.lxp.recommend.application.service;
+package com.lxp.recommend.application.service; // 또는 com.lxp.recommend.application.service.query
 
 import com.lxp.recommend.application.dto.RecommendedCourseDto;
-import com.lxp.recommend.application.mapper.RecommendedCourseMapper;
-import com.lxp.recommend.domain.model.MemberRecommendation;
-import com.lxp.recommend.domain.model.ids.MemberId;
 import com.lxp.recommend.application.port.provided.persistence.MemberRecommendationRepository;
+import com.lxp.recommend.domain.model.MemberRecommendation;
+import com.lxp.recommend.domain.model.RecommendedCourse;
+import com.lxp.recommend.domain.model.ids.MemberId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,12 +17,8 @@ import java.util.List;
  * 추천 조회 Query Service
  *
  * 책임:
- * - 추천 결과 조회
- * - Domain → DTO 변환
- *
- * 원칙:
- * - ReadOnly Transaction만 사용
- * - 상태 변경 메서드 금지
+ * - 추천 결과 조회 (Repository)
+ * - Domain Model → Response DTO 변환
  */
 @Service
 @RequiredArgsConstructor
@@ -30,15 +26,10 @@ import java.util.List;
 public class RecommendQueryService {
 
     private static final int DEFAULT_TOP_N = 10;
-
     private final MemberRecommendationRepository recommendationRepository;
-    private final RecommendedCourseMapper recommendedCourseMapper;
 
     /**
-     * 추천 결과 조회 (기본 10개)
-     *
-     * @param memberId 회원 ID
-     * @return 추천 강좌 목록
+     * 기본 상위 10개 추천 조회
      */
     @Transactional(readOnly = true)
     public List<RecommendedCourseDto> getTopRecommendations(String memberId) {
@@ -47,15 +38,12 @@ public class RecommendQueryService {
 
     /**
      * 추천 결과 조회 (개수 지정)
-     *
-     * @param memberId 회원 ID
-     * @param topN 조회할 개수
-     * @return 추천 강좌 목록
      */
     @Transactional(readOnly = true)
     public List<RecommendedCourseDto> getTopRecommendations(String memberId, int topN) {
         log.info("[추천 조회] memberId={}, topN={}", memberId, topN);
 
+        // MemberId.of() 호출 시 모듈 에러가 난다면, domain 모듈의 exports 설정을 확인해야 합니다.
         MemberId memberIdObj = MemberId.of(memberId);
 
         // 1. Repository에서 조회
@@ -69,10 +57,22 @@ public class RecommendQueryService {
             return Collections.emptyList();
         }
 
-        // 3. Domain → DTO 변환 (Mapper 위임)
+        // 3. Domain → DTO 변환 (내부 private 메서드 사용)
         return recommendation.getItems().stream()
                 .limit(topN)
-                .map(recommendedCourseMapper::toDto)
+                .map(this::toDto)
                 .toList();
+    }
+
+    /**
+     * Domain(RecommendedCourse) → DTO(RecommendedCourseDto) 변환
+     * (기존 RecommendedCourseMapper 로직 흡수)
+     */
+    private RecommendedCourseDto toDto(RecommendedCourse course) {
+        return new RecommendedCourseDto(
+                course.getCourseId().getValue(),
+                course.getScore(),
+                course.getRank()
+        );
     }
 }

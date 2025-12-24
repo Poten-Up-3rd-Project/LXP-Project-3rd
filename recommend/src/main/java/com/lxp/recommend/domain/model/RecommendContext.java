@@ -1,7 +1,6 @@
 package com.lxp.recommend.domain.model;
 
 import com.lxp.recommend.domain.model.ids.EnrollmentStatus;
-import com.lxp.recommend.infrastructure.external.enrollment.LearningStatusView;
 import com.lxp.recommend.domain.exception.InvalidRecommendContextException;
 import com.lxp.recommend.domain.model.ids.CourseId;
 
@@ -19,10 +18,11 @@ import java.util.stream.Collectors;
  * 4. 필터링된 후보 강좌 생성
  * 5. 불변식 검증
  */
+
 public class RecommendContext {
 
     private final Set<String> explicitTags;
-    private final List<LearningStatusView> learningHistories;
+    private final List<LearningHistory> learningHistories;
     private final List<CourseCandidate> allCandidates;
 
     // 조립된 결과 (생성 시점에 계산)
@@ -32,7 +32,7 @@ public class RecommendContext {
 
     private RecommendContext(
             Set<String> explicitTags,
-            List<LearningStatusView> learningHistories,
+            List<LearningHistory> learningHistories, // ✅ 변경
             List<CourseCandidate> allCandidates
     ) {
         // null 방어
@@ -49,8 +49,6 @@ public class RecommendContext {
         validateInvariants();
     }
 
-    // ===== Factory Method =====
-
     /**
      * RecommendContext 생성
      *
@@ -61,7 +59,7 @@ public class RecommendContext {
      */
     public static RecommendContext create(
             Set<String> explicitTags,
-            List<LearningStatusView> learningHistories,
+            List<LearningHistory> learningHistories,
             List<CourseCandidate> allCandidates
     ) {
         return new RecommendContext(explicitTags, learningHistories, allCandidates);
@@ -75,17 +73,16 @@ public class RecommendContext {
     private Set<CourseId> buildExcludedCourseIds() {
         return learningHistories.stream()
                 .filter(this::shouldExclude)
-                .map(history -> CourseId.of(history.courseId()))
+                .map(LearningHistory::courseId) // ✅ 변경
                 .collect(Collectors.toSet());
     }
 
-    private boolean shouldExclude(LearningStatusView history) {
+    private boolean shouldExclude(LearningHistory history) { // ✅ 변경
         EnrollmentStatus status = history.status();
         return status == EnrollmentStatus.ENROLLED || status == EnrollmentStatus.COMPLETED;
     }
 
     // ===== 도메인 규칙 2: Implicit 태그 추출 =====
-
     /**
      * Implicit 태그 = 수강 중인 강좌의 태그
      * (완료 강좌는 포함하지 않음)
@@ -93,35 +90,33 @@ public class RecommendContext {
     private TagContext buildTagContext() {
         Set<CourseId> enrolledCourseIds = learningHistories.stream()
                 .filter(history -> history.status() == EnrollmentStatus.ENROLLED)
-                .map(history -> CourseId.of(history.courseId()))
+                .map(LearningHistory::courseId)
                 .collect(Collectors.toSet());
 
         // 핵심 비즈니스 규칙: 수강 중인 강좌의 태그가 Implicit 태그
         Set<String> implicitTags = allCandidates.stream()
-                .filter(candidate -> enrolledCourseIds.contains(candidate.courseId()))
-                .flatMap(candidate -> candidate.tags().stream())
+                .filter(candidate -> enrolledCourseIds.contains(candidate.getCourseId()))
+                .flatMap(candidate -> candidate.getTags().stream())
                 .collect(Collectors.toSet());
 
         return new TagContext(explicitTags, implicitTags);
     }
 
     // ===== 도메인 규칙 3: 추천 후보 필터링 =====
-
     /**
      * 제외 대상 강좌를 걸러낸 최종 후보 리스트
      */
     private List<CourseCandidate> buildFilteredCandidates() {
         return allCandidates.stream()
-                .filter(candidate -> !excludedCourseIds.contains(candidate.courseId()))
+                .filter(candidate -> !excludedCourseIds.contains(candidate.getCourseId()))
                 .toList();
     }
 
     // ===== 불변식 검증 =====
-
     private void validateInvariants() {
         // 불변식 1: 필터링된 후보에 제외 강좌가 없어야 함
         boolean hasExcludedCourse = filteredCandidates.stream()
-                .anyMatch(candidate -> excludedCourseIds.contains(candidate.courseId()));
+                .anyMatch(candidate -> excludedCourseIds.contains(candidate.getCourseId()));
 
         if (hasExcludedCourse) {
             throw new InvalidRecommendContextException(

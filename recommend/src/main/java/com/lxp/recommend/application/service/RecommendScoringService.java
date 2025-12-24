@@ -3,6 +3,7 @@ package com.lxp.recommend.application.service;
 import com.lxp.common.domain.annotation.DomainService;
 import com.lxp.recommend.domain.model.*;
 import com.lxp.recommend.domain.model.MemberRecommendation.ScoredCourse;
+import com.lxp.recommend.domain.policy.ScoringPolicy;
 
 import java.util.Comparator;
 import java.util.List;

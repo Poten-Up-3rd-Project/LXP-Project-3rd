@@ -3,9 +3,10 @@ package com.lxp.recommend.application.service;
 import com.lxp.recommend.application.dto.CourseMetaData;
 import com.lxp.recommend.application.dto.LearnerProfileData;
 import com.lxp.recommend.application.dto.LearningHistoryData;
-import com.lxp.recommend.application.port.provided.external.CourseMetaQueryPort;
-import com.lxp.recommend.application.port.provided.external.LearnerProfileQueryPort;
-import com.lxp.recommend.application.port.provided.external.LearningHistoryQueryPort;
+import com.lxp.recommend.application.port.required.CourseMetaQueryPort;
+import com.lxp.recommend.application.port.required.LearnerProfileQueryPort;
+import com.lxp.recommend.application.port.required.LearningHistoryQueryPort;
+
 import com.lxp.recommend.application.port.provided.persistence.MemberRecommendationRepository;
 import com.lxp.recommend.domain.model.*;
 import com.lxp.recommend.domain.model.ids.CourseId;
